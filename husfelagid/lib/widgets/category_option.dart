@@ -36,21 +36,25 @@ class CategoryOption extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.only(
                     left: constraints.maxWidth * 0.1,
-                    right: constraints.maxWidth * 0.075,
+                    right: constraints.maxWidth * 0.05,
+                    top: constraints.maxWidth * 0.11,
+                    bottom: constraints.maxWidth * 0.11,
                   ),
-                  width: constraints.maxWidth * 0.3,
-                  child: Icon(
-                    optionIcon,
-                    size: constraints.maxHeight * 0.4,
+                  width: constraints.maxWidth * 0.35,
+                  child: FittedBox(
+                    child: Icon(
+                      optionIcon,
+                      //size: constraints.maxHeight * 0.4,
+                    ),
                   ),
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(
-                    left: constraints.maxWidth * 0.075,
+                    left: constraints.maxWidth * 0.05,
                     right: constraints.maxWidth * 0.1,
                   ),
-                  width: constraints.maxWidth * 0.7,
+                  width: constraints.maxWidth * 0.65,
                   child: Text(
                     optionText,
                     style: TextStyle(
