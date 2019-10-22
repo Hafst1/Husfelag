@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/widgets/custom_icons_icons.dart';
 
 import './add_cleaning_screen.dart';
 import './cleaning_list_screen.dart';
