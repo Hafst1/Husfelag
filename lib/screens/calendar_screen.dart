@@ -14,7 +14,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = CalendarController();
   }
@@ -29,7 +28,28 @@ class _CalendarScreenState extends State<CalendarScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TableCalendar(calendarController: _controller,)
+            TableCalendar(
+              calendarStyle: CalendarStyle(
+                todayColor: Colors.purple,
+                todayStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                  color: Colors.white
+                ),
+                selectedColor: Theme.of(context).primaryColor,
+                selectedStyle: TextStyle(
+                  color: Colors.black
+                )
+              ),
+              headerStyle: HeaderStyle(
+                centerHeaderTitle: true,
+                formatButtonDecoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarController: _controller,)
           ],
         ),
       ),
