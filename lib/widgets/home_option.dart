@@ -6,9 +6,9 @@ class HomeOption extends StatelessWidget {
   final String optionRoute;
 
   HomeOption(
-    @required this.optionIcon,
-    @required this.optionText,
-    @required this.optionRoute,
+    this.optionIcon,
+    this.optionText,
+    this.optionRoute,
   );
 
   void selectOption(BuildContext ctx) {
