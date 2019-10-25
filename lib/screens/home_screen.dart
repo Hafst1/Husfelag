@@ -8,7 +8,6 @@ import '../screens/cleaning/cleaning_screen.dart';
 import '../widgets/custom_icons_icons.dart';
 
 class HomeScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,10 +17,26 @@ class HomeScreen extends StatelessWidget {
       body: GridView(
         padding: const EdgeInsets.all(25),
         children: <Widget>[
-          HomeOption(CustomIcons.tools, "Framkvæmdir", ConstructionsScreen.routeName,),
-          HomeOption(CustomIcons.group, "Fundir", MeetingsScreen.routeName),
-          HomeOption(CustomIcons.doc_text, "Skjöl", DocumentsScreen.routeName),
-          HomeOption(CustomIcons.trash, "Þrif", CleaningScreen.routeName),
+          HomeOption(
+            CustomIcons.tools,
+            "Framkvæmdir",
+            ConstructionsScreen.routeName,
+          ),
+          HomeOption(
+            CustomIcons.group,
+            "Fundir",
+            MeetingsScreen.routeName,
+          ),
+          HomeOption(
+            CustomIcons.doc_text,
+            "Skjöl",
+            DocumentsScreen.routeName,
+          ),
+          HomeOption(
+            CustomIcons.trash,
+            "Þrif",
+            CleaningScreen.routeName,
+          ),
         ],
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 300,
