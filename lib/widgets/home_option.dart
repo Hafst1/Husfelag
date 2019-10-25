@@ -6,9 +6,9 @@ class HomeOption extends StatelessWidget {
   final String optionRoute;
 
   HomeOption(
-    this.optionIcon,
-    this.optionText,
-    this.optionRoute,
+    {@required this.optionIcon,
+    @required this.optionText,
+    @required this.optionRoute}
   );
 
   void selectOption(BuildContext ctx) {
@@ -23,7 +23,6 @@ class HomeOption extends StatelessWidget {
       onTap: () => selectOption(context),
       child: Container(
         decoration: BoxDecoration(
-          //border: Border.all(color: Colors.lightBlue[100]),
           border: Border.all(color: Colors.grey[400]),
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(15),

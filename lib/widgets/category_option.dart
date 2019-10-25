@@ -6,9 +6,9 @@ class CategoryOption extends StatelessWidget {
   final String optionRoute;
 
   CategoryOption(
-    this.optionIcon,
-    this.optionText,
-    this.optionRoute,
+    {@required this.optionIcon,
+    @required this.optionText,
+    @required this.optionRoute}
   );
 
   void selectOption(BuildContext ctx) {

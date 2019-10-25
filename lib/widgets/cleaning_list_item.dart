@@ -10,10 +10,10 @@ class CleaningListItem extends StatelessWidget {
   final String route;
 
   CleaningListItem(
-    this.apartment,
-    this.dateFrom,
-    this.dateTo,
-    this.route,
+    {@required this.apartment,
+    @required this.dateFrom,
+    @required this.dateTo,
+    @required this.route}
   );
 
   @override

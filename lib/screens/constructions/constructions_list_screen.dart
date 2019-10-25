@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 import '../../widgets/constructions_list_item.dart';
 import '../../widgets/meetings_list_item.dart';
 import '../../widgets/cleaning_list_item.dart';
+import '../../widgets/tab_filter_button.dart';
 
 class ConstructionsListScreen extends StatefulWidget {
   static const routeName = '/constructions-list';
 
   @override
-  _ConstructionsListScreenState createState() => _ConstructionsListScreenState();
+  _ConstructionsListScreenState createState() =>
+      _ConstructionsListScreenState();
 }
 
 class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
   int _selectedFilterIndex = 0;
 
-  _selectFilter (int index) {
+  _selectFilter(int index) {
     setState(() {
       _selectedFilterIndex = index;
     });
@@ -60,100 +62,57 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    height: heightOfBody * 0.1,
-                    color: Colors.grey[300],
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 3.0,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              "Nýjast",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 3.0,
-                                  color: Colors.grey[300],
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              "Gamalt",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            alignment: Alignment.center,
-                          ),
-                        ),
-                      ],
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TabFilterButton(
+                            buttonFilterId: 0,
+                            buttonText: "Nýjast",
+                            buttonFunc: _selectFilter,
+                            buttonHeight: heightOfBody * 0.1,
+                            filterIndex: _selectedFilterIndex),
+                      ),
+                      Expanded(
+                        child: TabFilterButton(
+                            buttonFilterId: 1,
+                            buttonText: "Gamalt",
+                            buttonFunc: _selectFilter,
+                            buttonHeight: heightOfBody * 0.1,
+                            filterIndex: _selectedFilterIndex),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
             Container(
               height: heightOfBody * 0.77,
+              padding: const EdgeInsets.only(
+                left: 10,
+                right: 10,
+                bottom: 10,
+              ),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  bottom: 10,
-                ),
                 child: Column(
                   children: <Widget>[
                     ConstructionsListItem(
-                      "Viðgerð á þaki",
-                      DateTime.now(),
-                      DateTime.now(),
-                      "some route",
+                      title: "Viðgerð á þaki",
+                      dateFrom: DateTime.now(),
+                      dateTo: DateTime.now(),
+                      route: "some route",
                     ),
                     MeetingsListItem(
-                      "Árlegur húsfundur",
-                      DateTime.now(),
-                      "17:00",
-                      "Egilshöll, 112 Grafarvogur",
-                      "some route",
+                      title: "Árlegur húsfundur",
+                      date: DateTime.now(),
+                      startsAt: "17:00",
+                      location: "Egilshöll, 112 Grafarvogur",
+                      route: "some route",
                     ),
                     CleaningListItem(
-                      "104",
-                      DateTime.now(),
-                      DateTime.now(),
-                      "some route",
-                    ),
-                    CleaningListItem(
-                      "104",
-                      DateTime.now(),
-                      DateTime.now(),
-                      "some route",
-                    ),
-                    CleaningListItem(
-                      "104",
-                      DateTime.now(),
-                      DateTime.now(),
-                      "some route",
-                    ),
-                    CleaningListItem(
-                      "104",
-                      DateTime.now(),
-                      DateTime.now(),
-                      "some route",
+                      apartment: "104",
+                      dateFrom: DateTime.now(),
+                      dateTo: DateTime.now(),
+                      route: "some route",
                     ),
                   ],
                 ),

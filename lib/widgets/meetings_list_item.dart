@@ -6,16 +6,16 @@ import './custom_icons_icons.dart';
 class MeetingsListItem extends StatelessWidget {
   final String title;
   final DateTime date;
-  final String time;
+  final String startsAt;
   final String location;
   final String route;
 
   MeetingsListItem(
-    this.title,
-    this.date,
-    this.time,
-    this.location,
-    this.route,
+    {@required this.title,
+    @required this.date,
+    @required this.startsAt,
+    @required this.location,
+    @required this.route}
   );
 
   @override
@@ -85,7 +85,7 @@ class MeetingsListItem extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      time,
+                      startsAt,
                       style: TextStyle(fontSize: 16),
                     ),
                   ),

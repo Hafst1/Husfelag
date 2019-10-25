@@ -19,15 +19,15 @@ class ConstructionsScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             CategoryOption(
-              CustomIcons.file_add,
-              "Bæta við framkvæmd",
-              AddConstructionScreen.routeName,
+              optionIcon: CustomIcons.file_add,
+              optionText: "Bæta við framkvæmd",
+              optionRoute: AddConstructionScreen.routeName,
             ),
             SizedBox(height: 15),
             CategoryOption(
-              CustomIcons.find_in_page,
-              "Yfirlit framkvæmda",
-              ConstructionsListScreen.routeName,
+              optionIcon: CustomIcons.find_in_page,
+              optionText: "Yfirlit framkvæmda",
+              optionRoute: ConstructionsListScreen.routeName,
             ),
           ],
         ),

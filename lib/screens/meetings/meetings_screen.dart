@@ -19,15 +19,15 @@ class MeetingsScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             CategoryOption(
-              Icons.group_add,
-              "Bóka fund",
-              AddMeetingScreen.routeName,
+              optionIcon: Icons.group_add,
+              optionText: "Bóka fund",
+              optionRoute: AddMeetingScreen.routeName,
             ),
             SizedBox(height: 15),
             CategoryOption(
-              CustomIcons.find_in_page,
-              "Yfirlit funda",
-              MeetingsListScreen.routeName,
+              optionIcon: CustomIcons.find_in_page,
+              optionText: "Yfirlit funda",
+              optionRoute: MeetingsListScreen.routeName,
             ),
           ],
         ),

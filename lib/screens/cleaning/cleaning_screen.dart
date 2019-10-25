@@ -20,21 +20,21 @@ class CleaningScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             CategoryOption(
-              Icons.add,
-              "Bæta við þrif",
-              AddCleaningScreen.routeName,
+              optionIcon: Icons.add,
+              optionText: "Bæta við þrif",
+              optionRoute: AddCleaningScreen.routeName,
             ),
             SizedBox(height: 15),
             CategoryOption(
-              Icons.find_in_page,
-              "Yfirlit þrifa",
-              CleaningListScreen.routeName,
+              optionIcon: Icons.find_in_page,
+              optionText: "Yfirlit þrifa",
+              optionRoute: CleaningListScreen.routeName,
             ),
             SizedBox(height: 15),
             CategoryOption(
-              CustomIcons.check,
-              "Verkefnalisti",
-              CleaningTasksScreen.routeName,
+              optionIcon: CustomIcons.check,
+              optionText: "Verkefnalisti",
+              optionRoute: CleaningTasksScreen.routeName,
             ),
           ],
         ),

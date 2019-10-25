@@ -9,7 +9,11 @@ class ConstructionsListItem extends StatelessWidget {
   final DateTime dateTo;
   final String route;
 
-  ConstructionsListItem(this.title, this.dateFrom, this.dateTo, this.route);
+  ConstructionsListItem(
+      {@required this.title,
+      @required this.dateFrom,
+      @required this.dateTo,
+      @required this.route});
 
   @override
   Widget build(BuildContext context) {

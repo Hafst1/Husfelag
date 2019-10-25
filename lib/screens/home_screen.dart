@@ -18,24 +18,24 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         children: <Widget>[
           HomeOption(
-            CustomIcons.tools,
-            "Framkvæmdir",
-            ConstructionsScreen.routeName,
+            optionIcon: CustomIcons.tools,
+            optionText: "Framkvæmdir",
+            optionRoute: ConstructionsScreen.routeName,
           ),
           HomeOption(
-            CustomIcons.group,
-            "Fundir",
-            MeetingsScreen.routeName,
+            optionIcon: CustomIcons.group,
+            optionText: "Fundir",
+            optionRoute: MeetingsScreen.routeName,
           ),
           HomeOption(
-            CustomIcons.doc_text,
-            "Skjöl",
-            DocumentsScreen.routeName,
+            optionIcon: CustomIcons.doc_text,
+            optionText: "Skjöl",
+            optionRoute: DocumentsScreen.routeName,
           ),
           HomeOption(
-            CustomIcons.trash,
-            "Þrif",
-            CleaningScreen.routeName,
+            optionIcon: CustomIcons.trash,
+            optionText: "Þrif",
+            optionRoute: CleaningScreen.routeName,
           ),
         ],
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
