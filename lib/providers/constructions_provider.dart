@@ -5,7 +5,7 @@ import '../models/construction.dart';
 enum ConstructionStatus { current, ahead, old }
 
 class ConstructionsProvider with ChangeNotifier {
-  List<Construction> _dummy_data = [
+  List<Construction> _dummyData = [
     Construction(
       title: "Viðgerð á þaki",
       dateFrom: DateTime.now().subtract(Duration(days: 10)),
@@ -61,11 +61,11 @@ class ConstructionsProvider with ChangeNotifier {
   }
 
   List<Construction> get items {
-    return [..._dummy_data];
+    return [..._dummyData];
   }
 
   List<Construction> filteredItems(String query, int filterIndex) {
-    List<Construction> constructions = [..._dummy_data];
+    List<Construction> constructions = [..._dummyData];
     String searchQuery = query.toLowerCase();
     List<Construction> displayList = [];
     if (query.isNotEmpty) {
