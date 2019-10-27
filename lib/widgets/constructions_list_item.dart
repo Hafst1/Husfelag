@@ -27,6 +27,7 @@ class ConstructionsListItem extends StatelessWidget {
         contentPadding: EdgeInsets.all(10),
         leading: CircleAvatar(
           backgroundColor: Colors.grey[400],
+          //backgroundColor: Colors.deepPurpleAccent[100],
           radius: 30,
           child: Padding(
             padding: EdgeInsets.all(6),
@@ -46,14 +47,17 @@ class ConstructionsListItem extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10),
           child: Row(
             children: <Widget>[
-              Icon(Icons.date_range),
+              Icon(
+                Icons.date_range,
+                //color: Colors.red[900],
+              ),
               SizedBox(
                 width: 5,
               ),
               Expanded(
                 child: Text(
                   '${DateFormat.yMMMd().format(dateFrom)} - ${DateFormat.yMMMd().format(dateTo)}',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16/*, color: Colors.grey[700]*/),
                 ),
               ),
             ],

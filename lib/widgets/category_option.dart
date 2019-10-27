@@ -22,10 +22,9 @@ class CategoryOption extends StatelessWidget {
     return GestureDetector(
       onTap: () => selectOption(context),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.18,
+        height: MediaQuery.of(context).size.height * 0.16,
         decoration: BoxDecoration(
-          //border: Border.all(color: Colors.lightBlue[100]),
-          border: Border.all(color: Colors.grey[400]),
+          border: Border.all(color: Colors.grey[600]),
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(15),
         ),

@@ -23,7 +23,7 @@ class HomeOption extends StatelessWidget {
       onTap: () => selectOption(context),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[400]),
+          border: Border.all(color: Colors.grey[600]),
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(15),
         ),
