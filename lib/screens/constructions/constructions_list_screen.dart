@@ -65,7 +65,6 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: SingleChildScrollView(
-          //height: heightOfBody,
           child: Column(
             children: <Widget>[
               Container(

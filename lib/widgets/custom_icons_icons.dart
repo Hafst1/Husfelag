@@ -49,6 +49,7 @@ class CustomIcons {
   static const IconData playlist_add = const IconData(0xe802, fontFamily: _kFontFam);
   static const IconData check = const IconData(0xe803, fontFamily: _kFontFam);
   static const IconData find_in_page = const IconData(0xe804, fontFamily: _kFontFam);
+  static const IconData clipboard = const IconData(0xe805, fontFamily: _kFontFam);
   static const IconData file_add = const IconData(0xe81e, fontFamily: _kFontFam);
   static const IconData trash = const IconData(0xf083, fontFamily: _kFontFam);
   static const IconData doc_text = const IconData(0xf0f6, fontFamily: _kFontFam);

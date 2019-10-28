@@ -6,14 +6,12 @@ import './custom_icons_icons.dart';
 class MeetingsListItem extends StatelessWidget {
   final String title;
   final DateTime date;
-  final String startsAt;
   final String location;
   final String route;
 
   MeetingsListItem(
     {@required this.title,
     @required this.date,
-    @required this.startsAt,
     @required this.location,
     @required this.route}
   );
@@ -85,7 +83,7 @@ class MeetingsListItem extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      startsAt,
+                      DateFormat.Hm().format(date).toString(),
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
