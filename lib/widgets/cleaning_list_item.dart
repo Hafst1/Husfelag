@@ -40,7 +40,7 @@ class CleaningListItem extends StatelessWidget {
           ),
         ),
         title: Text(
-          "Þrif á sameign",
+          apartment,
           style: Theme.of(context).textTheme.title,
         ),
         subtitle: Container(
@@ -49,13 +49,14 @@ class CleaningListItem extends StatelessWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Icon(Icons.home),
+                  Icon(CustomIcons.clipboard),
                   SizedBox(
                     width: 5,
                   ),
                   Expanded(
                     child: Text(
-                      'Íbúð $apartment',
+                      //apartment,
+                      "Þrif á sameign",
                       style: TextStyle(fontSize: 15),
                     ),
                   ),

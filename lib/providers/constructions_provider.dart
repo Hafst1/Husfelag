@@ -56,7 +56,7 @@ class ConstructionsProvider with ChangeNotifier {
       case ConstructionStatus.old:
         return dateTo.isBefore(currentDate);
       default:
-        return false;
+        return true;
     }
   }
 
