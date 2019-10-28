@@ -56,7 +56,7 @@ class CleaningListItem extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'Íbúð $apartment',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 15),
                     ),
                   ),
                 ],
@@ -73,7 +73,7 @@ class CleaningListItem extends StatelessWidget {
                   Expanded(
                     child: Text(
                       '${DateFormat.yMMMd().format(dateFrom)} - ${DateFormat.yMMMd().format(dateTo)}',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 15),
                     ),
                   ),
                 ],

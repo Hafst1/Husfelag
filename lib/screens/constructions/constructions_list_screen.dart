@@ -14,6 +14,7 @@ class ConstructionsListScreen extends StatefulWidget {
 }
 
 class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
+  TextEditingController _textFieldController = TextEditingController();
   int _selectedFilterIndex = 0;
   String _searchQuery = "";
 
@@ -27,6 +28,19 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
     setState(() {
       _searchQuery = query;
     });
+  }
+
+  _onClear() {
+    setState(() {
+      _searchQuery = "";
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _textFieldController.clear());
+    });
+  }
+
+  void dispose() {
+    _textFieldController.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,10 +79,23 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                         top: 10,
                       ),
                       child: TextField(
+                        controller: _textFieldController,
                         onChanged: (value) => _changeSearchQuery(value),
                         decoration: InputDecoration(
                           hintText: "Leita...",
-                          prefixIcon: Icon(Icons.search),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              color: _searchQuery == ""
+                                  ? Colors.white
+                                  : Colors.grey,
+                            ),
+                            onPressed: () => _onClear(),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(25),

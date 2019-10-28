@@ -58,7 +58,7 @@ class MeetingsListItem extends StatelessWidget {
                   Expanded(
                     child: Text(
                       location,
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 15),
                     ),
                   ),
                 ],
@@ -74,7 +74,7 @@ class MeetingsListItem extends StatelessWidget {
                   ),
                   Text(
                     '${DateFormat.yMMMd().format(date)}',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 15),
                   ),
                   SizedBox(
                     width: 10,
@@ -86,7 +86,7 @@ class MeetingsListItem extends StatelessWidget {
                   Expanded(
                     child: Text(
                       startsAt,
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 15),
                     ),
                   ),
                 ],

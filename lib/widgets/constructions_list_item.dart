@@ -57,7 +57,7 @@ class ConstructionsListItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   '${DateFormat.yMMMd().format(dateFrom)} - ${DateFormat.yMMMd().format(dateTo)}',
-                  style: TextStyle(fontSize: 16/*, color: Colors.grey[700]*/),
+                  style: TextStyle(fontSize: 15/*, color: Colors.grey[700]*/),
                 ),
               ),
             ],
