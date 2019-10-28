@@ -14,7 +14,7 @@ class ConstructionsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Framkvæmdir"),
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
         child: Column(
           children: <Widget>[

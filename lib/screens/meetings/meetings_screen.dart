@@ -14,7 +14,7 @@ class MeetingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Fundir"),
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
         child: Column(
           children: <Widget>[
