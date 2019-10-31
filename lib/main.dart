@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/models/user.dart';
+import 'package:husfelagid/screens/wrapper.dart';
+import 'package:husfelagid/services/auth.dart';
 import 'package:provider/provider.dart';
 
 import './screens/tabs_screen.dart';
@@ -16,25 +19,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Húsfélagið',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        accentColor: Colors.yellow,
-      ),
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(
-            value: ConstructionsProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: MeetingsProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: CleaningProvider(),
-          ),
-        ],
-        child: TabsScreen(),
+    return StreamProvider<User>.value(
+      value: AuthService().user,
+      child: MaterialApp(
+        title: 'Húsfélagið',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          accentColor: Colors.yellow,
+        ),
+        home: Wrapper()
       ),
     );
   }
