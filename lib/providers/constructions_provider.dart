@@ -54,10 +54,10 @@ class ConstructionsProvider with ChangeNotifier {
       int filterIndex, DateTime dateFrom, DateTime dateTo) {
     ConstructionStatus status = ConstructionStatus.values[filterIndex];
     DateTime exactDate = DateTime.now();
-    DateTime startOfCurrentDate = DateTime.parse(
-        '${exactDate.year}-${exactDate.month.toString().padLeft(2, '0')}-${exactDate.day.toString().padLeft(2, '0')} 00:00:00.000000');
-    DateTime endOfCurrentDate = DateTime.parse(
-        '${exactDate.year}-${exactDate.month.toString().padLeft(2, '0')}-${exactDate.day.toString().padLeft(2, '0')} 23:59:59.999999');
+    DateTime startOfCurrentDate =
+        DateTime(exactDate.year, exactDate.month, exactDate.day, 0, 0, 0, 0);
+    DateTime endOfCurrentDate = DateTime(
+        exactDate.year, exactDate.month, exactDate.day, 23, 59, 59, 999);
     switch (status) {
       case ConstructionStatus.current:
         return dateFrom.isBefore(endOfCurrentDate) &&
