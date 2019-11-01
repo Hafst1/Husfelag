@@ -10,36 +10,32 @@ class CleaningProvider with ChangeNotifier {
       apartment: "Íbúð 104",
       dateFrom: DateTime.now().subtract(Duration(days: 10)),
       dateTo: DateTime.now().subtract(Duration(days: 7)),
-
     ),
     Cleaning(
       apartment: "Íbúð 103",
       dateFrom: DateTime.now().add(Duration(days: 5)),
       dateTo: DateTime.now().add(Duration(days: 7)),
-
     ),
     Cleaning(
       apartment: "Íbúð 102",
       dateFrom: DateTime.now().add(Duration(days: 1)),
       dateTo: DateTime.now().add(Duration(days: 9)),
-
     ),
     Cleaning(
       apartment: "Íbúð 101",
       dateFrom: DateTime.now(),
       dateTo: DateTime.now().add(Duration(days: 12)),
-
     ),
     Cleaning(
       apartment: "Íbúð 107",
       dateFrom: DateTime.now().subtract(Duration(days: 20)),
       dateTo: DateTime.now().subtract(Duration(days: 16)),
-
     ),
     Cleaning(
       apartment: "Íbúð 109",
       dateFrom: DateTime.now().subtract(Duration(days: 28)),
-      dateTo: DateTime.now().subtract(Duration(days: 25)),    ),
+      dateTo: DateTime.now().subtract(Duration(days: 25)),
+    ),
   ];
 
   List<Cleaning> get items {
@@ -49,14 +45,20 @@ class CleaningProvider with ChangeNotifier {
   bool _cleaningStatusFilter(
       int filterIndex, DateTime dateFrom, DateTime dateTo) {
     CleaningStatus status = CleaningStatus.values[filterIndex];
-    DateTime currentDate = DateTime.now();
+    DateTime exactDate = DateTime.now();
+    DateTime startOfCurrentDate = DateTime.parse(
+        '${exactDate.year}-${exactDate.month.toString().padLeft(2, '0')}-${exactDate.day.toString().padLeft(2, '0')} 00:00:00.000000');
+    DateTime endOfCurrentDate = DateTime.parse(
+        '${exactDate.year}-${exactDate.month.toString().padLeft(2, '0')}-${exactDate.day.toString().padLeft(2, '0')} 23:59:59.999999');
     switch (status) {
       case CleaningStatus.current:
-        return dateFrom.isBefore(currentDate) && dateTo.isAfter(currentDate);
+        return dateFrom.isBefore(endOfCurrentDate) &&
+            (dateTo.compareTo(startOfCurrentDate) == 0 ||
+                dateTo.isAfter(startOfCurrentDate));
       case CleaningStatus.ahead:
-        return dateFrom.isAfter(currentDate);
+        return dateFrom.isAfter(endOfCurrentDate);
       case CleaningStatus.old:
-        return dateTo.isBefore(currentDate);
+        return dateTo.isBefore(startOfCurrentDate);
       default:
         return true;
     }
@@ -80,10 +82,10 @@ class CleaningProvider with ChangeNotifier {
     } else {
       constructions.forEach((item) {
         if (_cleaningStatusFilter(
-              filterIndex,
-              item.dateFrom,
-              item.dateTo,
-            )) {
+          filterIndex,
+          item.dateFrom,
+          item.dateTo,
+        )) {
           displayList.add(item);
         }
       });

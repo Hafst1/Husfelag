@@ -14,7 +14,7 @@ class ConstructionsListScreen extends StatefulWidget {
 }
 
 class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
-  TextEditingController _textFieldController = TextEditingController();
+  final _textFieldController = TextEditingController();
   int _selectedFilterIndex = 0;
   String _searchQuery = "";
 
@@ -38,6 +38,7 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
     });
   }
 
+  @override
   void dispose() {
     _textFieldController.dispose();
     super.dispose();

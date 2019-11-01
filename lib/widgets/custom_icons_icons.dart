@@ -28,6 +28,10 @@
 ///         Author:    Dave Gandy
 ///         License:   SIL ()
 ///         Homepage:  http://fortawesome.github.com/Font-Awesome/
+/// * Modern Pictograms, Copyright (c) 2012 by John Caserta. All rights reserved.
+///         Author:    John Caserta
+///         License:   SIL (http://scripts.sil.org/OFL)
+///         Homepage:  http://thedesignoffice.org/project/modern-pictograms/
 /// * Linearicons Free, Copyright (C) Linearicons.com
 ///         Author:    Perxis
 ///         License:   CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
@@ -50,6 +54,7 @@ class CustomIcons {
   static const IconData check = const IconData(0xe803, fontFamily: _kFontFam);
   static const IconData find_in_page = const IconData(0xe804, fontFamily: _kFontFam);
   static const IconData clipboard = const IconData(0xe805, fontFamily: _kFontFam);
+  static const IconData pencil = const IconData(0xe806, fontFamily: _kFontFam);
   static const IconData file_add = const IconData(0xe81e, fontFamily: _kFontFam);
   static const IconData trash = const IconData(0xf083, fontFamily: _kFontFam);
   static const IconData doc_text = const IconData(0xf0f6, fontFamily: _kFontFam);
