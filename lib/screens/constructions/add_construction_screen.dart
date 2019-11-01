@@ -94,7 +94,6 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                   prefixIcon: Icon(CustomIcons.pencil),
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: TextInputType.text,
                 validator: (value) {
                   if (value.isEmpty) {
                     return "Titill framkvæmdar getur ekki verið tómur strengur!";
