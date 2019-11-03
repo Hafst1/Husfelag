@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../providers/cleaning_provider.dart';
 import '../../models/cleaning.dart';
 import '../../widgets/save_button.dart';
-import '../../widgets/home_option.dart';
+import '../apartment_picker_screen.dart';
 
 class AddCleaningScreen extends StatefulWidget {
   static const routeName = '/add-cleaning';
@@ -15,6 +15,7 @@ class AddCleaningScreen extends StatefulWidget {
 }
 
 class _AddCleaningScreenState extends State<AddCleaningScreen> {
+  final _apartmentController = TextEditingController();
   final _dateFromController = TextEditingController();
   final _dateToController = TextEditingController();
   final _form = GlobalKey<FormState>();
@@ -27,9 +28,24 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
 
   @override
   void dispose() {
+    _apartmentController.dispose();
     _dateFromController.dispose();
     _dateToController.dispose();
     super.dispose();
+  }
+
+  void _presentApartmentPicker() async {
+    String apartment =
+        await Navigator.of(context).push(MaterialPageRoute<String>(
+            builder: (BuildContext context) {
+              return ApartMentPickerScreen();
+            },
+            fullscreenDialog: true));
+    if (apartment != null) {
+      setState(() {
+        _apartmentController.text = apartment;
+      });
+    }
   }
 
   void _presentDatePicker(TextEditingController controller) {
@@ -92,26 +108,32 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
         child: Form(
           key: _form,
           child: Column(children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: "Íbúð...",
-                prefixIcon: Icon(Icons.home),
-                border: OutlineInputBorder(),
+            GestureDetector(
+              onTap: () => _presentApartmentPicker(),
+              child: AbsorbPointer(
+                child: TextFormField(
+                  controller: _apartmentController,
+                  decoration: InputDecoration(
+                    hintText: "Íbúð...",
+                    prefixIcon: Icon(Icons.home),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Útvega þarf íbúð fyrir þrif á sameign!";
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _newCleaningItem = Cleaning(
+                      id: _newCleaningItem.id,
+                      apartment: value,
+                      dateFrom: _newCleaningItem.dateFrom,
+                      dateTo: _newCleaningItem.dateTo,
+                    );
+                  },
+                ),
               ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return "Útvega þarf íbúð fyrir þrif á sameign!";
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _newCleaningItem = Cleaning(
-                  id: _newCleaningItem.id,
-                  apartment: value,
-                  dateFrom: _newCleaningItem.dateFrom,
-                  dateTo: _newCleaningItem.dateTo,
-                );
-              },
             ),
             SizedBox(
               height: 15,

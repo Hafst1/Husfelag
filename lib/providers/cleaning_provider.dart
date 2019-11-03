@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/apartment.dart';
 import '../models/cleaning.dart';
 
 enum CleaningStatus { current, ahead, old }
@@ -44,8 +45,63 @@ class CleaningProvider with ChangeNotifier {
     ),
   ];
 
+  List<Apartment> _dummyData2 = [
+    Apartment(
+      apartmentNumber: "Íbúð 101",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 102",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 103",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 104",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 201",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 202",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 203",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 204",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 301",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 302",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 303",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 304",
+      residents: ["Siggi", "Baddi"],
+    ),
+  ];
+
   List<Cleaning> get items {
     return [..._dummyData];
+  }
+
+  List<Apartment> get apartmentItems {
+    return [..._dummyData2];
   }
 
   bool _cleaningStatusFilter(
