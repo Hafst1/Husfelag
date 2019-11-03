@@ -5,6 +5,7 @@ import './screens/tabs_screen.dart';
 import './providers/constructions_provider.dart';
 import './providers/meetings_provider.dart';
 import './providers/cleaning_provider.dart';
+import './providers/cleaning_task_provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -33,6 +34,9 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider.value(
             value: CleaningProvider(),
           ),
+          ChangeNotifierProvider.value(
+            value: CleaningTaskProvider(),
+          )
         ],
         child: TabsScreen(),
       ),
