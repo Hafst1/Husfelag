@@ -100,4 +100,21 @@ class MeetingsProvider with ChangeNotifier {
     }
     return displayList;
   }
+  void addMeeting(Meeting meeting) {
+    final newMeeting = Meeting(
+      title: meeting.title,
+      date: meeting.date,
+      duration: meeting.duration,
+      location: meeting.location,
+      description: meeting.description,
+      id: DateTime.now().toString(),
+    );
+    _dummyData.add(newMeeting);
+    notifyListeners();
+  }
+
+  void deleteMeeting(String id) {
+    _dummyData.removeWhere((meeting) => meeting.id == id);
+    notifyListeners();
+  }
 }

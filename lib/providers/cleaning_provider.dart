@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/apartment.dart';
 import '../models/cleaning.dart';
 
 enum CleaningStatus { current, ahead, old }
@@ -7,39 +8,100 @@ enum CleaningStatus { current, ahead, old }
 class CleaningProvider with ChangeNotifier {
   List<Cleaning> _dummyData = [
     Cleaning(
+      id: "Firebasekey1",
       apartment: "Íbúð 104",
       dateFrom: DateTime.now().subtract(Duration(days: 10)),
       dateTo: DateTime.now().subtract(Duration(days: 7)),
     ),
     Cleaning(
+      id: "Firebasekey2",
       apartment: "Íbúð 103",
       dateFrom: DateTime.now().add(Duration(days: 5)),
       dateTo: DateTime.now().add(Duration(days: 7)),
     ),
     Cleaning(
+      id: "Firebasekey3",
       apartment: "Íbúð 102",
       dateFrom: DateTime.now().add(Duration(days: 1)),
       dateTo: DateTime.now().add(Duration(days: 9)),
     ),
     Cleaning(
+      id: "Firebasekey4",
       apartment: "Íbúð 101",
       dateFrom: DateTime.now(),
       dateTo: DateTime.now().add(Duration(days: 12)),
     ),
     Cleaning(
+      id: "Firebasekey5",
       apartment: "Íbúð 107",
       dateFrom: DateTime.now().subtract(Duration(days: 20)),
       dateTo: DateTime.now().subtract(Duration(days: 16)),
     ),
     Cleaning(
+      id: "Firebasekey6",
       apartment: "Íbúð 109",
       dateFrom: DateTime.now().subtract(Duration(days: 28)),
       dateTo: DateTime.now().subtract(Duration(days: 25)),
     ),
   ];
 
+  List<Apartment> _dummyData2 = [
+    Apartment(
+      apartmentNumber: "Íbúð 101",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 102",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 103",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 104",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 201",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 202",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 203",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 204",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 301",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 302",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 303",
+      residents: ["Siggi", "Baddi"],
+    ),
+    Apartment(
+      apartmentNumber: "Íbúð 304",
+      residents: ["Siggi", "Baddi"],
+    ),
+  ];
+
   List<Cleaning> get items {
     return [..._dummyData];
+  }
+
+  List<Apartment> get apartmentItems {
+    return [..._dummyData2];
   }
 
   bool _cleaningStatusFilter(
@@ -91,5 +153,21 @@ class CleaningProvider with ChangeNotifier {
       });
     }
     return displayList;
+  }
+
+  void addCleaningItem(Cleaning cleaningItem) {
+    final newCleaningItem = Cleaning(
+      apartment: cleaningItem.apartment,
+      dateFrom: cleaningItem.dateFrom,
+      dateTo: cleaningItem.dateTo,
+      id: DateTime.now().toString(),
+    );
+    _dummyData.add(newCleaningItem);
+    notifyListeners();
+  }
+
+  void deleteCleaningItem(String id) {
+    _dummyData.removeWhere((cleaningItem) => cleaningItem.id == id);
+    notifyListeners();
   }
 }

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../providers/constructions_provider.dart';
 import '../../widgets/custom_icons_icons.dart';
 import '../../models/construction.dart';
+import '../../widgets/save_button.dart';
 
 class AddConstructionScreen extends StatefulWidget {
   static const routeName = '/add-construction';
@@ -33,11 +34,16 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
   }
 
   void _presentDatePicker(TextEditingController controller) {
+    DateTime exactDate = DateTime.now();
     showDatePicker(
       context: context,
       initialDate: convertToDate(controller.text) ?? DateTime.now(),
-      firstDate: DateTime(1950),
-      lastDate: DateTime(2100),
+      firstDate: exactDate.subtract(
+        Duration(days: 3650),
+      ),
+      lastDate: exactDate.add(
+        Duration(days: 3650),
+      ),
     ).then((pickedDate) {
       if (pickedDate == null) {
         return;
@@ -221,32 +227,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
               SizedBox(
                 height: 15,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      _saveForm();
-                    },
-                    child: Container(
-                      height: 50,
-                      width: 120,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.green[100],
-                        border: Border.all(color: Colors.green[300]),
-                      ),
-                      child: Text(
-                        "BÆTA VIÐ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              SaveButton(saveFunc: _saveForm),
             ],
           ),
         ),
