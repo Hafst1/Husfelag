@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/services/auth.dart';
 
 import '../widgets/home_option.dart';
 import '../screens/constructions/constructions_screen.dart';
@@ -8,11 +9,25 @@ import '../screens/cleaning/cleaning_screen.dart';
 import '../widgets/custom_icons_icons.dart';
 
 class HomeScreen extends StatelessWidget {
+
+  final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Húsfélagið'),
+        actions: <Widget>[
+          FlatButton.icon(
+            icon: Icon(Icons.person, color: Colors.white),
+            label: Text(
+              'Skrá Út',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () async {
+              await _auth.signOut();
+            }
+          )
+        ],
       ),
       body: GridView(
         padding: const EdgeInsets.all(25),
