@@ -7,6 +7,7 @@ enum MeetingStatus { ahead, old }
 class MeetingsProvider with ChangeNotifier {
   List<Meeting> _dummyData = [
     Meeting(
+      id: "firebasekey1",
       title: "Árlegur húsfundur",
       date: DateTime.now().add(Duration(days: 4)),
       duration: Duration(hours: 2),
@@ -14,6 +15,7 @@ class MeetingsProvider with ChangeNotifier {
       description: "",
     ),
     Meeting(
+      id: "firebasekey2",
       title: "Neyðarfundur",
       date: DateTime.now(),
       duration: Duration(hours: 1),
@@ -21,6 +23,7 @@ class MeetingsProvider with ChangeNotifier {
       description: "",
     ),
     Meeting(
+      id: "firebasekey3",
       title: "Fundað um húsið",
       date: DateTime.now().add(Duration(days: 4)),
       duration: Duration(hours: 2),
@@ -28,6 +31,7 @@ class MeetingsProvider with ChangeNotifier {
       description: "",
     ),
     Meeting(
+      id: "firebasekey4",
       title: "Stórfundur",
       date: DateTime.now(),
       duration: Duration(hours: 1),
@@ -35,6 +39,7 @@ class MeetingsProvider with ChangeNotifier {
       description: "",
     ),
     Meeting(
+      id: "firebasekey5",
       title: "Fundur",
       date: DateTime.now().add(Duration(days: 4)),
       duration: Duration(hours: 2),
@@ -42,6 +47,7 @@ class MeetingsProvider with ChangeNotifier {
       description: "",
     ),
     Meeting(
+      id: "firebasekey6",
       title: "Örfundur",
       date: DateTime.now(),
       duration: Duration(hours: 1),
@@ -93,5 +99,22 @@ class MeetingsProvider with ChangeNotifier {
       });
     }
     return displayList;
+  }
+  void addMeeting(Meeting meeting) {
+    final newMeeting = Meeting(
+      title: meeting.title,
+      date: meeting.date,
+      duration: meeting.duration,
+      location: meeting.location,
+      description: meeting.description,
+      id: DateTime.now().toString(),
+    );
+    _dummyData.add(newMeeting);
+    notifyListeners();
+  }
+
+  void deleteMeeting(String id) {
+    _dummyData.removeWhere((meeting) => meeting.id == id);
+    notifyListeners();
   }
 }
