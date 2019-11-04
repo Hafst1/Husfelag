@@ -4,12 +4,6 @@ import 'package:husfelagid/screens/wrapper.dart';
 import 'package:husfelagid/services/auth.dart';
 import 'package:provider/provider.dart';
 
-import './screens/tabs_screen.dart';
-import './providers/constructions_provider.dart';
-import './providers/meetings_provider.dart';
-import './providers/cleaning_provider.dart';
-import './providers/cleaning_task_provider.dart';
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
