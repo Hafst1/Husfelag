@@ -7,6 +7,8 @@ import 'tabs_screen.dart';
 import 'package:husfelagid/providers/constructions_provider.dart';
 import 'package:husfelagid/providers/meetings_provider.dart';
 import 'package:husfelagid/providers/cleaning_provider.dart';
+import 'package:husfelagid/providers/cleaning_task_provider.dart';
+
 
 class Wrapper extends StatelessWidget {
   @override
@@ -29,6 +31,9 @@ class Wrapper extends StatelessWidget {
           ChangeNotifierProvider.value(
             value: CleaningProvider(),
           ),
+          ChangeNotifierProvider.value(
+            value: CleaningTaskProvider(),
+          )
         ],
         child: TabsScreen(),
       );
