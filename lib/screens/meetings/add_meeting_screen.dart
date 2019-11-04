@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/meeting.dart';
+import '../../providers/meetings_provider.dart';
 import '../../widgets/custom_icons_icons.dart';
+import '../../widgets/save_button.dart';
 
 class AddMeetingScreen extends StatefulWidget {
   static const routeName = '/add-meeting';
@@ -35,11 +38,15 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
 
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
+    DateTime startOfCurrentDate =
+        DateTime(exactDate.year, exactDate.month, exactDate.day);
     showDatePicker(
       context: context,
-      initialDate: convertToDate(controller.text) ?? exactDate,
-      firstDate: DateTime(exactDate.year, exactDate.month, exactDate.day),
-      lastDate: DateTime(2100),
+      initialDate: _convertToDate(controller.text) ?? startOfCurrentDate,
+      firstDate: startOfCurrentDate,
+      lastDate: startOfCurrentDate.add(
+        Duration(days: 1825),
+      ),
     ).then((pickedDate) {
       if (pickedDate == null) {
         return;
@@ -50,7 +57,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     });
   }
 
-  DateTime convertToDate(String input) {
+  DateTime _convertToDate(String input) {
     try {
       var d = new DateFormat.yMMMMEEEEd().parseStrict(input);
       return d;
@@ -62,7 +69,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   void _presentTimePicker(TextEditingController controller) {
     showTimePicker(
       context: context,
-      initialTime: convertToTimeOfDay(controller.text) ?? TimeOfDay.now(),
+      initialTime: _convertToTimeOfDay(controller.text) ?? TimeOfDay.now(),
     ).then((pickedTime) {
       if (pickedTime == null) {
         return;
@@ -74,7 +81,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     });
   }
 
-  TimeOfDay convertToTimeOfDay(String input) {
+  TimeOfDay _convertToTimeOfDay(String input) {
     if (input.isEmpty) {
       return null;
     }
@@ -83,9 +90,29 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         minute: int.parse(input.split(':')[1]));
   }
 
-  bool isInvalidTime(TimeOfDay startOfMeeting, TimeOfDay endOfMeeting) {
-    return DateTime(startOfMeeting.hour, startOfMeeting.minute).isAfter(
-      DateTime(endOfMeeting.hour, endOfMeeting.minute),
+  bool _isInvalidTime(String startingTime, String endingTime) {
+    DateTime currentDate = DateTime.now();
+    TimeOfDay startOfMeeting = _convertToTimeOfDay(startingTime);
+    TimeOfDay endOfMeeting = _convertToTimeOfDay(endingTime);
+
+    return DateTime(currentDate.year, currentDate.month, currentDate.day,
+            startOfMeeting.hour, startOfMeeting.minute)
+        .isAfter(
+      DateTime(currentDate.year, currentDate.month, currentDate.day,
+          endOfMeeting.hour, endOfMeeting.minute),
+    );
+  }
+
+  Duration _getDuration(String startingTime, String endingTime) {
+    DateTime currentDate = DateTime.now();
+    TimeOfDay startOfMeeting = _convertToTimeOfDay(startingTime);
+    TimeOfDay endOfMeeting = _convertToTimeOfDay(endingTime);
+
+    return DateTime(currentDate.year, currentDate.month, currentDate.day,
+            endOfMeeting.hour, endOfMeeting.minute)
+        .difference(
+      DateTime(currentDate.year, currentDate.month, currentDate.day,
+          startOfMeeting.hour, startOfMeeting.minute),
     );
   }
 
@@ -94,10 +121,10 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     if (!isValid) {
       return;
     }
-    //_form.currentState.save();
-    // Provider.of<ConstructionsProvider>(context, listen: false)
-    //     .addConstruction(_newConstruction);
-    // Navigator.of(context).pop();
+    _form.currentState.save();
+    Provider.of<MeetingsProvider>(context, listen: false)
+        .addMeeting(_newMeeting);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -129,7 +156,20 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                 if (value.isEmpty) {
                   return "Titill fundar getur ekki verið tómur strengur!";
                 }
+                if (value.length > 40) {
+                  return "Titill fundar getur ekki verið meira en 40 stafir á lengd!";
+                }
                 return null;
+              },
+              onSaved: (value) {
+                _newMeeting = Meeting(
+                  id: _newMeeting.id,
+                  title: value,
+                  date: _newMeeting.date,
+                  duration: _newMeeting.duration,
+                  location: _newMeeting.location,
+                  description: _newMeeting.description,
+                );
               },
             ),
             SizedBox(
@@ -151,6 +191,25 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                       return "Útvega þarf dagsetningu fundar!";
                     }
                     return null;
+                  },
+                  onSaved: (value) {
+                    DateTime chosenDate = _convertToDate(value);
+                    TimeOfDay chosenStartTime =
+                        _convertToTimeOfDay(_timeFromController.text);
+                    _newMeeting = Meeting(
+                      id: _newMeeting.id,
+                      title: _newMeeting.title,
+                      date: DateTime(
+                        chosenDate.year,
+                        chosenDate.month,
+                        chosenDate.day,
+                        chosenStartTime.hour,
+                        chosenStartTime.minute,
+                      ),
+                      duration: _newMeeting.duration,
+                      location: _newMeeting.location,
+                      description: _newMeeting.description,
+                    );
                   },
                 ),
               ),
@@ -179,13 +238,9 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                             return "Útvega þarf tímasetningu!";
                           }
                           if (_timeToController.text.isNotEmpty) {
-                            TimeOfDay startOfMeeting =
-                                convertToTimeOfDay(value);
-                            TimeOfDay endOfMeeting =
-                                convertToTimeOfDay(_timeToController.text);
-                            if (isInvalidTime(
-                              startOfMeeting,
-                              endOfMeeting,
+                            if (_isInvalidTime(
+                              value,
+                              _timeToController.text,
                             )) {
                               return "Ógild tímasetning!";
                             }
@@ -217,17 +272,25 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                             return "Útvega þarf tímasetningu!";
                           }
                           if (_timeFromController.text.isNotEmpty) {
-                            TimeOfDay startOfMeeting =
-                                convertToTimeOfDay(_timeFromController.text);
-                            TimeOfDay endOfMeeting = convertToTimeOfDay(value);
-                            if (isInvalidTime(
-                              startOfMeeting,
-                              endOfMeeting,
+                            if (_isInvalidTime(
+                              _timeFromController.text,
+                              value,
                             )) {
                               return "Ógild tímasetning!";
                             }
                           }
                           return null;
+                        },
+                        onSaved: (value) {
+                          _newMeeting = Meeting(
+                            id: _newMeeting.id,
+                            title: _newMeeting.title,
+                            date: _newMeeting.date,
+                            duration:
+                                _getDuration(_timeFromController.text, value),
+                            location: _newMeeting.location,
+                            description: _newMeeting.description,
+                          );
                         },
                       ),
                     ),
@@ -248,7 +311,20 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                 if (value.isEmpty) {
                   return "Staðsetning fundar getur ekki verið tómur strengur!";
                 }
+                if (value.length > 40) {
+                  return "Staðsetning fundar getur ekki verið meira en 40 stafir á lengd!";
+                }
                 return null;
+              },
+              onSaved: (value) {
+                _newMeeting = Meeting(
+                  id: _newMeeting.id,
+                  title: _newMeeting.title,
+                  date: _newMeeting.date,
+                  duration: _newMeeting.duration,
+                  location: value,
+                  description: _newMeeting.description,
+                );
               },
             ),
             SizedBox(
@@ -267,36 +343,23 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                 }
                 return null;
               },
+              onSaved: (value) {
+                _newMeeting = Meeting(
+                  id: _newMeeting.id,
+                  title: _newMeeting.title,
+                  date: _newMeeting.date,
+                  duration: _newMeeting.duration,
+                  location: _newMeeting.location,
+                  description: value,
+                );
+              },
             ),
             SizedBox(
               height: 15,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm();
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 120,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.green[100],
-                      border: Border.all(color: Colors.green[300]),
-                    ),
-                    child: Text(
-                      "BÆTA VIÐ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            SaveButton(
+              saveFunc: _saveForm,
+            )
           ]),
         ),
       ),

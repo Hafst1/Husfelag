@@ -118,7 +118,7 @@ class ConstructionsProvider with ChangeNotifier {
   }
 
   void deleteConstruction(String id) {
-    _dummyData.removeWhere((cstr) => cstr.id == id);
+    _dummyData.removeWhere((construction) => construction.id == id);
     notifyListeners();
   }
 }
