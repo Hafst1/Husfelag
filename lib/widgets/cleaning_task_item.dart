@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:circular_check_box/circular_check_box.dart';
 
-class CleaningTaskItem extends StatelessWidget {
-  final String title;
-  final String description; 
+  class CleaningTaskItem extends StatefulWidget {
+    final String title;
+    final String description;
 
-  CleaningTaskItem(
-    {@required this.title,
-    @required this.description});
+    const CleaningTaskItem({Key key, this.title, this.description}):
+    super(key: key);
+
+    @override
+    _CleaningTaskItemState createState() => 
+      _CleaningTaskItemState();
+  }
+
+  class _CleaningTaskItemState extends State<CleaningTaskItem> {
+  bool check = false; 
+  void valueChanged(bool value) => setState(() => check = value);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +28,7 @@ class CleaningTaskItem extends StatelessWidget {
       child: ListTile(
         contentPadding: EdgeInsets.all(10),
         title: Text(
-          title,
+          widget.title,
           style: Theme.of(context).textTheme.title,
         ),
         subtitle: Padding(
@@ -28,12 +37,18 @@ class CleaningTaskItem extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    description,
+                    widget.description,
                     style: TextStyle(fontSize: 15/*, color: Colors.grey[700]*/),
                   ),
                 ),
               ],
             ),
+          ),
+          trailing: CircularCheckBox(
+            value: check,
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            onChanged: valueChanged,
+            activeColor: Colors.red[200],
           ),
       )
     );
