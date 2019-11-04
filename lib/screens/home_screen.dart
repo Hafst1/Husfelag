@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
           FlatButton.icon(
             icon: Icon(Icons.person, color: Colors.white),
             label: Text(
-              'Logout',
+              'Skrá Út',
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {

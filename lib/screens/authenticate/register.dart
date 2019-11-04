@@ -27,12 +27,12 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0.0,
-        title: Text('Sign Up'),
+        title: Text('Búa Til Aðgang'),
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(Icons.person, color: Colors.white),
             label: Text(
-              'Sign In',
+              'Skrá Inn',
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
@@ -49,17 +49,17 @@ class _RegisterState extends State<Register> {
             children: <Widget>[
               SizedBox(height: 20.0),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Email'),
-                validator: (val) => val.isEmpty ? 'Enter an email' : null,
+                decoration: textInputDecoration.copyWith(hintText: 'Netfang'),
+                validator: (val) => val.isEmpty ? 'Sláðu inn netfang' : null,
                 onChanged: (val) {
                   setState(() => email = val);
                 }
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Password'),
+                decoration: textInputDecoration.copyWith(hintText: 'Lykilorð'),
                 obscureText: true,
-                validator: (val) => val.length < 6 ? 'Enter a password 6+ chars long' : null,
+                validator: (val) => val.length < 6 ? 'Lykilorð þarf að innihalda 6+ stafi' : null,
                 onChanged: (val) {
                   setState(() => password = val);
                 }
@@ -68,14 +68,14 @@ class _RegisterState extends State<Register> {
               RaisedButton(
                 color: Colors.pink[400],
                 child: Text(
-                  'Register',
+                  'Stofna',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
                     dynamic result = await _auth.registerWithEmailAndPassword(email, password);
                     if (result == null) {
-                      setState(() => error = 'Please supply a valid email');
+                      setState(() => error = 'Vinsamlegast fylltu út gilt netfang');
                     }
                   }
                 }
