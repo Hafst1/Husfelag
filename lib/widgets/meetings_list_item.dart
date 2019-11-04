@@ -48,6 +48,7 @@ class MeetingsListItem extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Icon(Icons.location_on),
                   SizedBox(

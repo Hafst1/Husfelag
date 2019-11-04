@@ -22,7 +22,11 @@ dependencies:
   intl: ^0.16.0
   provider: ^3.1.0+1
   firebase_auth: ^0.14.0+5
+<<<<<<< HEAD
   circular_check_box: ^1.0.1
+=======
+  cloud_firestore: ^0.12.9+6
+>>>>>>> 8ddab63ea81c62d798f181d620a05c8b60f2f3ca
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

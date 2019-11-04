@@ -22,6 +22,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
+<<<<<<< HEAD
   circular_check_box:
     dependency: "direct main"
     description:
@@ -29,6 +30,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+=======
+  cloud_firestore:
+    dependency: "direct main"
+    description:
+      name: cloud_firestore
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.12.9+6"
+>>>>>>> 8ddab63ea81c62d798f181d620a05c8b60f2f3ca
   collection:
     dependency: transitive
     description:
