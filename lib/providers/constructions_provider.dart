@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/construction.dart';
 
 enum ConstructionStatus { current, ahead, old }
@@ -115,6 +115,17 @@ class ConstructionsProvider with ChangeNotifier {
     );
     _dummyData.add(newConstruction);
     notifyListeners();
+
+    //Add to Firebase
+    DocumentReference constructionRef = Firestore.instance
+        .collection("ResidentAssociation")
+        .document("09fnlNxhgYk70dMpaRJB");
+    constructionRef.collection("ConstructionItems").add({
+      'dateFrom:': construction.dateFrom,
+      'dateTo:': construction.dateTo,
+      'title:': construction.title,
+      'description:': construction.description
+    });
   }
 
   void deleteConstruction(String id) {

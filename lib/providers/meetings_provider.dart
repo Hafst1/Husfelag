@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/meeting.dart';
 
 enum MeetingStatus { ahead, old }
@@ -60,8 +60,7 @@ class MeetingsProvider with ChangeNotifier {
     return [..._dummyData];
   }
 
-  bool _meetingStatusFilter(
-      int filterIndex, DateTime date) {
+  bool _meetingStatusFilter(int filterIndex, DateTime date) {
     MeetingStatus status = MeetingStatus.values[filterIndex];
     DateTime currentDate = DateTime.now();
     switch (status) {
@@ -91,15 +90,16 @@ class MeetingsProvider with ChangeNotifier {
     } else {
       constructions.forEach((item) {
         if (_meetingStatusFilter(
-              filterIndex,
-              item.date,
-            )) {
+          filterIndex,
+          item.date,
+        )) {
           displayList.add(item);
         }
       });
     }
     return displayList;
   }
+
   void addMeeting(Meeting meeting) {
     final newMeeting = Meeting(
       title: meeting.title,
@@ -111,6 +111,18 @@ class MeetingsProvider with ChangeNotifier {
     );
     _dummyData.add(newMeeting);
     notifyListeners();
+
+    //add to Firebase
+    DocumentReference meetingRef = Firestore.instance
+        .collection("ResidentAssociation")
+        .document("09fnlNxhgYk70dMpaRJB");
+     meetingRef.collection("MeetingItems").add({
+      'date:': meeting.date,
+      'title:': meeting.title,
+      'description:': meeting.description,
+      'location:': meeting.location,
+      'duration' : meeting.duration.toString()
+    });
   }
 
   void deleteMeeting(String id) {
