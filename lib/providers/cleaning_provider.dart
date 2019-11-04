@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/apartment.dart';
 import '../models/cleaning.dart';
 
@@ -164,6 +164,16 @@ class CleaningProvider with ChangeNotifier {
     );
     _dummyData.add(newCleaningItem);
     notifyListeners();
+
+     //Add to Firebase
+    DocumentReference cleaningRef = Firestore.instance
+        .collection("ResidentAssociation")
+        .document("09fnlNxhgYk70dMpaRJB");
+    cleaningRef.collection("CleaningItems").add({
+      'apartment:': cleaningItem.apartment,
+      'dateFrom:': cleaningItem.dateFrom,
+      'dateTo:': cleaningItem.dateTo
+    });
   }
 
   void deleteCleaningItem(String id) {
