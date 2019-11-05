@@ -17,7 +17,7 @@ class DocumentsFolderProvider with ChangeNotifier {
     return [..._dummyData];
   }
 
-  List<DocumentFolder> addFolder(String newTitle) {
+  void addFolder(String newTitle) {
     final newFolder = DocumentFolder(
       id: "3", //þetta er mjög dummy :)
       title: newTitle,
@@ -28,5 +28,8 @@ class DocumentsFolderProvider with ChangeNotifier {
 
   List<DocumentFolder> getAllFolders() {
     return [..._dummyData];
+  }
+  DocumentFolder findNameById(String id) {
+    return _dummyData.firstWhere((folder) => folder.id == id);
   }
 }

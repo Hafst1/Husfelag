@@ -20,17 +20,23 @@ class DocumentsProvider with ChangeNotifier {
   List<Document> get items {
     return [..._dummyData];
   }
-  List<Document> filteredItems(String query, int filterIndex) {
+  List<Document> getAllDocuments() {
+    return [..._dummyData];
+  }
+  List<Document> findById(String id) {
+    return getAllDocuments().where((document) => document.folderId == id).toList();
+  }
+  /*List<Document> filteredItems(String query, int filterIndex) {
     List<Document> documents = [..._dummyData];
     String searchQuery = query.toLowerCase();
     List<Document> displayList = [];
     if (query.isNotEmpty) {
       documents.forEach((item) {
-        //if (item.title.toLowerCase().contains(searchQuery)) {
+       // if (item.title.toLowerCase().contains(searchQuery)) {
           displayList.add(item);
         //}
         });
       };
     return displayList;
-  }
+  }*/
 }

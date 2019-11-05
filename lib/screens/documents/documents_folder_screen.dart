@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/providers/documents_folder_provider.dart';
+import 'package:husfelagid/widgets/document_item.dart';
 import 'package:provider/provider.dart';
 
-import '../../widgets/documents_folder_item.dart';
-import '../../widgets/tab_filter_button.dart';
 import '../../providers/documents_provider.dart';
 
 class DocumentsFolderScreen extends StatefulWidget {
-  static const routeName = '/document-folder';
+  final String id;
+
+  DocumentsFolderScreen({
+    this.id,
+  });
 
   @override
   _DocumentsFolderScreenState createState() =>
@@ -14,14 +18,7 @@ class DocumentsFolderScreen extends StatefulWidget {
 }
 class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
   final _textFieldController = TextEditingController();
-  int _selectedFilterIndex = 0;
   String _searchQuery = "";
-
-  _selectFilter(int index) {
-    setState(() {
-      _selectedFilterIndex = index;
-    });
-  }
 
   _changeSearchQuery(String query) {
     setState(() {
@@ -45,19 +42,17 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final folder = Provider.of<DocumentsFolderProvider>(context, listen: false).findNameById(widget.id);
+    final folderName = folder.title;
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
-      title: Text("Mappa"),
+      title: Text(folderName), 
     );
     final heightOfBody = mediaQuery.size.height -
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final documentData = Provider.of<DocumentsProvider>(context);
-    final documents = documentData.filteredItems(
-      _searchQuery,
-      _selectedFilterIndex,
-    );
+    final documentData = Provider.of<DocumentsProvider>(context, listen: false).findById(widget.id);
     return Scaffold(
       appBar: appBar,
       body: GestureDetector(
@@ -100,7 +95,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
               ),
               SizedBox(
                 height: 10,
-              ),  
+              ),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.only(
@@ -109,12 +104,12 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
                     bottom: 5,
                   ),
                   child: ListView.builder(
-                    itemCount: documents.length,
-                    itemBuilder: (ctx, i) => DocumentListItem(
-                      title: documents[i].title,
-                      route: "some route",
+                    itemCount: documentData.length,
+                    itemBuilder: (ctx, i) =>DocumentItem(
+                      folderId: documentData[i].folderId,
+                      title: documentData[i].title,
                     ),
-                  ),
+                  )
                 ),
               ),
             ],

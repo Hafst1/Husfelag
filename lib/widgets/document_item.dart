@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import '../screens/documents/documents_folder_screen.dart';
 
-class DocumentFolder extends StatelessWidget {
+class DocumentItem extends StatelessWidget {
   final String title;
-  final String id;
+  final String folderId;
 
-  DocumentFolder(
+  DocumentItem(
       {@required this.title,
-      @required this.id});
+      @required this.folderId});
 
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: 5,
+        vertical: 4,
+        horizontal: 3,
       ),
       elevation: 5,
       child: ListTile(
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => DocumentsFolderScreen(id: id),
+              //builder: (context) => DocumentScreen(id: id),
             ),
           );
         },
