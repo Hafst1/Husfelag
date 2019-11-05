@@ -6,11 +6,13 @@ class Document {
   final String title;
   final String description;
   final File document;
+  final String folderId;
 
   Document({
     @required this.id,
     @required this.title,
     @required this.description,
     @required this.document,
+    @required this.folderId,
   });
 }

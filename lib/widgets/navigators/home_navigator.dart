@@ -8,6 +8,7 @@ import '../../screens/meetings/meetings_screen.dart';
 import '../../screens/meetings/add_meeting_screen.dart';
 import '../../screens/meetings/meetings_list_screen.dart';
 import '../../screens/documents/documents_screen.dart';
+import '../../screens/documents/documents_folder_screen.dart';
 import '../../screens/cleaning/cleaning_screen.dart';
 import '../../screens/cleaning/add_cleaning_screen.dart';
 import '../../screens/cleaning/cleaning_list_screen.dart';
@@ -26,6 +27,7 @@ class HomeNavigatorRoutes {
   static const String addCleaning = AddCleaningScreen.routeName;
   static const String cleaningList = CleaningListScreen.routeName;
   static const String cleaningTasks = CleaningTasksScreen.routeName;
+  static const String documentFolder = DocumentsFolderScreen.routeName;
 }
 
 class HomeNavigator extends StatelessWidget {
@@ -47,6 +49,7 @@ class HomeNavigator extends StatelessWidget {
       HomeNavigatorRoutes.addCleaning: (context) => AddCleaningScreen(),
       HomeNavigatorRoutes.cleaningList: (context) => CleaningListScreen(),
       HomeNavigatorRoutes.cleaningTasks: (context) => CleaningTasksScreen(),
+      HomeNavigatorRoutes.documentFolder: (context) => DocumentsFolderScreen(),
     };
   }
 
