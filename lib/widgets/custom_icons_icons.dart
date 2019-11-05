@@ -24,10 +24,6 @@
 ///         Author:    Google
 ///         License:   Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
 ///         Homepage:  https://design.google.com/icons/
-/// * Font Awesome, Copyright (C) 2016 by Dave Gandy
-///         Author:    Dave Gandy
-///         License:   SIL ()
-///         Homepage:  http://fortawesome.github.com/Font-Awesome/
 /// * Modern Pictograms, Copyright (c) 2012 by John Caserta. All rights reserved.
 ///         Author:    John Caserta
 ///         License:   SIL (http://scripts.sil.org/OFL)
@@ -40,6 +36,10 @@
 ///         Author:    MFG Labs
 ///         License:   SIL (http://scripts.sil.org/OFL)
 ///         Homepage:  http://www.mfglabs.com/
+/// * Font Awesome, Copyright (C) 2016 by Dave Gandy
+///         Author:    Dave Gandy
+///         License:   SIL ()
+///         Homepage:  http://fortawesome.github.com/Font-Awesome/
 ///
 import 'package:flutter/widgets.dart';
 
@@ -58,4 +58,7 @@ class CustomIcons {
   static const IconData file_add = const IconData(0xe81e, fontFamily: _kFontFam);
   static const IconData trash = const IconData(0xf083, fontFamily: _kFontFam);
   static const IconData doc_text = const IconData(0xf0f6, fontFamily: _kFontFam);
+  static const IconData file_pdf = const IconData(0xf1c1, fontFamily: _kFontFam);
+  static const IconData file_word = const IconData(0xf1c2, fontFamily: _kFontFam);
+  static const IconData file_excel = const IconData(0xf1c3, fontFamily: _kFontFam);
 }

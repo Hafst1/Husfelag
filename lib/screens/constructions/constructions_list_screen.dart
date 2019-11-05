@@ -140,10 +140,10 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                   child: ListView.builder(
                     itemCount: constructions.length,
                     itemBuilder: (ctx, i) => ConstructionsListItem(
+                      id: constructions[i].id,
                       title: constructions[i].title,
                       dateFrom: constructions[i].dateFrom,
                       dateTo: constructions[i].dateTo,
-                      route: "some route",
                     ),
                   ),
                 ),

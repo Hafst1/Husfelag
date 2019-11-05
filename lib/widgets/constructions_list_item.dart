@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import './custom_icons_icons.dart';
+import '../screens/constructions/construction_detail_screen.dart';
 
 class ConstructionsListItem extends StatelessWidget {
+  final String id;
   final String title;
   final DateTime dateFrom;
   final DateTime dateTo;
-  final String route;
 
-  ConstructionsListItem(
-      {@required this.title,
-      @required this.dateFrom,
-      @required this.dateTo,
-      @required this.route});
+  ConstructionsListItem({
+    @required this.id,
+    @required this.title,
+    @required this.dateFrom,
+    @required this.dateTo,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,13 @@ class ConstructionsListItem extends StatelessWidget {
       ),
       elevation: 5,
       child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ConstructionDetailScreen(id: id),
+            ),
+          );
+        },
         contentPadding: EdgeInsets.all(10),
         leading: CircleAvatar(
           backgroundColor: Colors.grey[400],
@@ -56,7 +65,7 @@ class ConstructionsListItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   '${DateFormat.yMMMd().format(dateFrom)} - ${DateFormat.yMMMd().format(dateTo)}',
-                  style: TextStyle(fontSize: 15/*, color: Colors.grey[700]*/),
+                  style: TextStyle(fontSize: 15 /*, color: Colors.grey[700]*/),
                 ),
               ),
             ],

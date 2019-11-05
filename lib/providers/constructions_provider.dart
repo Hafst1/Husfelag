@@ -136,4 +136,8 @@ class ConstructionsProvider with ChangeNotifier {
     _dummyData.removeWhere((construction) => construction.id == id);
     notifyListeners();
   }
+
+  Construction findById(String id) {
+    return _dummyData.firstWhere((construction) => construction.id == id);
+  }
 }
