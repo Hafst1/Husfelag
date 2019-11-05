@@ -76,9 +76,9 @@ class ConstructionsProvider with ChangeNotifier {
     return [..._dummyData];
   }
 
-  /*List<Construction> getAllItemsForCalendar() {
+  List<Construction> getAllItemsForCalendar() {
     return [..._dummyData];
-  }*/
+  }
 
   List<Construction> filteredItems(String query, int filterIndex) {
     List<Construction> constructions = [..._dummyData];
