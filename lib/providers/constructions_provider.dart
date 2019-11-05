@@ -76,6 +76,10 @@ class ConstructionsProvider with ChangeNotifier {
     return [..._dummyData];
   }
 
+  List<Construction> getAllItemsForCalendar() {
+    return [..._dummyData];
+  }
+
   List<Construction> filteredItems(String query, int filterIndex) {
     List<Construction> constructions = [..._dummyData];
     String searchQuery = query.toLowerCase();
@@ -131,5 +135,9 @@ class ConstructionsProvider with ChangeNotifier {
   void deleteConstruction(String id) {
     _dummyData.removeWhere((construction) => construction.id == id);
     notifyListeners();
+  }
+
+  Construction findById(String id) {
+    return _dummyData.firstWhere((construction) => construction.id == id);
   }
 }
