@@ -14,4 +14,22 @@ class Construction {
     @required this.dateTo,
     @required this.description,
   });
+
+  Construction.fromMap(Map snapshot,String id) :
+      id = id ?? '',
+      title = snapshot['title'] ?? '',
+      dateFrom = snapshot['dateFrom'] ?? '',
+      dateTo = snapshot['dateTo'] ?? '',
+      description = snapshot['description'] ?? '';
+
+  toJson() {
+    return {
+      "title": title,
+      "dateFrom": dateFrom,
+      "dateTo": dateTo,
+      "description": description,
+    };
+  }
+
+
 }
