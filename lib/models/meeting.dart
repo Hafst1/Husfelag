@@ -16,4 +16,23 @@ class Meeting {
     @required this.location,
     @required this.description,
   });
+
+  Meeting.fromMap(Map snapshot,String id) :
+      id = id ?? '',
+      title = snapshot['title'] ?? '',
+      date = DateTime.now(),
+      duration = null,
+      location = snapshot['location'] ?? '',
+      description = snapshot['description'] ?? '';
+
+  toJson() {
+    return {
+      "title": title,
+      "date": date,
+      "duration": duration,
+      "location" : location,
+      "description": description,
+    };
+  }
+
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Construction {
@@ -18,8 +19,8 @@ class Construction {
   Construction.fromMap(Map snapshot,String id) :
       id = id ?? '',
       title = snapshot['title'] ?? '',
-      dateFrom = snapshot['dateFrom'] ?? '',
-      dateTo = snapshot['dateTo'] ?? '',
+      dateFrom = DateTime.now(),
+      dateTo = DateTime.now(),
       description = snapshot['description'] ?? '';
 
   toJson() {

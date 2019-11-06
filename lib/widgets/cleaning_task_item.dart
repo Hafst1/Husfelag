@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 
   class CleaningTaskItem extends StatefulWidget {
+    final String id;
     final String title;
     final String description;
 
-    const CleaningTaskItem({Key key, this.title, this.description}):
+    const CleaningTaskItem({Key key, this.id, this.title, this.description}):
     super(key: key);
 
     @override
