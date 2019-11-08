@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import './custom_icons_icons.dart';
+import '../screens/meetings/meeting_detail_screen.dart';
 
 class MeetingsListItem extends StatelessWidget {
+  final String id;
   final String title;
   final DateTime date;
   final String location;
   final String route;
 
   MeetingsListItem(
-    {@required this.title,
-    @required this.date,
-    @required this.location,
-    @required this.route}
-  );
+      {@required this.id,
+      @required this.title,
+      @required this.date,
+      @required this.location,
+      @required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,13 @@ class MeetingsListItem extends StatelessWidget {
       ),
       elevation: 5,
       child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => MeetingDetailScreen(id: id),
+            ),
+          );
+        },
         contentPadding: EdgeInsets.all(10),
         leading: CircleAvatar(
           backgroundColor: Colors.brown[200],

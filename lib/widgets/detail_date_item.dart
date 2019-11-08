@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
+import '../constants/constants.dart' as Constants;
 
 class DetailDateItem extends StatelessWidget {
   final String text;
@@ -35,7 +36,7 @@ class DetailDateItem extends StatelessWidget {
           Container(
             width: constraints.maxWidth * 0.78,
             child: Text(
-              DateFormat.yMMMMEEEEd().format(date),
+              '${Constants.weekdays[date.weekday - 1]}, ${date.day}. ${Constants.months[date.month - 1].toLowerCase()} ${date.year}',
               style: TextStyle(fontSize: 17),
               softWrap: true,
             ),

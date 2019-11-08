@@ -11,8 +11,9 @@ class MeetingsProvider with ChangeNotifier {
       title: "Árlegur húsfundur",
       date: DateTime.now().add(Duration(days: 4)),
       duration: Duration(hours: 2),
-      location: "Egilshöll",
-      description: "",
+      location: "Egilshöll, 112 Grafarvogur",
+      description:
+          "In the phrase 'have a meeting', a meeting is an arranged event at which a group of people come together to discuss a particular topic. The phrase is most commonly used to refer to business meetings, at which a group of employees discuss, for example, the work they intend to do on a particular project.",
     ),
     Meeting(
       id: "firebasekey2",
@@ -116,17 +117,21 @@ class MeetingsProvider with ChangeNotifier {
     DocumentReference meetingRef = Firestore.instance
         .collection("ResidentAssociation")
         .document("09fnlNxhgYk70dMpaRJB");
-     meetingRef.collection("MeetingItems").add({
+    meetingRef.collection("MeetingItems").add({
       'date:': meeting.date,
       'title:': meeting.title,
       'description:': meeting.description,
       'location:': meeting.location,
-      'duration' : meeting.duration.toString()
+      'duration': meeting.duration.toString()
     });
   }
 
   void deleteMeeting(String id) {
     _dummyData.removeWhere((meeting) => meeting.id == id);
     notifyListeners();
+  }
+
+  Meeting findById(String id) {
+    return _dummyData.firstWhere((meeting) => meeting.id == id);
   }
 }
