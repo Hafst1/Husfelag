@@ -57,7 +57,6 @@ class ConstructionsListItem extends StatelessWidget {
             children: <Widget>[
               Icon(
                 Icons.date_range,
-                //color: Colors.red[900],
               ),
               SizedBox(
                 width: 5,
@@ -65,7 +64,7 @@ class ConstructionsListItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   '${DateFormat.yMMMd().format(dateFrom)} - ${DateFormat.yMMMd().format(dateTo)}',
-                  style: TextStyle(fontSize: 15 /*, color: Colors.grey[700]*/),
+                  style: TextStyle(fontSize: 15),
                 ),
               ),
             ],

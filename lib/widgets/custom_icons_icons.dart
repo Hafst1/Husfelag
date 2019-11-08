@@ -58,6 +58,7 @@ class CustomIcons {
   static const IconData file_add = const IconData(0xe81e, fontFamily: _kFontFam);
   static const IconData trash = const IconData(0xf083, fontFamily: _kFontFam);
   static const IconData doc_text = const IconData(0xf0f6, fontFamily: _kFontFam);
+  static const IconData smile = const IconData(0xf118, fontFamily: _kFontFam);
   static const IconData file_pdf = const IconData(0xf1c1, fontFamily: _kFontFam);
   static const IconData file_word = const IconData(0xf1c2, fontFamily: _kFontFam);
   static const IconData file_excel = const IconData(0xf1c3, fontFamily: _kFontFam);

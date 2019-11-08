@@ -147,12 +147,14 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
                     ),
                   )
                 : Container(),
-            _dummyData.isNotEmpty ? Divider(
-              color: Colors.grey,
-              thickness: 1.5,
-              indent: 20,
-              endIndent: 20,
-            ) : Container(),
+            _dummyData.isNotEmpty
+                ? Divider(
+                    color: Colors.grey,
+                    thickness: 1.5,
+                    indent: 20,
+                    endIndent: 20,
+                  )
+                : Container(),
             Container(
               padding: const EdgeInsets.only(
                 left: 35,
@@ -190,29 +192,37 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
                 bottom: 25,
               ),
               width: double.infinity,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    "Nánari lýsing:",
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
+              child: construction.description.isNotEmpty
+                  ? Column(
+                      children: <Widget>[
+                        Text(
+                          "Nánari lýsing:",
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          construction.description,
+                          style: TextStyle(
+                            fontSize: 17,
+                            height: 1.75,
+                          ),
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                        ),
+                      ],
+                    )
+                  : Text(
+                      "Engar nánari upplýsingar.",
+                      style: TextStyle(
+                        fontSize: 17,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    construction.description,
-                    style: TextStyle(
-                      fontSize: 17,
-                      height: 1.75,
-                    ),
-                    textAlign: TextAlign.justify,
-                    softWrap: true,
-                  ),
-                ],
-              ),
             ),
           ],
         ),
