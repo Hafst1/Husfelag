@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:husfelagid/services/auth.dart';
 import 'package:husfelagid/shared/constants.dart';
+import 'package:husfelagid/shared/loading.dart';
 
 class SignIn extends StatefulWidget {
 
@@ -15,6 +16,7 @@ class _SignInState extends State<SignIn> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
   // Text field state
   String email = '';
@@ -24,7 +26,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0.0,
@@ -69,14 +71,18 @@ class _SignInState extends State<SignIn> {
               RaisedButton(
                 color: Colors.pink[400],
                 child: Text(
-                  'Sign in',
+                  'Skrá Inn',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
+                    setState(() => loading = true);
                     dynamic result = await _auth.signInWithEmailAndPassword(email, password);
                     if (result == null) {
-                      setState(() => error = 'Gat ekki skráð inn á þessum upplýsingum');
+                      setState(() {
+                      error = 'Gat ekki skráð inn á þessum upplýsingum';
+                      loading = false;
+                      });
                     }
                   }
                 }
