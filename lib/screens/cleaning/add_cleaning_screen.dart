@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../providers/cleaning_provider.dart';
 import '../../models/cleaning.dart';
 import '../../widgets/save_button.dart';
-import '../apartment_picker_screen.dart';
+import './apartment_picker_screen.dart';
 
 class AddCleaningScreen extends StatefulWidget {
   static const routeName = '/add-cleaning';
