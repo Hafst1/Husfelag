@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:husfelagid/services/auth.dart';
 import 'package:husfelagid/shared/constants.dart';
+import 'package:husfelagid/shared/loading.dart';
 
 class Register extends StatefulWidget {
 
@@ -15,6 +16,7 @@ class _RegisterState extends State<Register> {
 
     final AuthService _auth = AuthService();
     final _formKey = GlobalKey<FormState>();
+    bool loading = false;
 
     // Text field state
   String email = '';
@@ -23,7 +25,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0.0,
@@ -73,9 +75,13 @@ class _RegisterState extends State<Register> {
                 ),
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
+                    setState(() => loading = true);
                     dynamic result = await _auth.registerWithEmailAndPassword(email, password);
                     if (result == null) {
-                      setState(() => error = 'Vinsamlegast fylltu út gilt netfang');
+                      setState(() {
+                        error = 'Vinsamlegast fylltu út gilt netfang';
+                        loading = false;
+                        });
                     }
                   }
                 }
