@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import './custom_icons_icons.dart';
+import '../screens/cleaning/cleaning_detail_screen.dart';
 
 class CleaningListItem extends StatelessWidget {
+  final String id;
   final String apartment;
   final DateTime dateFrom;
   final DateTime dateTo;
   final String route;
 
   CleaningListItem(
-    {@required this.apartment,
-    @required this.dateFrom,
-    @required this.dateTo,
-    @required this.route}
-  );
+      {@required this.id,
+      @required this.apartment,
+      @required this.dateFrom,
+      @required this.dateTo,
+      @required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,13 @@ class CleaningListItem extends StatelessWidget {
       ),
       elevation: 5,
       child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CleaningDetailScreen(id: id),
+            ),
+          );
+        },
         contentPadding: EdgeInsets.all(10),
         leading: CircleAvatar(
           backgroundColor: Colors.indigo[200],

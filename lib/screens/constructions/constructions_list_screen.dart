@@ -133,8 +133,6 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
                     bottom: 5,
                   ),
                   child: ListView.builder(

@@ -180,4 +180,8 @@ class CleaningProvider with ChangeNotifier {
     _dummyData.removeWhere((cleaningItem) => cleaningItem.id == id);
     notifyListeners();
   }
+
+    Cleaning findById(String id) {
+    return _dummyData.firstWhere((cleaning) => cleaning.id == id);
+  }
 }

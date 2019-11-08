@@ -131,13 +131,12 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
                     bottom: 5,
                   ),
                   child: ListView.builder(
                     itemCount: cleanings.length,
                     itemBuilder: (ctx, i) => CleaningListItem(
+                      id: cleanings[i].id,
                       apartment: cleanings[i].apartment,
                       dateFrom: cleanings[i].dateFrom,
                       dateTo: cleanings[i].dateTo,

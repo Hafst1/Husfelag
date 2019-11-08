@@ -121,13 +121,12 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
                     bottom: 5,
                   ),
                   child: ListView.builder(
                     itemCount: meetings.length,
                     itemBuilder: (ctx, i) => MeetingsListItem(
+                      id: meetings[i].id,
                       title: meetings[i].title,
                       date: meetings[i].date,
                       location: meetings[i].location,

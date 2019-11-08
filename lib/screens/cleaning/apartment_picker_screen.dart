@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/apartment_picker_item.dart';
-import '../providers/cleaning_provider.dart';
+import '../../widgets/apartment_picker_item.dart';
+import '../../providers/cleaning_provider.dart';
 
 class ApartMentPickerScreen extends StatelessWidget {
   selectApartment(BuildContext context, String apartmentNumber) {

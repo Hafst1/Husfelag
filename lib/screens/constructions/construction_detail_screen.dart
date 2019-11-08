@@ -68,12 +68,12 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final loadedConstruction =
+    final construction =
         Provider.of<ConstructionsProvider>(context, listen: false)
             .findById(widget.id);
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
-      title: Text(loadedConstruction.title),
+      title: Text(construction.title),
       centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
@@ -121,10 +121,6 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
                       }).toList(),
                       onPageChanged: (value) => _currentFileTracker(value),
                       enableInfiniteScroll: false,
-                      autoPlay: true,
-                      autoPlayInterval: Duration(seconds: 7),
-                      autoPlayAnimationDuration: Duration(milliseconds: 800),
-                      pauseAutoPlayOnTouch: Duration(seconds: 10),
                     )
                   // Tímabundin mynd í staðinn fyrir skjöl tengd framkvæmd
                   : Image(
@@ -168,14 +164,14 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
                 children: <Widget>[
                   DetailDateItem(
                     text: "Frá:",
-                    date: loadedConstruction.dateFrom,
+                    date: construction.dateFrom,
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   DetailDateItem(
                     text: "Til:",
-                    date: loadedConstruction.dateTo,
+                    date: construction.dateTo,
                   ),
                 ],
               ),
@@ -207,7 +203,7 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
                     height: 15,
                   ),
                   Text(
-                    loadedConstruction.description,
+                    construction.description,
                     style: TextStyle(
                       fontSize: 17,
                       height: 1.75,
