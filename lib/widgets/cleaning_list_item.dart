@@ -64,7 +64,6 @@ class CleaningListItem extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      //apartment,
                       "Þrif á sameign",
                       style: TextStyle(fontSize: 15),
                     ),
@@ -91,11 +90,6 @@ class CleaningListItem extends StatelessWidget {
             ],
           ),
         ),
-        // trailing: IconButton(
-        //   icon: Icon(Icons.check),
-        //   color: Colors.green,
-        //   onPressed: () => {},
-        // ),
       ),
     );
   }

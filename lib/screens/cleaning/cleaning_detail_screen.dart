@@ -154,7 +154,6 @@ class CleaningDetailScreen extends StatelessWidget {
                                   child: Text(
                                     task.title,
                                     style: TextStyle(fontSize: 17),
-                                  
                                   ),
                                 ),
                               ],
