@@ -23,6 +23,19 @@ class MeetingDetailScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Container(
+              height: 200,
+              width: double.infinity,
+              child: Image.asset(
+                'assets/images/google_sprint.jpg',
+                fit: BoxFit.cover,
+                alignment: Alignment.lerp(
+                  Alignment.center,
+                  Alignment.topCenter,
+                  0.33,
+                ),
+              ),
+            ),
+            Container(
               padding: const EdgeInsets.only(
                 left: 35,
                 right: 35,
@@ -83,29 +96,37 @@ class MeetingDetailScreen extends StatelessWidget {
                 bottom: 25,
               ),
               width: double.infinity,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    "Nánari lýsing:",
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
+              child: meeting.description.isNotEmpty
+                  ? Column(
+                      children: <Widget>[
+                        Text(
+                          "Nánari lýsing:",
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          meeting.description,
+                          style: TextStyle(
+                            fontSize: 17,
+                            height: 1.75,
+                          ),
+                          textAlign: TextAlign.justify,
+                          softWrap: true,
+                        ),
+                      ],
+                    )
+                  : Text(
+                      "Engar nánari upplýsingar.",
+                      style: TextStyle(
+                        fontSize: 17,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    meeting.description,
-                    style: TextStyle(
-                      fontSize: 17,
-                      height: 1.75,
-                    ),
-                    textAlign: TextAlign.justify,
-                    softWrap: true,
-                  ),
-                ],
-              ),
             ),
             // Container(
             //   padding: const EdgeInsets.only(

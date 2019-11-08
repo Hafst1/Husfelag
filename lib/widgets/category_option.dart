@@ -43,7 +43,6 @@ class CategoryOption extends StatelessWidget {
                   child: FittedBox(
                     child: Icon(
                       optionIcon,
-                      //size: constraints.maxHeight * 0.4,
                     ),
                   ),
                 ),
