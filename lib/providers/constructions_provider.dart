@@ -140,4 +140,11 @@ class ConstructionsProvider with ChangeNotifier {
   Construction findById(String id) {
     return _dummyData.firstWhere((construction) => construction.id == id);
   }
+
+  void updateConstruction(String id, Construction editedConstruction) {
+    final constructionIndex =
+        _dummyData.indexWhere((construction) => construction.id == id);
+    _dummyData[constructionIndex] = editedConstruction;
+    notifyListeners();
+  }
 }

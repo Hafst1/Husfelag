@@ -134,4 +134,10 @@ class MeetingsProvider with ChangeNotifier {
   Meeting findById(String id) {
     return _dummyData.firstWhere((meeting) => meeting.id == id);
   }
+
+  void updateMeeting(String id, Meeting editedMeeting) {
+    final meetingIndex = _dummyData.indexWhere((meeting) => meeting.id == id);
+    _dummyData[meetingIndex] = editedMeeting;
+    notifyListeners();
+  }
 }

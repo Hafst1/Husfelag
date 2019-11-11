@@ -6,14 +6,11 @@ import '../../providers/meetings_provider.dart';
 import '../../constants/constants.dart' as Constants;
 
 class MeetingDetailScreen extends StatelessWidget {
-  final String id;
-
-  MeetingDetailScreen({@required this.id});
-
   @override
   Widget build(BuildContext context) {
-    final meeting =
-        Provider.of<MeetingsProvider>(context, listen: false).findById(id);
+    final meetingId = ModalRoute.of(context).settings.arguments as String;
+    final meeting = Provider.of<MeetingsProvider>(context, listen: false)
+        .findById(meetingId);
     return Scaffold(
       appBar: AppBar(
         title: Text(meeting.title),

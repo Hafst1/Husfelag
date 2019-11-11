@@ -18,12 +18,6 @@ class DummyItem {
 }
 
 class ConstructionDetailScreen extends StatefulWidget {
-  final String id;
-
-  ConstructionDetailScreen({
-    this.id,
-  });
-
   @override
   _ConstructionDetailScreenState createState() =>
       _ConstructionDetailScreenState();
@@ -68,9 +62,10 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final constructionId = ModalRoute.of(context).settings.arguments as String;
     final construction =
         Provider.of<ConstructionsProvider>(context, listen: false)
-            .findById(widget.id);
+            .findById(constructionId);
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
       title: Text(construction.title),

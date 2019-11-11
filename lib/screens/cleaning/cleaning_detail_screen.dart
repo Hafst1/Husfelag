@@ -7,10 +7,6 @@ import '../../models/cleaning_task.dart';
 import '../../widgets/custom_icons_icons.dart';
 
 class CleaningDetailScreen extends StatelessWidget {
-  final String id;
-
-  CleaningDetailScreen({@required this.id});
-
   final List<CleaningTask> tasks = [
     CleaningTask(
       id: "firebasekey1",
@@ -48,8 +44,9 @@ class CleaningDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cleaningId = ModalRoute.of(context).settings.arguments as String;
     final cleaning =
-        Provider.of<CleaningProvider>(context, listen: false).findById(id);
+        Provider.of<CleaningProvider>(context, listen: false).findById(cleaningId);
     return Scaffold(
       appBar: AppBar(
         title: Text("Þrif á sameign"),

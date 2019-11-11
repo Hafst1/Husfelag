@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class SaveButton extends StatelessWidget {
+  final String text;
   final Function saveFunc;
 
   SaveButton({
+    @required this.text,
     @required this.saveFunc,
   });
 
@@ -26,7 +28,7 @@ class SaveButton extends StatelessWidget {
               border: Border.all(color: Colors.green[300]),
             ),
             child: Text(
-              "BÆTA VIÐ",
+              text,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
