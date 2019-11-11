@@ -26,8 +26,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     description: "",
   );
   var _initValues = {
+    'appbar-title': 'Bæta við framkvæmd',
     'title': '',
     'description': '',
+    'save-text': 'BÆTA VIÐ',
   };
   var _isInit = true;
 
@@ -41,8 +43,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
             Provider.of<ConstructionsProvider>(context, listen: false)
                 .findById(constructionId);
         _initValues = {
+          'appbar-title': 'Breyta framkvæmd',
           'title': _construction.title,
           'description': _construction.description,
+          'save-text': 'BREYTA',
         };
         _dateFromController.text =
             DateFormat.yMMMMEEEEd().format(_construction.dateFrom);
@@ -111,7 +115,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bæta við framkvæmd"),
+        title: Text(_initValues['appbar-title']),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.add),
@@ -262,7 +266,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
               SizedBox(
                 height: 15,
               ),
-              SaveButton(saveFunc: _saveForm),
+              SaveButton(
+                text: _initValues['save-text'],
+                saveFunc: _saveForm,
+              ),
             ],
           ),
         ),
