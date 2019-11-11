@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import './custom_icons_icons.dart';
 import '../screens/constructions/construction_detail_screen.dart';
+import '../screens/constructions/add_construction_screen.dart';
+import '../providers/constructions_provider.dart';
+import '../widgets/action_dialog.dart';
 
 class ConstructionsListItem extends StatelessWidget {
   final String id;
@@ -16,6 +20,29 @@ class ConstructionsListItem extends StatelessWidget {
     @required this.dateFrom,
     @required this.dateTo,
   });
+
+  void _showActionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return ActionDialog(
+          deleteFunc: () {
+            Provider.of<ConstructionsProvider>(context, listen: false)
+                .deleteConstruction(id);
+          },
+          editFunc: () {
+            Navigator.of(ctx).pop();
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => AddConstructionScreen(),
+                settings: RouteSettings(arguments: id),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +98,15 @@ class ConstructionsListItem extends StatelessWidget {
             ],
           ),
         ),
+        // trailing: IconButton(
+        //   icon: Icon(Icons.comment),
+        //   color: Colors.grey,
+        //   onPressed: () => {},
+        // ),
         trailing: IconButton(
-          icon: Icon(Icons.comment),
+          icon: Icon(CustomIcons.dot_3),
           color: Colors.grey,
-          onPressed: () => {},
+          onPressed: () => _showActionDialog(context),
         ),
       ),
     );

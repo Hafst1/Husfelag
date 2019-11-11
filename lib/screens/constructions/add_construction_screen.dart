@@ -18,13 +18,41 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
   final _dateFromController = TextEditingController();
   final _dateToController = TextEditingController();
   final _form = GlobalKey<FormState>();
-  var _newConstruction = Construction(
+  var _construction = Construction(
     id: null,
     title: "",
     dateFrom: DateTime.now(),
     dateTo: DateTime.now(),
     description: "",
   );
+  var _initValues = {
+    'title': '',
+    'description': '',
+  };
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final constructionId =
+          ModalRoute.of(context).settings.arguments as String;
+      if (constructionId != null) {
+        _construction =
+            Provider.of<ConstructionsProvider>(context, listen: false)
+                .findById(constructionId);
+        _initValues = {
+          'title': _construction.title,
+          'description': _construction.description,
+        };
+        _dateFromController.text =
+            DateFormat.yMMMMEEEEd().format(_construction.dateFrom);
+        _dateToController.text =
+            DateFormat.yMMMMEEEEd().format(_construction.dateTo);
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   void dispose() {
@@ -69,8 +97,13 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
       return;
     }
     _form.currentState.save();
-    Provider.of<ConstructionsProvider>(context, listen: false)
-        .addConstruction(_newConstruction);
+    if (_construction.id != null) {
+      Provider.of<ConstructionsProvider>(context, listen: false)
+          .updateConstruction(_construction.id, _construction);
+    } else {
+      Provider.of<ConstructionsProvider>(context, listen: false)
+          .addConstruction(_construction);
+    }
     Navigator.of(context).pop();
   }
 
@@ -95,6 +128,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
           child: Column(
             children: <Widget>[
               TextFormField(
+                initialValue: _initValues['title'],
                 decoration: InputDecoration(
                   hintText: "Titill...",
                   prefixIcon: Icon(CustomIcons.pencil),
@@ -110,12 +144,12 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _newConstruction = Construction(
-                    id: _newConstruction.id,
+                  _construction = Construction(
+                    id: _construction.id,
                     title: value,
-                    dateFrom: _newConstruction.dateFrom,
-                    dateTo: _newConstruction.dateTo,
-                    description: _newConstruction.description,
+                    dateFrom: _construction.dateFrom,
+                    dateTo: _construction.dateTo,
+                    description: _construction.description,
                   );
                 },
               ),
@@ -148,12 +182,12 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                       return null;
                     },
                     onSaved: (value) {
-                      _newConstruction = Construction(
-                        id: _newConstruction.id,
-                        title: _newConstruction.title,
+                      _construction = Construction(
+                        id: _construction.id,
+                        title: _construction.title,
                         dateFrom: convertToDate(value),
-                        dateTo: _newConstruction.dateTo,
-                        description: _newConstruction.description,
+                        dateTo: _construction.dateTo,
+                        description: _construction.description,
                       );
                     },
                   ),
@@ -187,12 +221,12 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                       return null;
                     },
                     onSaved: (value) {
-                      _newConstruction = Construction(
-                        id: _newConstruction.id,
-                        title: _newConstruction.title,
-                        dateFrom: _newConstruction.dateFrom,
+                      _construction = Construction(
+                        id: _construction.id,
+                        title: _construction.title,
+                        dateFrom: _construction.dateFrom,
                         dateTo: convertToDate(value),
-                        description: _newConstruction.description,
+                        description: _construction.description,
                       );
                     },
                   ),
@@ -202,6 +236,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                 height: 15,
               ),
               TextFormField(
+                initialValue: _initValues['description'],
                 maxLines: 10,
                 decoration: InputDecoration(
                   hintText: "Nánari lýsing...",
@@ -215,11 +250,11 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _newConstruction = Construction(
-                    id: _newConstruction.id,
-                    title: _newConstruction.title,
-                    dateFrom: _newConstruction.dateFrom,
-                    dateTo: _newConstruction.dateTo,
+                  _construction = Construction(
+                    id: _construction.id,
+                    title: _construction.title,
+                    dateFrom: _construction.dateFrom,
+                    dateTo: _construction.dateTo,
                     description: value,
                   );
                 },
