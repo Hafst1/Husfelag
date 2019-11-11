@@ -184,4 +184,10 @@ class CleaningProvider with ChangeNotifier {
     Cleaning findById(String id) {
     return _dummyData.firstWhere((cleaning) => cleaning.id == id);
   }
+
+  void updateCleaningItem(String id, Cleaning editedCleaning) {
+    final cleaningIndex = _dummyData.indexWhere((cleaning) => cleaning.id == id);
+    _dummyData[cleaningIndex] = editedCleaning;
+    notifyListeners();
+  }
 }

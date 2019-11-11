@@ -19,12 +19,30 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
   final _dateFromController = TextEditingController();
   final _dateToController = TextEditingController();
   final _form = GlobalKey<FormState>();
-  var _newCleaningItem = Cleaning(
+  var _cleaningItem = Cleaning(
     id: null,
-    apartment: "",
+    apartment: '',
     dateFrom: DateTime.now(),
     dateTo: DateTime.now(),
   );
+
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final cleaningId = ModalRoute.of(context).settings.arguments as String;
+      if (cleaningId != null) {
+        _cleaningItem = Provider.of<CleaningProvider>(context, listen: false)
+            .findById(cleaningId);
+        _apartmentController.text = _cleaningItem.apartment;
+        _dateFromController.text = DateFormat.yMMMMEEEEd().format(_cleaningItem.dateFrom);
+        _dateToController.text = DateFormat.yMMMMEEEEd().format(_cleaningItem.dateTo);
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   void dispose() {
@@ -84,8 +102,13 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
       return;
     }
     _form.currentState.save();
-    Provider.of<CleaningProvider>(context, listen: false)
-        .addCleaningItem(_newCleaningItem);
+    if (_cleaningItem.id != null) {
+      Provider.of<CleaningProvider>(context, listen: false)
+        .updateCleaningItem(_cleaningItem.id, _cleaningItem);
+    } else {
+      Provider.of<CleaningProvider>(context, listen: false)
+        .addCleaningItem(_cleaningItem);
+    }
     Navigator.of(context).pop();
   }
 
@@ -125,11 +148,11 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                     return null;
                   },
                   onSaved: (value) {
-                    _newCleaningItem = Cleaning(
-                      id: _newCleaningItem.id,
+                    _cleaningItem = Cleaning(
+                      id: _cleaningItem.id,
                       apartment: value,
-                      dateFrom: _newCleaningItem.dateFrom,
-                      dateTo: _newCleaningItem.dateTo,
+                      dateFrom: _cleaningItem.dateFrom,
+                      dateTo: _cleaningItem.dateTo,
                     );
                   },
                 ),
@@ -164,11 +187,11 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                     return null;
                   },
                   onSaved: (value) {
-                    _newCleaningItem = Cleaning(
-                      id: _newCleaningItem.id,
-                      apartment: _newCleaningItem.apartment,
+                    _cleaningItem = Cleaning(
+                      id: _cleaningItem.id,
+                      apartment: _cleaningItem.apartment,
                       dateFrom: convertToDate(value),
-                      dateTo: _newCleaningItem.dateTo,
+                      dateTo: _cleaningItem.dateTo,
                     );
                   },
                 ),
@@ -202,10 +225,10 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                     return null;
                   },
                   onSaved: (value) {
-                    _newCleaningItem = Cleaning(
-                      id: _newCleaningItem.id,
-                      apartment: _newCleaningItem.apartment,
-                      dateFrom: _newCleaningItem.dateFrom,
+                    _cleaningItem = Cleaning(
+                      id: _cleaningItem.id,
+                      apartment: _cleaningItem.apartment,
+                      dateFrom: _cleaningItem.dateFrom,
                       dateTo: convertToDate(value),
                     );
                   },
