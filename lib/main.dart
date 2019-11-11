@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
         title: 'Húsfélagið',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          accentColor: Colors.yellow,
+          accentColor: Colors.deepOrange[400],
         ),
         home: Wrapper(),
       ),
