@@ -29,7 +29,8 @@ class ConstructionsListItem extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => ConstructionDetailScreen(id: id),
+              builder: (context) => ConstructionDetailScreen(),
+              settings: RouteSettings(arguments: id),
             ),
           );
         },

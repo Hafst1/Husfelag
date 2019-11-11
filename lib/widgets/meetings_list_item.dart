@@ -30,7 +30,8 @@ class MeetingsListItem extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => MeetingDetailScreen(id: id),
+              builder: (context) => MeetingDetailScreen(),
+              settings: RouteSettings(arguments: id),
             ),
           );
         },
