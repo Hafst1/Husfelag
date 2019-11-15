@@ -63,7 +63,7 @@ class ConstructionsListItem extends StatelessWidget {
         },
         contentPadding: EdgeInsets.all(10),
         leading: CircleAvatar(
-          backgroundColor: Colors.grey[400],
+          backgroundColor: Color.fromRGBO(241, 212, 45, 0.8),
           radius: 30,
           child: Padding(
             padding: EdgeInsets.all(6),

@@ -9,7 +9,6 @@ import '../screens/cleaning/cleaning_screen.dart';
 import '../widgets/custom_icons_icons.dart';
 
 class HomeScreen extends StatelessWidget {
-
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
@@ -18,15 +17,17 @@ class HomeScreen extends StatelessWidget {
         title: Text('Húsfélagið'),
         actions: <Widget>[
           FlatButton.icon(
-            icon: Icon(Icons.person, color: Colors.white),
-            label: Text(
-              'Skrá Út',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () async {
-              await _auth.signOut();
-            }
-          )
+              icon: Icon(Icons.person, color: Colors.white),
+              label: Text(
+                'Skrá út',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+              onPressed: () async {
+                await _auth.signOut();
+              })
         ],
       ),
       body: GridView(
