@@ -33,7 +33,7 @@ class _SignInState extends State<SignIn> {
                     height: 260,
                     width: double.infinity,
                     child: Image.asset(
-                      'assets/images/husfelag_logo.png',
+                      'assets/images/husfelag_logo.PNG',
                       fit: BoxFit.contain,
                     ),
                   ),
