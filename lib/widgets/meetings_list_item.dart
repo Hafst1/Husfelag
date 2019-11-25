@@ -4,16 +4,20 @@ import 'package:intl/intl.dart';
 import './custom_icons_icons.dart';
 
 class MeetingsListItem extends StatelessWidget {
+  final String id;
   final String title;
   final DateTime date;
   final String location;
-  final String route;
+  final Duration duration;
+  final String description;
 
   MeetingsListItem(
-    {@required this.title,
+    {@required this.id,
+    @required this.title,
     @required this.date,
     @required this.location,
-    @required this.route}
+    @required this.duration,
+    @required this.description}
   );
 
   @override

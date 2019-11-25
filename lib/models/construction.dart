@@ -31,6 +31,4 @@ class Construction {
       "description": description,
     };
   }
-
-
 }

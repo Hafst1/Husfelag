@@ -1,54 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/construction.dart';
+import '../services/api.dart';
 
 enum ConstructionStatus { current, ahead, old }
 
 class ConstructionsProvider with ChangeNotifier {
-  List<Construction> _dummyData = [
-    Construction(
-      id: "firebasekey1",
-      title: "Viðgerð á þaki",
-      dateFrom: DateTime.now().subtract(Duration(days: 10)),
-      dateTo: DateTime.now().subtract(Duration(days: 7)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey2",
-      title: "Málað stigagang",
-      dateFrom: DateTime.now().add(Duration(days: 5)),
-      dateTo: DateTime.now().add(Duration(days: 7)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey3",
-      title: "Skipt um glugga",
-      dateFrom: DateTime.now().add(Duration(days: 1)),
-      dateTo: DateTime.now().add(Duration(days: 9)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey4",
-      title: "Sett upp grindverk",
-      dateFrom: DateTime.now(),
-      dateTo: DateTime.now().add(Duration(days: 12)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey5",
-      title: "Lagað dyrabjölluna",
-      dateFrom: DateTime.now(),
-      dateTo: DateTime.now().add(Duration(days: 16)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey6",
-      title: "Málað húsið",
-      dateFrom: DateTime.now(),
-      dateTo: DateTime.now().add(Duration(days: 20)),
-      description: "",
-    ),
-  ];
+
+  Api _api = new Api("ConstructionItems");
+
+  List<Construction> _constructionItems;
+  QuerySnapshot constructions;
+
+  Future<List<Construction>> fetchProducts() async {
+    var result = await _api.getDataCollection();
+    _constructionItems = result.documents
+        .map((doc) => Construction.fromMap(doc.data, doc.documentID))
+        .toList();
+    return _constructionItems;
+  }
+
+  Stream<QuerySnapshot> fetchProductsAsStream() {
+    return _api.streamDataCollection();
+  }
+
+  Future<Construction> getProductById(String id) async {
+    var doc = await _api.getDocumentById(id);
+    return  Construction.fromMap(doc.data, doc.documentID) ;
+  }
+
+
+  Future removeProduct(String id) async{
+     await _api.removeDocument(id) ;
+     return ;
+  }
+  Future updateProduct(Construction data,String id) async{
+    await _api.updateDocument(data.toJson(), id) ;
+    return ;
+  }
+
+  Future addProduct(Construction data) async{
+    var result  = await _api.addDocument(data.toJson()) ;
+
+    return ;
+
+  }
 
   bool _constructionStatusFilter(
       int filterIndex, DateTime dateFrom, DateTime dateTo) {
@@ -72,16 +68,13 @@ class ConstructionsProvider with ChangeNotifier {
     }
   }
 
-  List<Construction> get items {
-    return [..._dummyData];
-  }
-
   List<Construction> getAllItemsForCalendar() {
-    return [..._dummyData];
+    return null;
   }
+  
 
   List<Construction> filteredItems(String query, int filterIndex) {
-    List<Construction> constructions = [..._dummyData];
+    List<Construction> constructions = [..._constructionItems];
     String searchQuery = query.toLowerCase();
     List<Construction> displayList = [];
     if (query.isNotEmpty) {
@@ -117,7 +110,7 @@ class ConstructionsProvider with ChangeNotifier {
       description: construction.description,
       id: DateTime.now().toString(),
     );
-    _dummyData.add(newConstruction);
+    _constructionItems.add(newConstruction);
     notifyListeners();
 
     //Add to Firebase
@@ -133,11 +126,12 @@ class ConstructionsProvider with ChangeNotifier {
   }
 
   void deleteConstruction(String id) {
-    _dummyData.removeWhere((construction) => construction.id == id);
+    _constructionItems.removeWhere((construction) => construction.id == id);
     notifyListeners();
   }
 
   Construction findById(String id) {
-    return _dummyData.firstWhere((construction) => construction.id == id);
+    return _constructionItems.firstWhere((construction) => construction.id == id);
   }
+  
 }

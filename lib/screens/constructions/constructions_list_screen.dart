@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../../models/construction.dart';
 import '../../widgets/constructions_list_item.dart';
 import '../../widgets/tab_filter_button.dart';
 import '../../providers/constructions_provider.dart';
@@ -17,6 +18,7 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
   final _textFieldController = TextEditingController();
   int _selectedFilterIndex = 0;
   String _searchQuery = "";
+  List<Construction> constructions;
 
   _selectFilter(int index) {
     setState(() {
@@ -55,10 +57,10 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
     final constructionData = Provider.of<ConstructionsProvider>(context);
-    final constructions = constructionData.filteredItems(
+    /* final constructions = constructionData.filteredItems(
       _searchQuery,
       _selectedFilterIndex,
-    );
+    );*/
     return Scaffold(
       appBar: appBar,
       body: GestureDetector(
@@ -131,23 +133,34 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                 ],
               ),
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                    bottom: 5,
-                  ),
-                  child: ListView.builder(
-                    itemCount: constructions.length,
-                    itemBuilder: (ctx, i) => ConstructionsListItem(
-                      id: constructions[i].id,
-                      title: constructions[i].title,
-                      dateFrom: constructions[i].dateFrom,
-                      dateTo: constructions[i].dateTo,
-                    ),
-                  ),
+                  child: Container(
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                  bottom: 5,
                 ),
-              ),
+                child: StreamBuilder(
+                    stream: constructionData.fetchProductsAsStream(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasData) {
+                        constructions = snapshot.data.documents
+                            .map((doc) =>
+                                Construction.fromMap(doc.data, doc.documentID))
+                            .toList();
+                        return ListView.builder(
+                          itemCount: constructions.length,
+                          itemBuilder: (ctx, i) => ConstructionsListItem(
+                            id: constructions[i].id,
+                            title: constructions[i].title,
+                            dateFrom: constructions[i].dateFrom,
+                            dateTo: constructions[i].dateTo,
+                          ),
+                        );
+                      } else {
+                        return Text('fetching');
+                      }
+                    }),
+              ))
             ],
           ),
         ),

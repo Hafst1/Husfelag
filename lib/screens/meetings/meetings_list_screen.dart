@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../../models/meeting.dart';
 import '../../providers/meetings_provider.dart';
 import '../../widgets/meetings_list_item.dart';
 import '../../widgets/tab_filter_button.dart';
@@ -53,8 +53,8 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
     final meetingData = Provider.of<MeetingsProvider>(context);
-    final meetings =
-        meetingData.filteredItems(_searchQuery, _selectedFilterIndex);
+  /*  final meetings =
+        meetingData.filteredItems(_searchQuery, _selectedFilterIndex);*/
     return Scaffold(
       appBar: appBar,
       body: GestureDetector(
@@ -125,14 +125,22 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                     right: 10,
                     bottom: 5,
                   ),
-                  child: ListView.builder(
-                    itemCount: meetings.length,
-                    itemBuilder: (ctx, i) => MeetingsListItem(
-                      title: meetings[i].title,
-                      date: meetings[i].date,
-                      location: meetings[i].location,
-                      route: "some route",
-                    ),
+                  child: FutureBuilder<List<Meeting>>(
+                          future: meetingData.fetchProducts(),
+                          builder: (context, AsyncSnapshot<List<Meeting>> constructionSnapshot){
+                          return (constructionSnapshot.hasData) ? 
+                          ListView.builder(
+                          itemCount: constructionSnapshot.data.length,
+                          itemBuilder: (ctx, i) => MeetingsListItem(
+                          id: constructionSnapshot.data[i].id,
+                          title: constructionSnapshot.data[i].title,
+                          date: constructionSnapshot.data[i].date,
+                          location: constructionSnapshot.data[i].location,
+                          duration: constructionSnapshot.data[i].duration,
+                          description: constructionSnapshot.data[i].description,
+                          ),
+                          ) : Container();        
+                  },
                   ),
                 ),
               ),

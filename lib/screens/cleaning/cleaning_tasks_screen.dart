@@ -1,69 +1,53 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/cleaning_task_item.dart';
 import '../../providers/cleaning_task_provider.dart';
-import '../../providers/CRUDmodel.dart'; 
-import './cleaning_tasks_router.dart';
-
-//Renders CleaningTasksListScreen and CRUDmodel
-class CleaningTasksScreen extends StatelessWidget {
-  static const routeName = '/cleaning-tasks';
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(builder: (_) => CRUDModel()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: '/cleaning-tasks-list',
-        title: 'Product App',
-        theme: ThemeData(),
-        onGenerateRoute: Router.generateRoute,
-      ),
-    );
-  }
-}
+import '../../models/cleaning_task.dart';
 
 
-
-
-/*
 class CleaningTasksScreen extends StatefulWidget {
   static const routeName = '/cleaning-tasks';
-
   @override
   _CleaningTasksScreenState createState() => 
     _CleaningTasksScreenState();
   }
 
 class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
-  
+  List<CleaningTask> products;
+
   @override
   Widget build(BuildContext context) {
-   // final mediaQuery = MediaQuery.of(context);
-    final PreferredSizeWidget appBar = AppBar(
-      title: Text("Verkefnalisti"),
-    );
-    final cleaningTaskData = Provider.of<CleaningTaskProvider>(context);
-    final cleaningTasks = cleaningTaskData.getAllTasks();    
+    final productProvider = Provider.of<CleaningTaskProvider>(context);
+
     return Scaffold(
-      appBar: appBar,
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-              itemCount: cleaningTasks.length,
-              itemBuilder: (ctx, i) => CleaningTaskItem(
-                title: cleaningTasks[i].title,
-                description: cleaningTasks[i].description,
-              )
-            )
-          )
-        ],
-      )
-      );
+      appBar: AppBar(
+        title: Center(child: Text('Verkefnalisti')),
+      ),
+      body: Container(
+        child: StreamBuilder(
+            stream: productProvider.fetchProductsAsStream(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasData) {
+                products = snapshot.data.documents
+                    .map((doc) => CleaningTask.fromMap(doc.data, doc.documentID))
+                    .toList();
+                return ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (buildContext, i) =>
+                      CleaningTaskItem(
+                      id: products[i].id,
+                      title: products[i].title,
+                      description: products[i].description,
+                    ),
+                );
+              } else {
+                return Text('fetching');
+              }
+            }),
+      ),
+    );
+  
   }
 }
-*/

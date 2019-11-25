@@ -1,63 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/meeting.dart';
-
+import '../services/api.dart';
 enum MeetingStatus { ahead, old }
 
 class MeetingsProvider with ChangeNotifier {
-  List<Meeting> _dummyData = [
-    Meeting(
-      id: "firebasekey1",
-      title: "Árlegur húsfundur",
-      date: DateTime.now().add(Duration(days: 4)),
-      duration: Duration(hours: 2),
-      location: "Egilshöll",
-      description: "",
-    ),
-    Meeting(
-      id: "firebasekey2",
-      title: "Neyðarfundur",
-      date: DateTime.now(),
-      duration: Duration(hours: 1),
-      location: "Egilshöll",
-      description: "",
-    ),
-    Meeting(
-      id: "firebasekey3",
-      title: "Fundað um húsið",
-      date: DateTime.now().add(Duration(days: 4)),
-      duration: Duration(hours: 2),
-      location: "Egilshöll",
-      description: "",
-    ),
-    Meeting(
-      id: "firebasekey4",
-      title: "Stórfundur",
-      date: DateTime.now(),
-      duration: Duration(hours: 1),
-      location: "Egilshöll",
-      description: "",
-    ),
-    Meeting(
-      id: "firebasekey5",
-      title: "Fundur",
-      date: DateTime.now().add(Duration(days: 4)),
-      duration: Duration(hours: 2),
-      location: "Egilshöll",
-      description: "",
-    ),
-    Meeting(
-      id: "firebasekey6",
-      title: "Örfundur",
-      date: DateTime.now(),
-      duration: Duration(hours: 1),
-      location: "Egilshöll",
-      description: "",
-    ),
-  ];
+  Api _api = new Api("MeetingItems");
+
+  List<Meeting> _meetingItems;
+  QuerySnapshot meetings;
+
+  Future<List<Meeting>> fetchProducts() async {
+    var result = await _api.getDataCollection();
+    _meetingItems = result.documents
+        .map((doc) => Meeting.fromMap(doc.data, doc.documentID))
+        .toList();
+    return _meetingItems;
+  }
+
+  Stream<QuerySnapshot> fetchProductsAsStream() {
+    return _api.streamDataCollection();
+  }
+
+  Future<Meeting> getProductById(String id) async {
+    var doc = await _api.getDocumentById(id);
+    return  Meeting.fromMap(doc.data, doc.documentID) ;
+  }
+
+
+  Future removeProduct(String id) async{
+     await _api.removeDocument(id) ;
+     return ;
+  }
+  Future updateProduct(Meeting data,String id) async{
+    await _api.updateDocument(data.toJson(), id) ;
+    return ;
+  }
+
+  Future addProduct(Meeting data) async{
+    var result  = await _api.addDocument(data.toJson()) ;
+
+    return ;
+
+  }
 
   List<Meeting> get items {
-    return [..._dummyData];
+    return [..._meetingItems];
   }
 
   bool _meetingStatusFilter(int filterIndex, DateTime date) {
@@ -74,7 +62,7 @@ class MeetingsProvider with ChangeNotifier {
   }
 
   List<Meeting> filteredItems(String query, int filterIndex) {
-    List<Meeting> constructions = [..._dummyData];
+    List<Meeting> constructions = [..._meetingItems];
     String searchQuery = query.toLowerCase();
     List<Meeting> displayList = [];
     if (query.isNotEmpty) {
@@ -109,7 +97,7 @@ class MeetingsProvider with ChangeNotifier {
       description: meeting.description,
       id: DateTime.now().toString(),
     );
-    _dummyData.add(newMeeting);
+    _meetingItems.add(newMeeting);
     notifyListeners();
 
     //add to Firebase
@@ -126,7 +114,7 @@ class MeetingsProvider with ChangeNotifier {
   }
 
   void deleteMeeting(String id) {
-    _dummyData.removeWhere((meeting) => meeting.id == id);
+    _meetingItems.removeWhere((meeting) => meeting.id == id);
     notifyListeners();
   }
 }
