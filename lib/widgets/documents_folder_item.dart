@@ -13,12 +13,12 @@ class DocumentFolder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(22.0),
       ),
-      elevation: 5,
+      elevation: 10,
       child: ListTile(
+        leading: Icon(Icons.folder_open, color: Colors.black),
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(

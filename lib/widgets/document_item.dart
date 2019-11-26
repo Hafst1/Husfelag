@@ -28,7 +28,11 @@ class DocumentItem extends StatelessWidget {
         contentPadding: EdgeInsets.all(10),
         title: Text(
           title,
-          style: Theme.of(context).textTheme.title,
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

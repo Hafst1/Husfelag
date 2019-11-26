@@ -52,7 +52,11 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final documentData = Provider.of<DocumentsProvider>(context, listen: false).findById(widget.id);
+    final documentData = Provider.of<DocumentsProvider>(context);//.findById(widget.id);
+    final documents = documentData.filteredItems(
+      _searchQuery,
+      widget.id,
+    );
     return Scaffold(
       appBar: appBar,
       body: GestureDetector(
@@ -104,14 +108,19 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
                     bottom: 5,
                   ),
                   child: ListView.builder(
-                    itemCount: documentData.length,
+                    itemCount: documents.length,
                     itemBuilder: (ctx, i) =>DocumentItem(
-                      folderId: documentData[i].folderId,
-                      title: documentData[i].title,
+                      folderId: documents[i].folderId,
+                      title: documents[i].title,
                     ),
                   )
                 ),
               ),
+             /* AddDocumentOption(
+                optionIcon: CustomIcons.file_add,
+                optionText: "Bæta við skjali",
+                optionRoute: AddDocumentScreen.routeName,
+              )*/
             ],
           ),
         ),
