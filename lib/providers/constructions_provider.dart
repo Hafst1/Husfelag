@@ -44,7 +44,7 @@ class ConstructionsProvider with ChangeNotifier {
     Construction(
       id: "firebasekey6",
       title: "Málað húsið",
-      dateFrom: DateTime.now(),
+      dateFrom: DateTime.now().subtract(Duration(days: 9)),
       dateTo: DateTime.now().add(Duration(days: 20)),
       description: "",
     ),
@@ -146,5 +146,23 @@ class ConstructionsProvider with ChangeNotifier {
         _dummyData.indexWhere((construction) => construction.id == id);
     _dummyData[constructionIndex] = editedConstruction;
     notifyListeners();
+  }
+
+  Map<DateTime, List> filterForCalendar() {
+    List<Construction> constructions = [..._dummyData];
+    Map<DateTime, List> _events = Map();   
+    if (constructions == []) {
+      return null;
+    }
+    else {
+      constructions.forEach((item) {
+        if(_events.containsKey(item.dateFrom)) { 
+        }
+      _events[item.dateFrom] = [item.title,];
+       
+      });
+      _events.forEach((key, value) => print("key: $key and value: $value"));
+      return _events; 
+    }
   }
 }
