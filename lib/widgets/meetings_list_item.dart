@@ -16,12 +16,11 @@ class MeetingsListItem extends StatelessWidget {
   final String route;
 
   MeetingsListItem(
-    {@required this.id,
-    @required this.title,
-    @required this.date,
-    @required this.location,
-    @required this.route}
-  );
+      {@required this.id,
+      @required this.title,
+      @required this.date,
+      @required this.location,
+      @required this.route});
 
   void _showActionDialog(BuildContext context) {
     showDialog(

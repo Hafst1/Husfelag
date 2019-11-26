@@ -116,8 +116,8 @@ class MeetingsProvider with ChangeNotifier {
   void deleteMeeting(String id) {
     _meetingItems.removeWhere((meeting) => meeting.id == id);
     notifyListeners();
-  }
-*/
+  }*/
+
   Meeting findById(String id) {
     return _meetingItems.firstWhere((meeting) => meeting.id == id);
   }

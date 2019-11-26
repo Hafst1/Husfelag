@@ -93,7 +93,7 @@ class _SignInState extends State<SignIn> {
                                 Text(
                                   "Gleymt lykilorð?",
                                   style: TextStyle(
-                                    color: Theme.of(context).accentColor,
+                                    color: Theme.of(context).primaryColor,
                                     fontSize: 15,
                                   ),
                                 )
@@ -126,7 +126,7 @@ class _SignInState extends State<SignIn> {
                                     "Stofnaðu aðgang!",
                                     style: TextStyle(
                                       fontSize: 15,
-                                      color: Theme.of(context).accentColor,
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 )
@@ -173,7 +173,7 @@ class _SignInState extends State<SignIn> {
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(23),
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).primaryColor,
         ),
         child: Center(
           child: Text(

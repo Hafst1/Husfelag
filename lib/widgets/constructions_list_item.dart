@@ -9,7 +9,6 @@ import '../screens/constructions/add_construction_screen.dart';
 import '../providers/constructions_provider.dart';
 import '../widgets/action_dialog.dart';
 
-
 class ConstructionsListItem extends StatelessWidget {
   final String id;
   final String title;
