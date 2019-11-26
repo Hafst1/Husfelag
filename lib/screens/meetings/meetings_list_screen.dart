@@ -61,83 +61,68 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: Container(
-          height: heightOfBody,
-          child: Column(
-            children: <Widget>[
-              Container(
+        child: Column(
+          children: <Widget>[
+            TextField(
+              controller: _textFieldController,
+              onChanged: (value) => _changeSearchQuery(value),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(
+                  top: 25,
+                  bottom: 25,
+                ),
+                hintText: "Leita...",
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.grey,
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.clear,
+                    color: _searchQuery == "" ? Colors.white : Colors.grey,
+                  ),
+                  onPressed: () => _onClear(),
+                ),
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TabFilterButton(
+                      buttonFilterId: 0,
+                      buttonText: "Framundan",
+                      buttonFunc: _selectFilter,
+                      buttonHeight: heightOfBody * 0.1,
+                      filterIndex: _selectedFilterIndex),
+                ),
+                Expanded(
+                  child: TabFilterButton(
+                      buttonFilterId: 1,
+                      buttonText: "Gamalt",
+                      buttonFunc: _selectFilter,
+                      buttonHeight: heightOfBody * 0.1,
+                      filterIndex: _selectedFilterIndex),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Container(
                 padding: const EdgeInsets.only(
-                  left: 5,
-                  right: 5,
-                  top: 10,
+                  bottom: 5,
                 ),
-                child: TextField(
-                  controller: _textFieldController,
-                  onChanged: (value) => _changeSearchQuery(value),
-                  decoration: InputDecoration(
-                    hintText: "Leita...",
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.clear,
-                        color: _searchQuery == "" ? Colors.white : Colors.grey,
-                      ),
-                      onPressed: () => _onClear(),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(25),
-                      ),
-                    ),
+                child: ListView.builder(
+                  itemCount: meetings.length,
+                  itemBuilder: (ctx, i) => MeetingsListItem(
+                    id: meetings[i].id,
+                    title: meetings[i].title,
+                    date: meetings[i].date,
+                    location: meetings[i].location,
+                    route: "some route",
                   ),
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TabFilterButton(
-                        buttonFilterId: 0,
-                        buttonText: "Framundan",
-                        buttonFunc: _selectFilter,
-                        buttonHeight: heightOfBody * 0.1,
-                        filterIndex: _selectedFilterIndex),
-                  ),
-                  Expanded(
-                    child: TabFilterButton(
-                        buttonFilterId: 1,
-                        buttonText: "Gamalt",
-                        buttonFunc: _selectFilter,
-                        buttonHeight: heightOfBody * 0.1,
-                        filterIndex: _selectedFilterIndex),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                    bottom: 5,
-                  ),
-                  child: ListView.builder(
-                    itemCount: meetings.length,
-                    itemBuilder: (ctx, i) => MeetingsListItem(
-                      title: meetings[i].title,
-                      date: meetings[i].date,
-                      location: meetings[i].location,
-                      route: "some route",
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

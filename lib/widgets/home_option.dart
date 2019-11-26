@@ -6,10 +6,9 @@ class HomeOption extends StatelessWidget {
   final String optionRoute;
 
   HomeOption(
-    {@required this.optionIcon,
-    @required this.optionText,
-    @required this.optionRoute}
-  );
+      {@required this.optionIcon,
+      @required this.optionText,
+      @required this.optionRoute});
 
   void selectOption(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
@@ -49,9 +48,7 @@ class HomeOption extends StatelessWidget {
                   child: FittedBox(
                     child: Text(
                       optionText,
-                      style: TextStyle(
-                          //fontSize: constraints.maxHeight * 0.11,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

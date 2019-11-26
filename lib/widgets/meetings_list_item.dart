@@ -1,20 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import './custom_icons_icons.dart';
+import '../screens/meetings/meeting_detail_screen.dart';
+import '../screens/meetings/add_meeting_screen.dart';
+import '../providers/meetings_provider.dart';
+import '../widgets/action_dialog.dart';
 
 class MeetingsListItem extends StatelessWidget {
+  final String id;
   final String title;
   final DateTime date;
   final String location;
   final String route;
 
   MeetingsListItem(
-    {@required this.title,
-    @required this.date,
-    @required this.location,
-    @required this.route}
-  );
+      {@required this.id,
+      @required this.title,
+      @required this.date,
+      @required this.location,
+      @required this.route});
+
+  void _showActionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return ActionDialog(
+          deleteFunc: () {
+            Provider.of<MeetingsProvider>(context, listen: false)
+                .deleteMeeting(id);
+          },
+          editFunc: () {
+            Navigator.of(ctx).pop();
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => AddMeetingScreen(),
+                settings: RouteSettings(arguments: id),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +54,14 @@ class MeetingsListItem extends StatelessWidget {
       ),
       elevation: 5,
       child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => MeetingDetailScreen(),
+              settings: RouteSettings(arguments: id),
+            ),
+          );
+        },
         contentPadding: EdgeInsets.all(10),
         leading: CircleAvatar(
           backgroundColor: Colors.brown[200],
@@ -94,10 +131,15 @@ class MeetingsListItem extends StatelessWidget {
           ),
         ),
         trailing: IconButton(
-          icon: Icon(Icons.check),
-          color: Colors.green,
-          onPressed: () => {},
+          icon: Icon(CustomIcons.dot_3),
+          color: Colors.grey,
+          onPressed: () => _showActionDialog(context),
         ),
+        // trailing: IconButton(
+        //   icon: Icon(Icons.check),
+        //   color: Colors.green,
+        //   onPressed: () => {},
+        // ),
       ),
     );
   }

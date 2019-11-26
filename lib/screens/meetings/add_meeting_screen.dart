@@ -19,7 +19,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   final _timeFromController = TextEditingController();
   final _timeToController = TextEditingController();
   final _form = GlobalKey<FormState>();
-  var _newMeeting = Meeting(
+  var _meeting = Meeting(
     id: null,
     title: '',
     date: DateTime.now(),
@@ -27,6 +27,40 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     location: '',
     description: '',
   );
+  var _initValues = {
+    'appbar-title': 'Bóka fund',
+    'title': '',
+    'location': '',
+    'description': '',
+    'save-text': 'BÓKA',
+  };
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final meetingId = ModalRoute.of(context).settings.arguments as String;
+      if (meetingId != null) {
+        _meeting = Provider.of<MeetingsProvider>(context, listen: false)
+            .findById(meetingId);
+        _initValues = {
+          'appbar-title': 'Breyta fundi',
+          'title': _meeting.title,
+          'location': _meeting.location,
+          'description': _meeting.description,
+          'save-text': 'BREYTA',
+        };
+        _dateController.text = DateFormat.yMMMMEEEEd().format(_meeting.date);
+        DateTime timeToValue = _meeting.date.add(_meeting.duration);
+        _timeFromController.text =
+            '${_meeting.date.hour.toString().padLeft(2, '0')}:${_meeting.date.minute.toString().padLeft(2, '0')}';
+        _timeToController.text =
+            '${timeToValue.hour.toString().padLeft(2, '0')}:${timeToValue.minute.toString().padLeft(2, '0')}';
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   void dispose() {
@@ -122,8 +156,11 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       return;
     }
     _form.currentState.save();
-    Provider.of<MeetingsProvider>(context, listen: false)
-        .addMeeting(_newMeeting);
+    if (_meeting.id != null) {
+      Provider.of<MeetingsProvider>(context, listen: false).updateMeeting(_meeting.id, _meeting);
+    } else {
+      Provider.of<MeetingsProvider>(context, listen: false).addMeeting(_meeting);
+    }
     Navigator.of(context).pop();
   }
 
@@ -131,7 +168,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bóka fund"),
+        title: Text(_initValues['appbar-title']),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.add),
@@ -145,222 +182,228 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _form,
-          child: Column(children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: "Titill...",
-                prefixIcon: Icon(CustomIcons.pencil),
-                border: OutlineInputBorder(),
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                initialValue: _initValues['title'],
+                decoration: InputDecoration(
+                  hintText: "Titill...",
+                  prefixIcon: Icon(CustomIcons.pencil),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return "Titill fundar getur ekki verið tómur strengur!";
+                  }
+                  if (value.length > 40) {
+                    return "Titill fundar getur ekki verið meira en 40 stafir á lengd!";
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _meeting = Meeting(
+                    id: _meeting.id,
+                    title: value,
+                    date: _meeting.date,
+                    duration: _meeting.duration,
+                    location: _meeting.location,
+                    description: _meeting.description,
+                  );
+                },
               ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return "Titill fundar getur ekki verið tómur strengur!";
-                }
-                if (value.length > 40) {
-                  return "Titill fundar getur ekki verið meira en 40 stafir á lengd!";
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _newMeeting = Meeting(
-                  id: _newMeeting.id,
-                  title: value,
-                  date: _newMeeting.date,
-                  duration: _newMeeting.duration,
-                  location: _newMeeting.location,
-                  description: _newMeeting.description,
-                );
-              },
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            GestureDetector(
-              onTap: () => _presentDatePicker(_dateController),
-              child: AbsorbPointer(
-                child: TextFormField(
-                  controller: _dateController,
-                  decoration: InputDecoration(
-                    hintText: "Dagsetning...",
-                    prefixIcon: Icon(Icons.date_range),
-                    border: OutlineInputBorder(),
-                    errorMaxLines: 2,
+              SizedBox(
+                height: 15,
+              ),
+              GestureDetector(
+                onTap: () => _presentDatePicker(_dateController),
+                child: AbsorbPointer(
+                  child: TextFormField(
+                    controller: _dateController,
+                    decoration: InputDecoration(
+                      hintText: "Dagsetning...",
+                      prefixIcon: Icon(Icons.date_range),
+                      border: OutlineInputBorder(),
+                      errorMaxLines: 2,
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "Útvega þarf dagsetningu fundar!";
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      DateTime chosenDate = _convertToDate(value);
+                      TimeOfDay chosenStartTime =
+                          _convertToTimeOfDay(_timeFromController.text);
+                      _meeting = Meeting(
+                        id: _meeting.id,
+                        title: _meeting.title,
+                        date: DateTime(
+                          chosenDate.year,
+                          chosenDate.month,
+                          chosenDate.day,
+                          chosenStartTime.hour,
+                          chosenStartTime.minute,
+                        ),
+                        duration: _meeting.duration,
+                        location: _meeting.location,
+                        description: _meeting.description,
+                      );
+                    },
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return "Útvega þarf dagsetningu fundar!";
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    DateTime chosenDate = _convertToDate(value);
-                    TimeOfDay chosenStartTime =
-                        _convertToTimeOfDay(_timeFromController.text);
-                    _newMeeting = Meeting(
-                      id: _newMeeting.id,
-                      title: _newMeeting.title,
-                      date: DateTime(
-                        chosenDate.year,
-                        chosenDate.month,
-                        chosenDate.day,
-                        chosenStartTime.hour,
-                        chosenStartTime.minute,
-                      ),
-                      duration: _newMeeting.duration,
-                      location: _newMeeting.location,
-                      description: _newMeeting.description,
-                    );
-                  },
                 ),
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _presentTimePicker(_timeFromController),
-                    child: AbsorbPointer(
-                      child: TextFormField(
-                        controller: _timeFromController,
-                        decoration: InputDecoration(
-                          hintText: "Frá...",
-                          prefixText:
-                              _timeFromController.text != "" ? "Frá: " : "",
-                          prefixIcon: Icon(Icons.access_time),
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return "Útvega þarf tímasetningu!";
-                          }
-                          if (_timeToController.text.isNotEmpty) {
-                            if (_isInvalidTime(
-                              value,
-                              _timeToController.text,
-                            )) {
-                              return "Ógild tímasetning!";
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _presentTimePicker(_timeFromController),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: _timeFromController,
+                          decoration: InputDecoration(
+                            hintText: "Frá...",
+                            prefixText:
+                                _timeFromController.text != "" ? "Frá: " : "",
+                            prefixIcon: Icon(Icons.access_time),
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Útvega þarf tímasetningu!";
                             }
-                          }
-                          return null;
-                        },
+                            if (_timeToController.text.isNotEmpty) {
+                              if (_isInvalidTime(
+                                value,
+                                _timeToController.text,
+                              )) {
+                                return "Ógild tímasetning!";
+                              }
+                            }
+                            return null;
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _presentTimePicker(_timeToController),
-                    child: AbsorbPointer(
-                      child: TextFormField(
-                        controller: _timeToController,
-                        decoration: InputDecoration(
-                          hintText: "Til...",
-                          prefixText:
-                              _timeToController.text != "" ? "Til: " : "",
-                          prefixIcon: Icon(Icons.access_time),
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return "Útvega þarf tímasetningu!";
-                          }
-                          if (_timeFromController.text.isNotEmpty) {
-                            if (_isInvalidTime(
-                              _timeFromController.text,
-                              value,
-                            )) {
-                              return "Ógild tímasetning!";
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _presentTimePicker(_timeToController),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: _timeToController,
+                          decoration: InputDecoration(
+                            hintText: "Til...",
+                            prefixText:
+                                _timeToController.text != "" ? "Til: " : "",
+                            prefixIcon: Icon(Icons.access_time),
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Útvega þarf tímasetningu!";
                             }
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _newMeeting = Meeting(
-                            id: _newMeeting.id,
-                            title: _newMeeting.title,
-                            date: _newMeeting.date,
-                            duration:
-                                _getDuration(_timeFromController.text, value),
-                            location: _newMeeting.location,
-                            description: _newMeeting.description,
-                          );
-                        },
+                            if (_timeFromController.text.isNotEmpty) {
+                              if (_isInvalidTime(
+                                _timeFromController.text,
+                                value,
+                              )) {
+                                return "Ógild tímasetning!";
+                              }
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _meeting = Meeting(
+                              id: _meeting.id,
+                              title: _meeting.title,
+                              date: _meeting.date,
+                              duration:
+                                  _getDuration(_timeFromController.text, value),
+                              location: _meeting.location,
+                              description: _meeting.description,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              TextFormField(
+                initialValue: _initValues['location'],
+                decoration: InputDecoration(
+                  hintText: "Staðsetning...",
+                  prefixIcon: Icon(Icons.location_on),
+                  border: OutlineInputBorder(),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: "Staðsetning...",
-                prefixIcon: Icon(Icons.location_on),
-                border: OutlineInputBorder(),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return "Staðsetning fundar getur ekki verið tómur strengur!";
+                  }
+                  if (value.length > 40) {
+                    return "Staðsetning fundar getur ekki verið meira en 40 stafir á lengd!";
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _meeting = Meeting(
+                    id: _meeting.id,
+                    title: _meeting.title,
+                    date: _meeting.date,
+                    duration: _meeting.duration,
+                    location: value,
+                    description: _meeting.description,
+                  );
+                },
               ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return "Staðsetning fundar getur ekki verið tómur strengur!";
-                }
-                if (value.length > 40) {
-                  return "Staðsetning fundar getur ekki verið meira en 40 stafir á lengd!";
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _newMeeting = Meeting(
-                  id: _newMeeting.id,
-                  title: _newMeeting.title,
-                  date: _newMeeting.date,
-                  duration: _newMeeting.duration,
-                  location: value,
-                  description: _newMeeting.description,
-                );
-              },
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            TextFormField(
-              maxLines: 10,
-              decoration: InputDecoration(
-                hintText: "Nánari lýsing...",
-                border: OutlineInputBorder(),
+              SizedBox(
+                height: 15,
               ),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (value.length < 10) {
-                  return "Lýsing fundar þarf að vera a.m.k. 10 stafir á lengd!";
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _newMeeting = Meeting(
-                  id: _newMeeting.id,
-                  title: _newMeeting.title,
-                  date: _newMeeting.date,
-                  duration: _newMeeting.duration,
-                  location: _newMeeting.location,
-                  description: value,
-                );
-              },
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            SaveButton(
-              saveFunc: _saveForm,
-            )
-          ]),
+              TextFormField(
+                initialValue: _initValues['description'],
+                maxLines: 10,
+                decoration: InputDecoration(
+                  hintText: "Nánari lýsing...",
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.text,
+                validator: (value) {
+                  if (value.length < 10) {
+                    return "Lýsing fundar þarf að vera a.m.k. 10 stafir á lengd!";
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _meeting = Meeting(
+                    id: _meeting.id,
+                    title: _meeting.title,
+                    date: _meeting.date,
+                    duration: _meeting.duration,
+                    location: _meeting.location,
+                    description: value,
+                  );
+                },
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              SaveButton(
+                text: _initValues['save-text'],
+                saveFunc: _saveForm,
+              )
+            ],
+          ),
         ),
       ),
     );
