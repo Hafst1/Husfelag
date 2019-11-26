@@ -25,7 +25,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<MeetingsProvider>(context).fetchMeetings().then((_) {
+      Provider.of<MeetingsProvider>(context).fetchMeetings(context).then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -33,6 +33,10 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _refreshMeetings(BuildContext context) async {
+    await Provider.of<MeetingsProvider>(context).fetchMeetings(context);
   }
 
   _selectFilter(int index) {
@@ -132,18 +136,22 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                     ],
                   ),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                        bottom: 5,
-                      ),
-                      child: ListView.builder(
-                        itemCount: meetings.length,
-                        itemBuilder: (ctx, i) => MeetingsListItem(
-                          id: meetings[i].id,
-                          title: meetings[i].title,
-                          date: meetings[i].date,
-                          location: meetings[i].location,
-                          route: "some route",
+                    child: RefreshIndicator(
+                      color: Colors.blue,
+                      onRefresh: () => _refreshMeetings(context),
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: ListView.builder(
+                          itemCount: meetings.length,
+                          itemBuilder: (ctx, i) => MeetingsListItem(
+                            id: meetings[i].id,
+                            title: meetings[i].title,
+                            date: meetings[i].date,
+                            location: meetings[i].location,
+                            route: "some route",
+                          ),
                         ),
                       ),
                     ),

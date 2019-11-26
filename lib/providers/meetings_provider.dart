@@ -7,7 +7,7 @@ enum MeetingStatus { ahead, old }
 class MeetingsProvider with ChangeNotifier {
   List<Meeting> _meetings = [];
 
-  Future<void> fetchMeetings() async {
+  Future<void> fetchMeetings(BuildContext context) async {
     DocumentReference meetingRef = Firestore.instance
         .collection('ResidentAssociation')
         .document('09fnlNxhgYk70dMpaRJB');
@@ -28,7 +28,21 @@ class MeetingsProvider with ChangeNotifier {
       _meetings = loadedMeetings;
       notifyListeners();
     } catch (error) {
-      throw (error);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Villa kom upp'),
+          content: Text('Ekki tókst að hlaða upp fundum!'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Halda áfram'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            )
+          ],
+        ),
+      );
     }
   }
 
@@ -36,23 +50,27 @@ class MeetingsProvider with ChangeNotifier {
     DocumentReference meetingRef = Firestore.instance
         .collection('ResidentAssociation')
         .document('09fnlNxhgYk70dMpaRJB');
-    final response = await meetingRef.collection('MeetingItems').add({
-      'date': meeting.date.millisecondsSinceEpoch,
-      'title': meeting.title,
-      'description': meeting.description,
-      'location': meeting.location,
-      'duration': meeting.duration.toString(),
-    });
-    final newMeeting = Meeting(
-      title: meeting.title,
-      date: meeting.date,
-      duration: meeting.duration,
-      location: meeting.location,
-      description: meeting.description,
-      id: response.documentID,
-    );
-    _meetings.add(newMeeting);
-    notifyListeners();
+    try {
+      final response = await meetingRef.collection('MeetingItems').add({
+        'title': meeting.title,
+        'date': meeting.date.millisecondsSinceEpoch,
+        'duration': meeting.duration.toString(),
+        'location': meeting.location,
+        'description': meeting.description,
+      });
+      final newMeeting = Meeting(
+        title: meeting.title,
+        date: meeting.date,
+        duration: meeting.duration,
+        location: meeting.location,
+        description: meeting.description,
+        id: response.documentID,
+      );
+      _meetings.add(newMeeting);
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
   }
 
   Future<void> deleteMeeting(String id) async {
@@ -80,18 +98,22 @@ class MeetingsProvider with ChangeNotifier {
     DocumentReference meetingRef = Firestore.instance
         .collection('ResidentAssociation')
         .document('09fnlNxhgYk70dMpaRJB');
-    await meetingRef.collection('MeetingItems').document(id).updateData({
-      'title': editedMeeting.title,
-      'date': editedMeeting.date.millisecondsSinceEpoch,
-      'duration': editedMeeting.duration.toString(),
-      'location': editedMeeting.location,
-      'description': editedMeeting.description,
-    });
-    final meetingIndex = _meetings.indexWhere((meeting) => meeting.id == id);
-    if (meetingIndex >= 0) {
-      _meetings[meetingIndex] = editedMeeting;
+    try {
+      await meetingRef.collection('MeetingItems').document(id).updateData({
+        'title': editedMeeting.title,
+        'date': editedMeeting.date.millisecondsSinceEpoch,
+        'duration': editedMeeting.duration.toString(),
+        'location': editedMeeting.location,
+        'description': editedMeeting.description,
+      });
+      final meetingIndex = _meetings.indexWhere((meeting) => meeting.id == id);
+      if (meetingIndex >= 0) {
+        _meetings[meetingIndex] = editedMeeting;
+      }
+      notifyListeners();
+    } catch (error) {
+      throw (error);
     }
-    notifyListeners();
   }
 
   bool _meetingStatusFilter(int filterIndex, DateTime date) {
