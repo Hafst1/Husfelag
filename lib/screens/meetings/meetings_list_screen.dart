@@ -137,7 +137,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                   ),
                   Expanded(
                     child: RefreshIndicator(
-                      color: Colors.blue,
+                      color: Theme.of(context).primaryColor,
                       onRefresh: () => _refreshMeetings(context),
                       child: Container(
                         padding: const EdgeInsets.only(
