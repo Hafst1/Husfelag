@@ -1,91 +1,204 @@
 import 'package:flutter/material.dart';
 import 'package:husfelagid/services/auth.dart';
 import 'package:husfelagid/shared/constants.dart';
+import 'package:husfelagid/shared/loading.dart';
 
 class Register extends StatefulWidget {
-
   final Function toggleView;
-  Register({ this.toggleView });
+  Register({this.toggleView});
 
   @override
   _RegisterState createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
+  final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
-    final AuthService _auth = AuthService();
-    final _formKey = GlobalKey<FormState>();
-
-    // Text field state
+  // Text field state
   String email = '';
   String password = '';
   String error = '';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        elevation: 0.0,
-        title: Text('Búa Til Aðgang'),
-        actions: <Widget>[
-          FlatButton.icon(
-            icon: Icon(Icons.person, color: Colors.white),
-            label: Text(
-              'Skrá Inn',
-              style: TextStyle(color: Colors.white),
+    return loading
+        ? Loading()
+        : Scaffold(
+            body: SafeArea(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 50,
+                    ),
+                    child: Text(
+                      "Búa til aðgang",
+                      style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'AlegreyaSansSC',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.only(
+                        left: 30,
+                        right: 30,
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: "Fullt nafn",
+                                prefixIcon: Icon(Icons.person),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              validator: (val) =>
+                                  val.isEmpty ? 'Sláðu inn fullt nafn' : null,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: "Heimilisfang",
+                                prefixIcon: Icon(Icons.home),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              validator: (val) =>
+                                  val.isEmpty ? 'Sláðu inn heimilisfang' : null,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: "Netfang",
+                                  prefixIcon: Icon(Icons.email),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                validator: (val) =>
+                                    val.isEmpty ? 'Sláðu inn netfang' : null,
+                                onChanged: (val) {
+                                  setState(() => email = val);
+                                }),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: "Lykilorð",
+                                  prefixIcon: Icon(Icons.lock),
+                                  suffixIcon: Icon(Icons.visibility_off),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                                obscureText: true,
+                                validator: (val) => val.length < 6
+                                    ? 'Lykilorð þarf að innihalda 6+ stafi'
+                                    : null,
+                                onChanged: (val) {
+                                  setState(() => password = val);
+                                }),
+                            SizedBox(
+                              height: 60,
+                            ),
+                            buildButton(),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  "Ertu nú þegar með aðgang?",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    widget.toggleView();
+                                  },
+                                  child: Text(
+                                    "Skráðu þig inn!",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context).accentColor,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              error,
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 14,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            onPressed: () {
-              widget.toggleView();
-            },
-          )
-        ],
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 20.0),
-              TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Netfang'),
-                validator: (val) => val.isEmpty ? 'Sláðu inn netfang' : null,
-                onChanged: (val) {
-                  setState(() => email = val);
-                }
-              ),
-              SizedBox(height: 20.0),
-              TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Lykilorð'),
-                obscureText: true,
-                validator: (val) => val.length < 6 ? 'Lykilorð þarf að innihalda 6+ stafi' : null,
-                onChanged: (val) {
-                  setState(() => password = val);
-                }
-              ),
-              SizedBox(height: 20.0),
-              RaisedButton(
-                color: Colors.pink[400],
-                child: Text(
-                  'Stofna',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  if (_formKey.currentState.validate()) {
-                    dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-                    if (result == null) {
-                      setState(() => error = 'Vinsamlegast fylltu út gilt netfang');
-                    }
-                  }
-                }
-              ),
-              SizedBox(height: 12.0),
-              Text(
-                error,
-                style: TextStyle(color: Colors.red, fontSize: 14.0),
-              )
-            ],
+            // resizeToAvoidBottomPadding: false,
+          );
+  }
+
+  Widget buildButton() {
+    return GestureDetector(
+      onTap: () async {
+        if (_formKey.currentState.validate()) {
+          setState(() => loading = true);
+          dynamic result =
+              await _auth.registerWithEmailAndPassword(email, password);
+          if (result == null) {
+            setState(() {
+              error = 'Vinsamlegast fylltu út gilt netfang';
+              loading = false;
+            });
+          }
+        }
+      },
+      child: Container(
+        height: 50,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(23),
+          color: Theme.of(context).accentColor,
+        ),
+        child: Center(
+          child: Text(
+            "STOFNA AÐGANG",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+            ),
           ),
         ),
       ),
