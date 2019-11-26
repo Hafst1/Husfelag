@@ -1,20 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import './custom_icons_icons.dart';
+import '../screens/cleaning/cleaning_detail_screen.dart';
+import '../providers/cleaning_provider.dart';
+import '../screens/cleaning/add_cleaning_screen.dart';
+import '../widgets/action_dialog.dart';
 
 class CleaningListItem extends StatelessWidget {
+  final String id;
   final String apartment;
   final DateTime dateFrom;
   final DateTime dateTo;
   final String route;
 
   CleaningListItem(
-    {@required this.apartment,
-    @required this.dateFrom,
-    @required this.dateTo,
-    @required this.route}
-  );
+      {@required this.id,
+      @required this.apartment,
+      @required this.dateFrom,
+      @required this.dateTo,
+      @required this.route});
+
+  void _showActionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return ActionDialog(
+          deleteFunc: () {
+            Provider.of<CleaningProvider>(context, listen: false)
+                .deleteCleaningItem(id);
+          },
+          editFunc: () {
+            Navigator.of(ctx).pop();
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => AddCleaningScreen(),
+                settings: RouteSettings(arguments: id),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +54,14 @@ class CleaningListItem extends StatelessWidget {
       ),
       elevation: 5,
       child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CleaningDetailScreen(),
+              settings: RouteSettings(arguments: id),
+            ),
+          );
+        },
         contentPadding: EdgeInsets.all(10),
         leading: CircleAvatar(
           backgroundColor: Colors.indigo[200],
@@ -55,7 +92,6 @@ class CleaningListItem extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      //apartment,
                       "Þrif á sameign",
                       style: TextStyle(fontSize: 15),
                     ),
@@ -82,11 +118,11 @@ class CleaningListItem extends StatelessWidget {
             ],
           ),
         ),
-        // trailing: IconButton(
-        //   icon: Icon(Icons.check),
-        //   color: Colors.green,
-        //   onPressed: () => {},
-        // ),
+        trailing: IconButton(
+          icon: Icon(CustomIcons.dot_3),
+          color: Colors.grey,
+          onPressed: () => _showActionDialog(context),
+        ),
       ),
     );
   }

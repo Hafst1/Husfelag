@@ -28,11 +28,11 @@ class MeetingsProvider with ChangeNotifier {
   }
 
 
-  Future removeProduct(String id) async{
+  Future deleteMeeting(String id) async{
      await _api.removeDocument(id) ;
      return ;
   }
-  Future updateProduct(Meeting data,String id) async{
+  Future updateMeeting(Meeting data,String id) async{
     await _api.updateDocument(data.toJson(), id) ;
     return ;
   }
@@ -104,17 +104,27 @@ class MeetingsProvider with ChangeNotifier {
     DocumentReference meetingRef = Firestore.instance
         .collection("ResidentAssociation")
         .document("09fnlNxhgYk70dMpaRJB");
-     meetingRef.collection("MeetingItems").add({
+    meetingRef.collection("MeetingItems").add({
       'date:': meeting.date,
       'title:': meeting.title,
       'description:': meeting.description,
       'location:': meeting.location,
-      'duration' : meeting.duration.toString()
+      'duration': meeting.duration.toString()
     });
   }
-
+/*
   void deleteMeeting(String id) {
     _meetingItems.removeWhere((meeting) => meeting.id == id);
     notifyListeners();
   }
+*/
+  Meeting findById(String id) {
+    return _meetingItems.firstWhere((meeting) => meeting.id == id);
+  }
+/*
+  void updateMeeting(String id, Meeting editedMeeting) {
+    final meetingIndex = _dummyData.indexWhere((meeting) => meeting.id == id);
+    _dummyData[meetingIndex] = editedMeeting;
+    notifyListeners();
+  }*/
 }

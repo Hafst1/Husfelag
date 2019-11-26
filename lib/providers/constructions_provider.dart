@@ -34,7 +34,7 @@ class ConstructionsProvider with ChangeNotifier {
      await _api.removeDocument(id) ;
      return ;
   }
-  Future updateProduct(Construction data,String id) async{
+  Future updateConstruction(Construction data,String id) async{
     await _api.updateDocument(data.toJson(), id) ;
     return ;
   }
@@ -134,4 +134,12 @@ class ConstructionsProvider with ChangeNotifier {
     return _constructionItems.firstWhere((construction) => construction.id == id);
   }
   
+/*
+  void updateConstruction(String id, Construction editedConstruction) {
+    final constructionIndex =
+        _dummyData.indexWhere((construction) => construction.id == id);
+    _dummyData[constructionIndex] = editedConstruction;
+    notifyListeners();
+  }
+  */
 }
