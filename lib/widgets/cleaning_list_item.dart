@@ -13,14 +13,13 @@ class CleaningListItem extends StatelessWidget {
   final String apartment;
   final DateTime dateFrom;
   final DateTime dateTo;
-  final String route;
 
-  CleaningListItem(
-      {@required this.id,
-      @required this.apartment,
-      @required this.dateFrom,
-      @required this.dateTo,
-      @required this.route});
+  CleaningListItem({
+    @required this.id,
+    @required this.apartment,
+    @required this.dateFrom,
+    @required this.dateTo,
+  });
 
   void _showActionDialog(BuildContext context) {
     showDialog(

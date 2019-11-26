@@ -162,7 +162,6 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
                             apartment: cleanings[i].apartment,
                             dateFrom: cleanings[i].dateFrom,
                             dateTo: cleanings[i].dateTo,
-                            route: "some route",
                           ),
                         ),
                       ),

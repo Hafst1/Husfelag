@@ -13,14 +13,13 @@ class MeetingsListItem extends StatelessWidget {
   final String title;
   final DateTime date;
   final String location;
-  final String route;
 
-  MeetingsListItem(
-      {@required this.id,
-      @required this.title,
-      @required this.date,
-      @required this.location,
-      @required this.route});
+  MeetingsListItem({
+    @required this.id,
+    @required this.title,
+    @required this.date,
+    @required this.location,
+  });
 
   void _showActionDialog(BuildContext context) {
     showDialog(

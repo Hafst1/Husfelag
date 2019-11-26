@@ -150,7 +150,6 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                             title: meetings[i].title,
                             date: meetings[i].date,
                             location: meetings[i].location,
-                            route: "some route",
                           ),
                         ),
                       ),
