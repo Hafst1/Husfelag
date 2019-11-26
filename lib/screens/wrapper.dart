@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/screens/authenticate/authenticate.dart';
 import 'package:provider/provider.dart';
-import 'package:husfelagid/models/user.dart';
 
 import 'tabs_screen.dart';
-import 'package:husfelagid/providers/constructions_provider.dart';
-import 'package:husfelagid/providers/meetings_provider.dart';
-import 'package:husfelagid/providers/cleaning_provider.dart';
-import 'package:husfelagid/providers/cleaning_task_provider.dart';
-
+import '../models/user.dart';
+import '../providers/constructions_provider.dart';
+import '../providers/meetings_provider.dart';
+import '../providers/cleaning_provider.dart';
+import '../providers/cleaning_task_provider.dart';
+import '../screens/authenticate/authenticate.dart';
 
 class Wrapper extends StatelessWidget {
   @override

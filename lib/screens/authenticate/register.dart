@@ -150,7 +150,7 @@ class _RegisterState extends State<Register> {
                                     "Skráðu þig inn!",
                                     style: TextStyle(
                                       fontSize: 15,
-                                      color: Theme.of(context).accentColor,
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 )
@@ -203,7 +203,7 @@ class _RegisterState extends State<Register> {
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(23),
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).primaryColor,
         ),
         child: Center(
           child: Text(
