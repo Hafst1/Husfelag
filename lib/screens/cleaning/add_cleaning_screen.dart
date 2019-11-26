@@ -30,8 +30,8 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     'appbar-title': 'Bæta við þrif',
     'save-text': 'BÆTA VIÐ',
   };
-
   var _isInit = true;
+  var _isLoading = false;
 
   @override
   void didChangeDependencies() {
@@ -107,20 +107,52 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     }
   }
 
-  void _saveForm() {
+  void _saveForm() async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
       return;
     }
     _form.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
     if (_cleaningItem.id != null) {
-      Provider.of<CleaningProvider>(context, listen: false)
-          .updateCleaningItem(_cleaningItem.id, _cleaningItem);
+      try {
+        await Provider.of<CleaningProvider>(context, listen: false)
+            .updateCleaningItem(_cleaningItem.id, _cleaningItem);
+      } catch (error) {
+        await printErrorDialog('Ekki tókst að breyta þrifum!');
+      }
     } else {
-      Provider.of<CleaningProvider>(context, listen: false)
-          .addCleaningItem(_cleaningItem);
+      try {
+        await Provider.of<CleaningProvider>(context, listen: false)
+            .addCleaningItem(_cleaningItem);
+      } catch (error) {
+        await printErrorDialog('Ekki tókst að bæta við þrif!');
+      }
     }
+    setState(() {
+      _isLoading = false;
+    });
     Navigator.of(context).pop();
+  }
+
+  Future<void> printErrorDialog(String errorMessage) {
+    return showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text(errorMessage),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -137,127 +169,136 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
               }),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _form,
-          child: Column(
-            children: <Widget>[
-              GestureDetector(
-                onTap: () => _presentApartmentPicker(),
-                child: AbsorbPointer(
-                  child: TextFormField(
-                    controller: _apartmentController,
-                    decoration: InputDecoration(
-                      hintText: "Íbúð...",
-                      prefixIcon: Icon(Icons.home),
-                      border: OutlineInputBorder(),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor),
+              ),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _form,
+                child: Column(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () => _presentApartmentPicker(),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: _apartmentController,
+                          decoration: InputDecoration(
+                            hintText: "Íbúð...",
+                            prefixIcon: Icon(Icons.home),
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Útvega þarf íbúð fyrir þrif á sameign!";
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _cleaningItem = Cleaning(
+                              id: _cleaningItem.id,
+                              apartment: value,
+                              dateFrom: _cleaningItem.dateFrom,
+                              dateTo: _cleaningItem.dateTo,
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Útvega þarf íbúð fyrir þrif á sameign!";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _cleaningItem = Cleaning(
-                        id: _cleaningItem.id,
-                        apartment: value,
-                        dateFrom: _cleaningItem.dateFrom,
-                        dateTo: _cleaningItem.dateTo,
-                      );
-                    },
-                  ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    GestureDetector(
+                      onTap: () => _presentDatePicker(_dateFromController),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: _dateFromController,
+                          decoration: InputDecoration(
+                            hintText: "Frá...",
+                            prefixText:
+                                _dateFromController.text != "" ? "Frá: " : "",
+                            prefixIcon: Icon(Icons.date_range),
+                            border: OutlineInputBorder(),
+                            errorMaxLines: 2,
+                          ),
+                          textInputAction: TextInputAction.next,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Fylla þarf út upphafsdagsetningu þrifa!";
+                            }
+                            if (_dateToController.text.isNotEmpty) {
+                              if (convertToDate(value).isAfter(
+                                  convertToDate(_dateToController.text))) {
+                                return "Valin dagsetning á sér stað á eftir lokadagsetningu þrifa!";
+                              }
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _cleaningItem = Cleaning(
+                              id: _cleaningItem.id,
+                              apartment: _cleaningItem.apartment,
+                              dateFrom: convertToDate(value),
+                              dateTo: _cleaningItem.dateTo,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    GestureDetector(
+                      onTap: () => _presentDatePicker(_dateToController),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: _dateToController,
+                          decoration: InputDecoration(
+                            hintText: "Til...",
+                            prefixText:
+                                _dateToController.text != "" ? "Til: " : "",
+                            prefixIcon: Icon(Icons.date_range),
+                            border: OutlineInputBorder(),
+                            errorMaxLines: 2,
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Fylla þarf út lokadagsetningu þrifa!";
+                            }
+                            if (_dateFromController.text.isNotEmpty) {
+                              if (convertToDate(value).isBefore(
+                                  convertToDate(_dateFromController.text))) {
+                                return "Valin dagsetning á sér stað á undan upphafsdagsetningu þrifa!";
+                              }
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _cleaningItem = Cleaning(
+                              id: _cleaningItem.id,
+                              apartment: _cleaningItem.apartment,
+                              dateFrom: _cleaningItem.dateFrom,
+                              dateTo: convertToDate(value),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    SaveButton(
+                      text: _initValues['save-text'],
+                      saveFunc: _saveForm,
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(
-                height: 15,
-              ),
-              GestureDetector(
-                onTap: () => _presentDatePicker(_dateFromController),
-                child: AbsorbPointer(
-                  child: TextFormField(
-                    controller: _dateFromController,
-                    decoration: InputDecoration(
-                      hintText: "Frá...",
-                      prefixText: _dateFromController.text != "" ? "Frá: " : "",
-                      prefixIcon: Icon(Icons.date_range),
-                      border: OutlineInputBorder(),
-                      errorMaxLines: 2,
-                    ),
-                    textInputAction: TextInputAction.next,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Fylla þarf út upphafsdagsetningu þrifa!";
-                      }
-                      if (_dateToController.text.isNotEmpty) {
-                        if (convertToDate(value)
-                            .isAfter(convertToDate(_dateToController.text))) {
-                          return "Valin dagsetning á sér stað á eftir lokadagsetningu þrifa!";
-                        }
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _cleaningItem = Cleaning(
-                        id: _cleaningItem.id,
-                        apartment: _cleaningItem.apartment,
-                        dateFrom: convertToDate(value),
-                        dateTo: _cleaningItem.dateTo,
-                      );
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              GestureDetector(
-                onTap: () => _presentDatePicker(_dateToController),
-                child: AbsorbPointer(
-                  child: TextFormField(
-                    controller: _dateToController,
-                    decoration: InputDecoration(
-                      hintText: "Til...",
-                      prefixText: _dateToController.text != "" ? "Til: " : "",
-                      prefixIcon: Icon(Icons.date_range),
-                      border: OutlineInputBorder(),
-                      errorMaxLines: 2,
-                    ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Fylla þarf út lokadagsetningu þrifa!";
-                      }
-                      if (_dateFromController.text.isNotEmpty) {
-                        if (convertToDate(value).isBefore(
-                            convertToDate(_dateFromController.text))) {
-                          return "Valin dagsetning á sér stað á undan upphafsdagsetningu þrifa!";
-                        }
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _cleaningItem = Cleaning(
-                        id: _cleaningItem.id,
-                        apartment: _cleaningItem.apartment,
-                        dateFrom: _cleaningItem.dateFrom,
-                        dateTo: convertToDate(value),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              SaveButton(
-                text: _initValues['save-text'],
-                saveFunc: _saveForm,
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
