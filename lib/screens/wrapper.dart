@@ -19,6 +19,7 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return Authenticate();
     } else {
+      print(user.uid);
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(

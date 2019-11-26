@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:husfelagid/services/auth.dart';
+import 'package:husfelagid/services/database.dart';
 import 'package:husfelagid/shared/constants.dart';
 import 'package:husfelagid/shared/loading.dart';
 
@@ -19,6 +21,8 @@ class _RegisterState extends State<Register> {
   // Text field state
   String email = '';
   String password = '';
+  String name = '';
+  String home = '';
   String error = '';
 
   @override
@@ -65,7 +69,9 @@ class _RegisterState extends State<Register> {
                               ),
                               validator: (val) =>
                                   val.isEmpty ? 'Sláðu inn fullt nafn' : null,
-                            ),
+                                onChanged: (val) {
+                                  setState(() => name = val);
+                                }),
                             SizedBox(
                               height: 20,
                             ),
@@ -79,7 +85,9 @@ class _RegisterState extends State<Register> {
                               ),
                               validator: (val) =>
                                   val.isEmpty ? 'Sláðu inn heimilisfang' : null,
-                            ),
+                                onChanged: (val) {
+                                  setState(() => home = val);
+                                }),
                             SizedBox(
                               height: 20,
                             ),
@@ -176,12 +184,17 @@ class _RegisterState extends State<Register> {
         if (_formKey.currentState.validate()) {
           setState(() => loading = true);
           dynamic result =
-              await _auth.registerWithEmailAndPassword(email, password);
-          if (result == null) {
-            setState(() {
-              error = 'Vinsamlegast fylltu út gilt netfang';
-              loading = false;
-            });
+              await _auth.registerWithEmailAndPassword(email, password)
+              .then((currentUser) async {
+                await DatabaseService(uid: currentUser.uid).updateUserData(name, email, home, '', '');
+              });
+          if (this.mounted){
+            if (result == null) {
+              setState(() {
+                error = 'Vinsamlegast fylltu út gilt netfang';
+                loading = false;
+              });
+            }
           }
         }
       },
