@@ -189,7 +189,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                   _pickType = value;
                 }),
               ),
-              SaveButton(saveFunc: _saveForm),
+              SaveButton(saveFunc: _saveForm, text: "Vista skjal"),
             ],
           ),
         ),
