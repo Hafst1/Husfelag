@@ -50,13 +50,13 @@ class _SettingsFormState extends State<SettingsForm> {
                     validator: (val) => val.isEmpty ? 'Vinsamlegast skráðu nafn' : null,
                     onChanged: (val) => setState(() => _currentName = val),
                   ),
-                  SizedBox(height: 20.0),
+                  /*SizedBox(height: 20.0),
                   TextFormField(
                     initialValue: userData.email,
                     decoration: textInputDecoration.copyWith(hintText: 'Netfang'),
                     validator: (val) => val.isEmpty ? 'Vinsamlegast skráðu netfang' : null,
                     onChanged: (val) => setState(() => _currentEmail = val),
-                  ),
+                  ),*/
                   SizedBox(height: 20.0),
                   TextFormField(
                     initialValue: userData.home,

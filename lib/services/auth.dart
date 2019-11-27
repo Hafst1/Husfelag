@@ -44,6 +44,16 @@ class AuthService {
     }
   }
 
+  /*Future changeEmail(String email) async {
+    FirebaseUser user = await _auth.currentUser();
+    user.updateEmail(email).then((_) {
+      print("Succesfull changed email");
+    }).catchError((error) {
+      print("email can't be changed" + error.toString());
+    });
+    return null;
+  }*/
+
   // sign out
   Future signOut() async {
     try {
