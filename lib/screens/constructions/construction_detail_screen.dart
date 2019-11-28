@@ -27,31 +27,31 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
   int _currentFileIndex = 0;
 
   List<DummyItem> _dummyData = [
-    DummyItem(
-      icon: Icon(CustomIcons.doc_text),
-      fileName: "thakvidgerd.txt",
-    ),
-    DummyItem(
-      icon: Icon(
-        CustomIcons.file_excel,
-        color: Colors.green,
-      ),
-      fileName: "kostnadur.excl",
-    ),
-    DummyItem(
-      icon: Icon(
-        CustomIcons.file_pdf,
-        color: Colors.red,
-      ),
-      fileName: "paelingar.pdf",
-    ),
-    DummyItem(
-      icon: Icon(
-        CustomIcons.file_word,
-        color: Colors.blue,
-      ),
-      fileName: "yfirlit.docx",
-    ),
+    // DummyItem(
+    //   icon: Icon(CustomIcons.doc_text),
+    //   fileName: "thakvidgerd.txt",
+    // ),
+    // DummyItem(
+    //   icon: Icon(
+    //     CustomIcons.file_excel,
+    //     color: Colors.green,
+    //   ),
+    //   fileName: "kostnadur.excl",
+    // ),
+    // DummyItem(
+    //   icon: Icon(
+    //     CustomIcons.file_pdf,
+    //     color: Colors.red,
+    //   ),
+    //   fileName: "paelingar.pdf",
+    // ),
+    // DummyItem(
+    //   icon: Icon(
+    //     CustomIcons.file_word,
+    //     color: Colors.blue,
+    //   ),
+    //   fileName: "yfirlit.docx",
+    // ),
   ];
 
   void _currentFileTracker(int index) {
@@ -118,10 +118,17 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
                       enableInfiniteScroll: false,
                     )
                   // Tímabundin mynd í staðinn fyrir skjöl tengd framkvæmd
-                  : Image(
-                      image: NetworkImage(
-                          "https://www.irishbuildingmagazine.ie/wp-content/uploads/2017/01/Construction-Activity-2017-800x445.jpg"),
-                      fit: BoxFit.cover,
+                  : Container(
+                      width: double.infinity,
+                      child: Image.asset(
+                        'assets/images/construction_photo.jpg',
+                        fit: BoxFit.cover,
+                        alignment: Alignment.lerp(
+                          Alignment.topCenter,
+                          Alignment.bottomCenter,
+                          0.8,
+                        ),
+                      ),
                     ),
             ),
             _dummyData.length > 1
@@ -151,10 +158,10 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
                   )
                 : Container(),
             Container(
-              padding: const EdgeInsets.only(
+              padding: EdgeInsets.only(
                 left: 35,
                 right: 35,
-                top: 20,
+                top: _dummyData.isEmpty ? 30 : 20,
                 bottom: 20,
               ),
               child: Column(
