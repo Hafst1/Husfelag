@@ -1,6 +1,6 @@
-import 'package:husfelagid/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:husfelagid/services/database.dart';
+
+import '../models/user.dart';
 
 class AuthService {
 
@@ -30,19 +30,29 @@ class AuthService {
     }
 
   // register with email and password
-    Future registerWithEmailAndPassword(String email, String password) async {
-      try {
-        AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-        FirebaseUser user = result.user;
+  Future registerWithEmailAndPassword(String email, String password) async {
+    try {
+      AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      FirebaseUser user = result.user;
 
-        // create a new document for the user with uid
-        //await DatabaseService(uid: user.uid).updateUserData('', email, '', '', '');
-        return _userFromFirebaseUser(user);
-      } catch(e){
-        print(e.toString());
-        return null;
-      }
+      // create a new document for the user with uid
+      //await DatabaseService(uid: user.uid).updateUserData('', email, '', '', '');
+      return _userFromFirebaseUser(user);
+    } catch(e){
+      print(e.toString());
+      return null;
     }
+  }
+
+  /*Future changeEmail(String email) async {
+    FirebaseUser user = await _auth.currentUser();
+    user.updateEmail(email).then((_) {
+      print("Succesfull changed email");
+    }).catchError((error) {
+      print("email can't be changed" + error.toString());
+    });
+    return null;
+  }*/
 
   // sign out
   Future signOut() async {

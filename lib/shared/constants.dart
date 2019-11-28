@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 
+class Constants {
+  static const MyPage = 'Mín Síða';
+  static const SignOut = 'Skrá út';
+
+  static const List<String> choices = <String>[
+    MyPage,
+    SignOut
+  ];
+}
+
 const textInputDecoration = InputDecoration(
   fillColor: Colors.white,
   filled: true,
