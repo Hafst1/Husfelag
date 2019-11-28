@@ -12,8 +12,7 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStateMixin {
-  Map<DateTime, List> _events;  //skipta um nafn við constructionEvents? 
-  Map<DateTime, List> _meetingEvents;
+  Map<DateTime, List> _events;   //Meetings and Constructions
   Map<DateTime, List> _constructionEvents;
   List _selectedEvents;
   CalendarController _calendarController;
@@ -22,9 +21,6 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    /*final constructionEvents = Provider.of<ConstructionsProvider>(context);
-    _events = constructionEvents.filterForCalendar();
-    _selectedEvents = _events[DateTime.now()] ?? [];*/
     _calendarController = CalendarController();
     _animationController = AnimationController(
       vsync: this,
@@ -32,12 +28,34 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
     );
     _animationController.forward();
   }
+  var _isInit = true;
+  var _isLoading = false;
 
   @override
   void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+   
+    Provider.of<MeetingsProvider>(context).fetchMeetings(context); 
+    Provider.of<ConstructionsProvider>(context)
+          .fetchConstructions(context)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+
     final constructionEvents = Provider.of<ConstructionsProvider>(context);
-    _events = constructionEvents.filterForCalendar();
-    _selectedEvents = _events[DateTime.now()] ?? [];
+    _constructionEvents = constructionEvents.filterForCalendar();
+
+    final meetingEvents = Provider.of<MeetingsProvider>(context);
+     _events = meetingEvents.mergeMeetingsAndConstructions(_constructionEvents);
+     _selectedEvents = _events[DateTime.now()] ?? [];
+    
+    _isInit = false;
     super.didChangeDependencies();
   }
 
@@ -69,19 +87,10 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
   }
 
   void _onDaySelected(DateTime day, List events) {
-    print('CALLBACK: _onDaySelected');
     setState(() {
       _selectedEvents = events;
-
     });
   }
-
-  /*Map<DateTime, List> mergeMeetingsAndConstructions() {
-    final meetingEvents = Provider.of<MeetingsProvider>(context);
-    _meetingEvents = meetingEvents.filterForCalendar();
-
-    return _meetingEvents; 
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -89,26 +98,33 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
       appBar: AppBar(
       title: Text("Dagatal"),
       ),
-      body: Container (
-        color: Colors.white60,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-          _buildTableCalendar(),
-          const SizedBox(height: 8.0),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: _buildEventList()
+      body: _isLoading 
+          ? Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor),
+              )
+            )
+          : Container (
+              color: Colors.white60,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                _buildTableCalendar(),
+                const SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
+                Expanded(
+                  child: _buildEventList()
+                  ),
+              ],
             ),
-        ],
-      ),
-      ),
+          ),
     );
   }
   Widget _buildTableCalendar() {
     return TableCalendar(
       calendarController: _calendarController,
-      events: _events,                              
+      events: _events,                             
       startingDayOfWeek: StartingDayOfWeek.monday, 
       calendarStyle: CalendarStyle(
         selectedColor: Colors.deepOrange[400],    

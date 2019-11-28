@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import '../models/meeting.dart';
 import '../models/construction.dart';
 
 enum ConstructionStatus { current, ahead, old }
 
 class ConstructionsProvider with ChangeNotifier {
   List<Construction> _constructions = [];
-
-  List<Construction> getAllItemsForCalendar() {
-    return [..._constructions];
-  }
 
   Future<void> fetchConstructions(BuildContext context) async {
     DocumentReference constructionRef = Firestore.instance
@@ -186,33 +182,16 @@ class ConstructionsProvider with ChangeNotifier {
     if (constructions == []) {
       return null;
     }else {
-
       constructions.forEach((item) {
-        var date = DateTime.parse(item.dateFrom.toString());
-        var formattedDate = "${date.day}-${date.month}-${date.year}";
-        if(_events.containsKey(item.dateFrom)) { //extracta daginn
-          _events[item.dateFrom].add(item.title);
-          print('inní í if sama dagsetning');
-          _events.forEach((key, value) => print("key: $key and value: $value"));
-            return _events; 
-        }
-      _events[item.dateFrom] = [item.title,];
-       
+        if(_events.containsKey(item.dateFrom)) { 
+          _events[item.dateFrom].add(item.title); 
+        }else {
+             _events[item.dateFrom] = [item.title,];
+          }
+        return _events; 
       });
-      _events.forEach((key, value) => print("key: $key and value: $value"));
-      return _events;
+    return _events;
     }
   }
 }
 
-/*else {
-      constructions.forEach((item) {
-        if(_events.containsKey(item.dateFrom)) { //extracta daginn
-          _events[item.dateFrom].add(item.title);
-        }
-      _events[item.dateFrom] = [item.title,];
-       
-      });
-      _events.forEach((key, value) => print("key: $key and value: $value"));
-      return _events; 
-    }*/
