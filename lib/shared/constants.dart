@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class Constants {
-  static const Settings = 'Stillingar';
+  static const MyPage = 'Mín Síða';
   static const SignOut = 'Skrá út';
 
   static const List<String> choices = <String>[
-    Settings,
+    MyPage,
     SignOut
   ];
 }

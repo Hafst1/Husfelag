@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/screens/profile_page.dart';
 import 'package:husfelagid/screens/settings_form.dart';
 import 'package:husfelagid/services/auth.dart';
 
@@ -25,8 +26,13 @@ class HomeScreen extends StatelessWidget {
     }
 
     void choiceAction(String choice) {
-    if (choice == Constants.Settings){
-      _showSettingsPanel();
+    if (choice == Constants.MyPage){
+      //_showSettingsPanel();
+      Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ProfilePage(),
+          ),
+        );
     } else if (choice == Constants.SignOut) {
       _auth.signOut();
     }
@@ -105,5 +111,4 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-  
 }
