@@ -13,10 +13,9 @@ class CleaningTasksScreen extends StatefulWidget {
   }
 
 class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
-  
+ 
   @override
   Widget build(BuildContext context) {
-   // final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
       title: Text("Verkefnalisti"),
     );
@@ -29,9 +28,9 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
           Expanded(
             child: ListView.builder(
               itemCount: cleaningTasks.length,
-              itemBuilder: (ctx, i) => CleaningTaskItem(
-                title: cleaningTasks[i].title,
-                description: cleaningTasks[i].description,
+              itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+                value: cleaningTasks[i],
+                child: CleaningTaskItem()
               )
             )
           )

@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:husfelagid/models/cleaning_task.dart';
+import 'package:husfelagid/providers/cleaning_task_provider.dart';
+import 'package:provider/provider.dart';
 
   class CleaningTaskItem extends StatefulWidget {
-    final String title;
-    final String description;
-
-    const CleaningTaskItem({Key key, this.title, this.description}):
-    super(key: key);
-
+  
     @override
     _CleaningTaskItemState createState() => 
       _CleaningTaskItemState();
   }
 
   class _CleaningTaskItemState extends State<CleaningTaskItem> {
-  bool check = false; 
-  void valueChanged(bool value) => setState(() => check = value);
-
+    var _cleaningTask = CleaningTask(
+      id: null,
+      title: '',
+      description: '',
+      taskDone: false,
+    );
+ 
   @override
   Widget build(BuildContext context) {
+    final cleaningTask = Provider.of<CleaningTask>(context);
     return Card(
       margin: EdgeInsets.symmetric(
         vertical: 8,
@@ -28,7 +31,7 @@ import 'package:circular_check_box/circular_check_box.dart';
       child: ListTile(
         contentPadding: EdgeInsets.all(10),
         title: Text(
-          widget.title,
+          cleaningTask.title,
           style: Theme.of(context).textTheme.title,
         ),
         subtitle: Padding(
@@ -37,7 +40,7 @@ import 'package:circular_check_box/circular_check_box.dart';
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    widget.description,
+                    cleaningTask.description,
                     style: TextStyle(fontSize: 15/*, color: Colors.grey[700]*/),
                   ),
                 ),
@@ -45,10 +48,20 @@ import 'package:circular_check_box/circular_check_box.dart';
             ),
           ),
           trailing: CircularCheckBox(
-            value: check,
+            value: cleaningTask.taskDone,
             materialTapTargetSize: MaterialTapTargetSize.padded,
-            onChanged: valueChanged,
-            activeColor: Colors.red[200],
+            onChanged: (check) {
+              setState(() {
+                _cleaningTask = CleaningTask(
+                  id: cleaningTask.id,
+                  title: cleaningTask.title,
+                  description: cleaningTask.description,
+                  taskDone: check,
+                );
+              Provider.of<CleaningTaskProvider>(context)
+              .updateCleaningTask(_cleaningTask.id, _cleaningTask);
+              });
+            },
           ),
       )
     );
