@@ -16,6 +16,30 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
   TextEditingController _textFieldController = TextEditingController();
   int _selectedFilterIndex = 0;
   String _searchQuery = "";
+  var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<CleaningProvider>(context)
+          .fetchCleaningItems(context)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
+  Future<void> _refreshCleaningItems(BuildContext context) async {
+    await Provider.of<CleaningProvider>(context).fetchCleaningItems(context);
+  }
 
   _selectFilter(int index) {
     setState(() {
@@ -59,82 +83,93 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     );
     return Scaffold(
       appBar: appBar,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: _textFieldController,
-              onChanged: (value) => _changeSearchQuery(value),
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(
-                  top: 25,
-                  bottom: 25,
-                ),
-                hintText: "Leita...",
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.grey,
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    Icons.clear,
-                    color: _searchQuery == "" ? Colors.white : Colors.grey,
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor),
+              ),
+            )
+          : GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    controller: _textFieldController,
+                    onChanged: (value) => _changeSearchQuery(value),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                        top: 25,
+                        bottom: 25,
+                      ),
+                      hintText: "Leita...",
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.clear,
+                          color:
+                              _searchQuery == "" ? Colors.white : Colors.grey,
+                        ),
+                        onPressed: () => _onClear(),
+                      ),
+                    ),
                   ),
-                  onPressed: () => _onClear(),
-                ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TabFilterButton(
+                            buttonFilterId: 0,
+                            buttonText: "Núverandi",
+                            buttonFunc: _selectFilter,
+                            buttonHeight: heightOfBody * 0.1,
+                            filterIndex: _selectedFilterIndex),
+                      ),
+                      Expanded(
+                        child: TabFilterButton(
+                            buttonFilterId: 1,
+                            buttonText: "Framundan",
+                            buttonFunc: _selectFilter,
+                            buttonHeight: heightOfBody * 0.1,
+                            filterIndex: _selectedFilterIndex),
+                      ),
+                      Expanded(
+                        child: TabFilterButton(
+                            buttonFilterId: 2,
+                            buttonText: "Gamalt",
+                            buttonFunc: _selectFilter,
+                            buttonHeight: heightOfBody * 0.1,
+                            filterIndex: _selectedFilterIndex),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: RefreshIndicator(
+                      color: Theme.of(context).primaryColor,
+                      onRefresh: () => _refreshCleaningItems(context),
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: ListView.builder(
+                          itemCount: cleanings.length,
+                          itemBuilder: (ctx, i) => CleaningListItem(
+                            id: cleanings[i].id,
+                            apartment: cleanings[i].apartment,
+                            dateFrom: cleanings[i].dateFrom,
+                            dateTo: cleanings[i].dateTo,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: TabFilterButton(
-                      buttonFilterId: 0,
-                      buttonText: "Núverandi",
-                      buttonFunc: _selectFilter,
-                      buttonHeight: heightOfBody * 0.1,
-                      filterIndex: _selectedFilterIndex),
-                ),
-                Expanded(
-                  child: TabFilterButton(
-                      buttonFilterId: 1,
-                      buttonText: "Framundan",
-                      buttonFunc: _selectFilter,
-                      buttonHeight: heightOfBody * 0.1,
-                      filterIndex: _selectedFilterIndex),
-                ),
-                Expanded(
-                  child: TabFilterButton(
-                      buttonFilterId: 2,
-                      buttonText: "Gamalt",
-                      buttonFunc: _selectFilter,
-                      buttonHeight: heightOfBody * 0.1,
-                      filterIndex: _selectedFilterIndex),
-                ),
-              ],
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(
-                  bottom: 5,
-                ),
-                child: ListView.builder(
-                  itemCount: cleanings.length,
-                  itemBuilder: (ctx, i) => CleaningListItem(
-                    id: cleanings[i].id,
-                    apartment: cleanings[i].apartment,
-                    dateFrom: cleanings[i].dateFrom,
-                    dateTo: cleanings[i].dateTo,
-                    route: "some route",
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

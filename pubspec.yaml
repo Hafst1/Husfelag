@@ -55,6 +55,7 @@ flutter:
   assets:
    - assets/images/google_sprint.jpg
    - assets/images/husfelag_logo.jpg
+   - assets/images/construction_photo.jpg
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
