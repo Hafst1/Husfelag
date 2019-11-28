@@ -76,12 +76,12 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
     });
   }
 
-  Map<DateTime, List> mergeMeetingsAndConstructions() {
+  /*Map<DateTime, List> mergeMeetingsAndConstructions() {
     final meetingEvents = Provider.of<MeetingsProvider>(context);
     _meetingEvents = meetingEvents.filterForCalendar();
 
     return _meetingEvents; 
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

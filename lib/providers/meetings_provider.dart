@@ -167,7 +167,7 @@ class MeetingsProvider with ChangeNotifier {
     }
     return Duration(hours: hours, minutes: minutes);
   }
-
+/*
    Map<DateTime, List> filterForCalendar() {
     List<Meeting> meetings = [..._dummyData];
     Map<DateTime, List> _events = Map();   
@@ -184,5 +184,5 @@ class MeetingsProvider with ChangeNotifier {
       //_events.forEach((key, value) => print("key: $key and value: $value"));
       return _events; 
     }
-  }
+  }*/
 }
