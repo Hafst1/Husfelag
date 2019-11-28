@@ -194,7 +194,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
-                              return "Útvega þarf íbúð fyrir þrif á sameign!";
+                              return "Velja þarf íbúð fyrir þrif á sameign!";
                             }
                             return null;
                           },

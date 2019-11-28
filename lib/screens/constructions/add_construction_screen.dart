@@ -180,7 +180,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return "Titill framkvæmdar getur ekki verið tómur strengur!";
+                          return "Fylla þarf út titil framkvæmdar!";
                         }
                         if (value.length > 40) {
                           return "Titill framkvæmdar getur ekki verið meira en 40 stafir á lengd!";

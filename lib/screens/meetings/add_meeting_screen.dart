@@ -235,7 +235,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return "Titill fundar getur ekki verið tómur strengur!";
+                          return "Fylla þarf út titil fundar!";
                         }
                         if (value.length > 40) {
                           return "Titill fundar getur ekki verið meira en 40 stafir á lengd!";
@@ -394,7 +394,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return "Staðsetning fundar getur ekki verið tómur strengur!";
+                          return "Fylla þarf út staðsetningu fundar!";
                         }
                         if (value.length > 40) {
                           return "Staðsetning fundar getur ekki verið meira en 40 stafir á lengd!";
