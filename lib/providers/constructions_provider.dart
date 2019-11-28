@@ -178,4 +178,21 @@ class ConstructionsProvider with ChangeNotifier {
     }
     return displayList;
   }
+
+  Map<DateTime, List> filterForCalendar() {
+    List<Construction> constructions = [..._constructions];
+    Map<DateTime, List> _events = Map();
+    if (constructions == []) {
+      return null;
+    } else {
+      constructions.forEach((item) {
+        if (_events.containsKey(item.dateFrom)) {}
+        _events[item.dateFrom] = [
+          item.title,
+        ];
+      });
+      _events.forEach((key, value) => print("key: $key and value: $value"));
+      return _events;
+    }
+  }
 }

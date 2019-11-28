@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/providers/documents_folder_provider.dart';
+import 'package:husfelagid/providers/documents_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'tabs_screen.dart';
@@ -19,6 +21,7 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return Authenticate();
     } else {
+      print(user.uid);
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(
@@ -32,6 +35,12 @@ class Wrapper extends StatelessWidget {
           ),
           ChangeNotifierProvider.value(
             value: CleaningTaskProvider(),
+          ),
+          ChangeNotifierProvider.value(
+            value: DocumentsProvider(),
+          ),
+          ChangeNotifierProvider.value(
+            value: DocumentsFolderProvider(),
           )
         ],
         child: TabsScreen(),
