@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/providers/documents_folder_provider.dart';
-import 'package:husfelagid/providers/documents_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'tabs_screen.dart';
@@ -10,6 +8,7 @@ import '../providers/meetings_provider.dart';
 import '../providers/cleaning_provider.dart';
 import '../providers/cleaning_task_provider.dart';
 import '../screens/authenticate/authenticate.dart';
+import '../providers/documents_provider.dart';
 
 class Wrapper extends StatelessWidget {
   @override

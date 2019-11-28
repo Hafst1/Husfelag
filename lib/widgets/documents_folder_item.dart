@@ -12,13 +12,9 @@ class DocumentFolder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22.0),
-      ),
-      elevation: 10,
-      child: ListTile(
-        leading: Icon(Icons.folder_open, color: Colors.black),
+      child: GestureDetector(
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -26,10 +22,42 @@ class DocumentFolder extends StatelessWidget {
             ),
           );
         },
-        contentPadding: EdgeInsets.all(10),
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.title,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[600]),
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: LayoutBuilder(
+            builder: (ctx, constraints) {
+              return Column(
+                children: <Widget>[
+                  Container(
+                    height: constraints.maxHeight * 0.75,
+                    child: Icon(
+                      Icons.folder_open,
+                      size: constraints.maxHeight * 0.4,
+                    ),
+                  ),
+                  Container(
+                    height: constraints.maxHeight * 0.25,
+                    padding: EdgeInsets.fromLTRB(
+                      constraints.maxWidth * 0.025,
+                      constraints.maxHeight * 0.01,
+                      constraints.maxWidth * 0.025,
+                      constraints.maxHeight * 0.1,
+                    ),
+                    child: FittedBox(
+                      child: Text(
+                        title,
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
