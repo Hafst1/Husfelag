@@ -10,40 +10,72 @@ import '../providers/meetings_provider.dart';
 import '../providers/cleaning_provider.dart';
 import '../providers/cleaning_task_provider.dart';
 import '../screens/authenticate/authenticate.dart';
+import '../providers/current_user.dart';
+import '../screens/association_registration/association_options_screen.dart';
 
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    print(user);
-
-    // return either home or authenticate widget
+    final currentUser = Provider.of<CurrentUser>(context, listen: false);
+    // return Authenticate page if user has value of null
     if (user == null) {
       return Authenticate();
     } else {
-      print(user.uid);
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(
-            value: ConstructionsProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: MeetingsProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: CleaningProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: CleaningTaskProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: DocumentsProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: DocumentsFolderProvider(),
-          )
-        ],
-        child: TabsScreen(),
+      return FutureBuilder(
+        future: currentUser.fetchCurrentUser(user.uid),
+        builder: (_, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Container();
+            case ConnectionState.waiting:
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).primaryColor),
+                  ),
+                ),
+              );
+            case ConnectionState.done:
+              // currentUser.setResidentAssociationNumber('Tokyo');
+              // print(currentUser.getResidentAssociationNumber());
+              // send user to home page if he contains a resident association number
+              return currentUser.containsRAN()
+                  ? MultiProvider(
+                      providers: [
+                        ChangeNotifierProvider.value(
+                          value: ConstructionsProvider(),
+                        ),
+                        ChangeNotifierProvider.value(
+                          value: MeetingsProvider(),
+                        ),
+                        ChangeNotifierProvider.value(
+                          value: CleaningProvider(),
+                        ),
+                        ChangeNotifierProvider.value(
+                          value: CleaningTaskProvider(),
+                        ),
+                        ChangeNotifierProvider.value(
+                          value: DocumentsProvider(),
+                        ),
+                        ChangeNotifierProvider.value(
+                          value: DocumentsFolderProvider(),
+                        )
+                      ],
+                      child: TabsScreen(),
+                    )
+                  // send user to page where he can create or join a resident assocation
+                  // if he doesn't contain resident association number
+                  : AssociationOptionsScreen();
+            default:
+              if (snapshot.hasError) {
+                // Gera eittvað error page með valmöguleikum um framhald..
+                return null;
+              }
+              return null;
+          }
+        },
       );
     }
   }
