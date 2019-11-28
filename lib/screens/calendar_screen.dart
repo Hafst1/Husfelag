@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/providers/meetings_provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
- 
+
+import 'package:husfelagid/widgets/action_dialog_calendar.dart';
 import '../providers/constructions_provider.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -10,7 +12,9 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStateMixin {
-  Map<DateTime, List> _events;
+  Map<DateTime, List> _events;  //skipta um nafn við constructionEvents? 
+  Map<DateTime, List> _meetingEvents;
+  Map<DateTime, List> _constructionEvents;
   List _selectedEvents;
   CalendarController _calendarController;
   AnimationController _animationController;
@@ -18,7 +22,9 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-
+    /*final constructionEvents = Provider.of<ConstructionsProvider>(context);
+    _events = constructionEvents.filterForCalendar();
+    _selectedEvents = _events[DateTime.now()] ?? [];*/
     _calendarController = CalendarController();
     _animationController = AnimationController(
       vsync: this,
@@ -32,6 +38,7 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
     final constructionEvents = Provider.of<ConstructionsProvider>(context);
     _events = constructionEvents.filterForCalendar();
     _selectedEvents = _events[DateTime.now()] ?? [];
+    super.didChangeDependencies();
   }
 
   @override
@@ -50,7 +57,7 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
           content: Text("staðsetning, tími"),
           actions: <Widget> [
             FlatButton(
-              child: Text("Close"),
+              child: Text("Loka"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -67,6 +74,13 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
       _selectedEvents = events;
 
     });
+  }
+
+  Map<DateTime, List> mergeMeetingsAndConstructions() {
+    final meetingEvents = Provider.of<MeetingsProvider>(context);
+    _meetingEvents = meetingEvents.filterForCalendar();
+
+    return _meetingEvents; 
   }
 
   @override

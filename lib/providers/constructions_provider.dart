@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/construction.dart';
 
 enum ConstructionStatus { current, ahead, old }
@@ -153,10 +154,16 @@ class ConstructionsProvider with ChangeNotifier {
     Map<DateTime, List> _events = Map();   
     if (constructions == []) {
       return null;
-    }
-    else {
+    }else {
+
       constructions.forEach((item) {
-        if(_events.containsKey(item.dateFrom)) { 
+        var date = DateTime.parse(item.dateFrom.toString());
+        var formattedDate = "${date.day}-${date.month}-${date.year}";
+        if(_events.containsKey(item.dateFrom)) { //extracta daginn
+          _events[item.dateFrom].add(item.title);
+          print('inní í if sama dagsetning');
+          _events.forEach((key, value) => print("key: $key and value: $value"));
+            return _events; 
         }
       _events[item.dateFrom] = [item.title,];
        
@@ -166,3 +173,15 @@ class ConstructionsProvider with ChangeNotifier {
     }
   }
 }
+
+/*else {
+      constructions.forEach((item) {
+        if(_events.containsKey(item.dateFrom)) { //extracta daginn
+          _events[item.dateFrom].add(item.title);
+        }
+      _events[item.dateFrom] = [item.title,];
+       
+      });
+      _events.forEach((key, value) => print("key: $key and value: $value"));
+      return _events; 
+    }*/

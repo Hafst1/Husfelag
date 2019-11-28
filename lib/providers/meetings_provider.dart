@@ -140,4 +140,22 @@ class MeetingsProvider with ChangeNotifier {
     _dummyData[meetingIndex] = editedMeeting;
     notifyListeners();
   }
+
+   Map<DateTime, List> filterForCalendar() {
+    List<Meeting> meetings = [..._dummyData];
+    Map<DateTime, List> _events = Map();   
+    if (meetings == []) {
+      return null;
+    }else {
+      meetings.forEach((item) {
+        if(_events.containsKey(item.date)) { //extracta daginn
+          _events[item.date].add(item.title);
+        }
+      _events[item.date] = [item.title,];
+       
+      });
+      //_events.forEach((key, value) => print("key: $key and value: $value"));
+      return _events; 
+    }
+  }
 }
