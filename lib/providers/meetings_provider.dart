@@ -167,22 +167,21 @@ class MeetingsProvider with ChangeNotifier {
     }
     return Duration(hours: hours, minutes: minutes);
   }
-/*
-   Map<DateTime, List> filterForCalendar() {
-    List<Meeting> meetings = [..._dummyData];
-    Map<DateTime, List> _events = Map();   
+
+    Map<DateTime, List> mergeMeetingsAndConstructions(Map<DateTime, List> constructions) {
+    List<Meeting> meetings = [..._meetings];   
     if (meetings == []) {
       return null;
     }else {
       meetings.forEach((item) {
-        if(_events.containsKey(item.date)) { //extracta daginn
-          _events[item.date].add(item.title);
-        }
-      _events[item.date] = [item.title,];
-       
+        if(constructions.containsKey(item.date)) { 
+          constructions[item.date].add(item.title);
+        }else {
+          constructions[item.date] = [item.title,];
+         }
+        return constructions;
       });
-      //_events.forEach((key, value) => print("key: $key and value: $value"));
-      return _events; 
+      return constructions; 
     }
-  }*/
+  }
 }
