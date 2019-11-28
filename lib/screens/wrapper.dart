@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:husfelagid/providers/documents_folder_provider.dart';
 import 'package:husfelagid/providers/documents_provider.dart';
-import 'package:husfelagid/screens/profile_page.dart';
 import 'package:provider/provider.dart';
 
 import 'tabs_screen.dart';

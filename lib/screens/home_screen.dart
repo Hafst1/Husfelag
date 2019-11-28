@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:husfelagid/screens/profile_page.dart';
-import 'package:husfelagid/screens/settings_form.dart';
+//import 'package:husfelagid/screens/settings_form.dart';
 import 'package:husfelagid/services/auth.dart';
 
 import '../widgets/home_option.dart';
@@ -16,14 +16,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    void _showSettingsPanel() {
-      showModalBottomSheet(context: context, builder: (context) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal:60.0),
-          child: SettingsForm(),
-        );
-      });
-    }
+    // void _showSettingsPanel() {
+    //   showModalBottomSheet(context: context, builder: (context) {
+    //     return Container(
+    //       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal:60.0),
+    //       child: SettingsForm(),
+    //     );
+    //   });
+    // }
 
     void choiceAction(String choice) {
     if (choice == Constants.MyPage){

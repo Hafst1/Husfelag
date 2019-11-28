@@ -1,6 +1,6 @@
-import 'package:husfelagid/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:husfelagid/services/database.dart';
+
+import '../models/user.dart';
 
 class AuthService {
 
