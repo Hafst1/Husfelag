@@ -6,50 +6,128 @@ import '../models/construction.dart';
 enum ConstructionStatus { current, ahead, old }
 
 class ConstructionsProvider with ChangeNotifier {
-  List<Construction> _dummyData = [
-    Construction(
-      id: "firebasekey1",
-      title: "Viðgerð á þaki",
-      dateFrom: DateTime.now().subtract(Duration(days: 10)),
-      dateTo: DateTime.now().subtract(Duration(days: 7)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey2",
-      title: "Málað stigagang",
-      dateFrom: DateTime.now().add(Duration(days: 5)),
-      dateTo: DateTime.now().add(Duration(days: 7)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey3",
-      title: "Skipt um glugga",
-      dateFrom: DateTime.now().add(Duration(days: 1)),
-      dateTo: DateTime.now().add(Duration(days: 9)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey4",
-      title: "Sett upp grindverk",
-      dateFrom: DateTime.now(),
-      dateTo: DateTime.now().add(Duration(days: 12)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey5",
-      title: "Lagað dyrabjölluna",
-      dateFrom: DateTime.now(),
-      dateTo: DateTime.now().add(Duration(days: 16)),
-      description: "",
-    ),
-    Construction(
-      id: "firebasekey6",
-      title: "Málað húsið",
-      dateFrom: DateTime.now().subtract(Duration(days: 9)),
-      dateTo: DateTime.now().add(Duration(days: 20)),
-      description: "",
-    ),
-  ];
+  List<Construction> _constructions = [];
+
+  List<Construction> getAllItemsForCalendar() {
+    return [..._constructions];
+  }
+
+  Future<void> fetchConstructions(BuildContext context) async {
+    DocumentReference constructionRef = Firestore.instance
+        .collection('ResidentAssociation')
+        .document('09fnlNxhgYk70dMpaRJB');
+    try {
+      final response =
+          await constructionRef.collection('ConstructionItems').getDocuments();
+      final List<Construction> loadedConstructions = [];
+      response.documents.forEach((construction) {
+        loadedConstructions.add(Construction(
+          id: construction.documentID,
+          title: construction.data['title'],
+          dateFrom: DateTime.fromMillisecondsSinceEpoch(
+              construction.data['dateFrom']),
+          dateTo:
+              DateTime.fromMillisecondsSinceEpoch(construction.data['dateTo']),
+          description: construction.data['description'],
+        ));
+      });
+      _constructions = loadedConstructions;
+      notifyListeners();
+    } catch (error) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Villa kom upp'),
+          content: Text('Ekki tókst að hlaða upp fundum!'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Halda áfram'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<void> addConstruction(Construction construction) async {
+    DocumentReference constructionRef = Firestore.instance
+        .collection('ResidentAssociation')
+        .document('09fnlNxhgYk70dMpaRJB');
+    try {
+      final response =
+          await constructionRef.collection('ConstructionItems').add({
+        'title': construction.title,
+        'dateFrom': construction.dateFrom.millisecondsSinceEpoch,
+        'dateTo': construction.dateTo.millisecondsSinceEpoch,
+        'description': construction.description
+      });
+      final newConstruction = Construction(
+        title: construction.title,
+        dateFrom: construction.dateFrom,
+        dateTo: construction.dateTo,
+        description: construction.description,
+        id: response.documentID,
+      );
+      _constructions.add(newConstruction);
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  Future<void> deleteConstruction(String id) async {
+    DocumentReference constructionRef = Firestore.instance
+        .collection('ResidentAssociation')
+        .document('09fnlNxhgYk70dMpaRJB');
+    final deleteIndex =
+        _constructions.indexWhere((construction) => construction.id == id);
+    var deletedConstruction = _constructions[deleteIndex];
+    _constructions.removeAt(deleteIndex);
+    notifyListeners();
+    try {
+      await constructionRef
+          .collection('ConstructionItems')
+          .document(id)
+          .delete();
+      deletedConstruction = null;
+    } catch (error) {
+      _constructions.insert(deleteIndex, deletedConstruction);
+      notifyListeners();
+    }
+  }
+
+  Construction findById(String id) {
+    return _constructions.firstWhere((construction) => construction.id == id);
+  }
+
+  Future<void> updateConstruction(
+      String id, Construction editedConstruction) async {
+    DocumentReference constructionRef = Firestore.instance
+        .collection("ResidentAssociation")
+        .document("09fnlNxhgYk70dMpaRJB");
+    try {
+      await constructionRef
+          .collection('ConstructionItems')
+          .document(id)
+          .updateData({
+        'title': editedConstruction.title,
+        'dateFrom': editedConstruction.dateFrom.millisecondsSinceEpoch,
+        'dateTo': editedConstruction.dateTo.millisecondsSinceEpoch,
+        'description': editedConstruction.description,
+      });
+      final constructionIndex =
+          _constructions.indexWhere((construction) => construction.id == id);
+      if (constructionIndex >= 0) {
+        _constructions[constructionIndex] = editedConstruction;
+      }
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
 
   bool _constructionStatusFilter(
       int filterIndex, DateTime dateFrom, DateTime dateTo) {
@@ -73,16 +151,8 @@ class ConstructionsProvider with ChangeNotifier {
     }
   }
 
-  List<Construction> get items {
-    return [..._dummyData];
-  }
-
-  List<Construction> getAllItemsForCalendar() {
-    return [..._dummyData];
-  }
-
   List<Construction> filteredItems(String query, int filterIndex) {
-    List<Construction> constructions = [..._dummyData];
+    List<Construction> constructions = [..._constructions];
     String searchQuery = query.toLowerCase();
     List<Construction> displayList = [];
     if (query.isNotEmpty) {
@@ -110,48 +180,9 @@ class ConstructionsProvider with ChangeNotifier {
     return displayList;
   }
 
-  void addConstruction(Construction construction) {
-    final newConstruction = Construction(
-      title: construction.title,
-      dateFrom: construction.dateFrom,
-      dateTo: construction.dateTo,
-      description: construction.description,
-      id: DateTime.now().toString(),
-    );
-    _dummyData.add(newConstruction);
-    notifyListeners();
-
-    //Add to Firebase
-    DocumentReference constructionRef = Firestore.instance
-        .collection("ResidentAssociation")
-        .document("09fnlNxhgYk70dMpaRJB");
-    constructionRef.collection("ConstructionItems").add({
-      'dateFrom:': construction.dateFrom,
-      'dateTo:': construction.dateTo,
-      'title:': construction.title,
-      'description:': construction.description
-    });
-  }
-
-  void deleteConstruction(String id) {
-    _dummyData.removeWhere((construction) => construction.id == id);
-    notifyListeners();
-  }
-
-  Construction findById(String id) {
-    return _dummyData.firstWhere((construction) => construction.id == id);
-  }
-
-  void updateConstruction(String id, Construction editedConstruction) {
-    final constructionIndex =
-        _dummyData.indexWhere((construction) => construction.id == id);
-    _dummyData[constructionIndex] = editedConstruction;
-    notifyListeners();
-  }
-
   Map<DateTime, List> filterForCalendar() {
-    List<Construction> constructions = [..._dummyData];
-    Map<DateTime, List> _events = Map();   
+    List<Construction> constructions = [..._constructions];
+    Map<DateTime, List> _events = Map();
     if (constructions == []) {
       return null;
     }else {
@@ -169,7 +200,7 @@ class ConstructionsProvider with ChangeNotifier {
        
       });
       _events.forEach((key, value) => print("key: $key and value: $value"));
-      return _events; 
+      return _events;
     }
   }
 }

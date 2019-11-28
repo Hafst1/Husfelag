@@ -12,6 +12,7 @@ import '../../screens/cleaning/cleaning_screen.dart';
 import '../../screens/cleaning/add_cleaning_screen.dart';
 import '../../screens/cleaning/cleaning_list_screen.dart';
 import '../../screens/cleaning/cleaning_tasks_screen.dart';
+import '../../screens/documents/add_document_screen.dart';
 
 class HomeNavigatorRoutes {
   static const String root = '/';
@@ -26,6 +27,7 @@ class HomeNavigatorRoutes {
   static const String addCleaning = AddCleaningScreen.routeName;
   static const String cleaningList = CleaningListScreen.routeName;
   static const String cleaningTasks = CleaningTasksScreen.routeName;
+  static const String addDocument = AddDocumentScreen.routeName;
 }
 
 class HomeNavigator extends StatelessWidget {
@@ -47,6 +49,7 @@ class HomeNavigator extends StatelessWidget {
       HomeNavigatorRoutes.addCleaning: (context) => AddCleaningScreen(),
       HomeNavigatorRoutes.cleaningList: (context) => CleaningListScreen(),
       HomeNavigatorRoutes.cleaningTasks: (context) => CleaningTasksScreen(),
+      HomeNavigatorRoutes.addDocument: (context) => AddDocumentScreen(),
     };
   }
 
