@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:husfelagid/models/cleaning_task.dart';
-import 'package:husfelagid/providers/cleaning_task_provider.dart';
+import 'package:husfelagid/providers/cleaning_provider.dart';
 import 'package:provider/provider.dart';
 
   class CleaningTaskItem extends StatefulWidget {
-  
+    final String id;
+    final String title;
+    final String description; 
+    final bool taskDone;
+
+
+  CleaningTaskItem({
+    @required this.id,
+    @required this.title,
+    @required this.description,
+    @required this.taskDone,
+  });
+
     @override
     _CleaningTaskItemState createState() => 
       _CleaningTaskItemState();
@@ -21,7 +33,7 @@ import 'package:provider/provider.dart';
  
   @override
   Widget build(BuildContext context) {
-    final cleaningTask = Provider.of<CleaningTask>(context);
+   // final cleaningTask = Provider.of<CleaningTask>(context);
     return Card(
       margin: EdgeInsets.symmetric(
         vertical: 8,
@@ -31,7 +43,7 @@ import 'package:provider/provider.dart';
       child: ListTile(
         contentPadding: EdgeInsets.all(10),
         title: Text(
-          cleaningTask.title,
+          widget.title,
           style: Theme.of(context).textTheme.title,
         ),
         subtitle: Padding(
@@ -40,7 +52,7 @@ import 'package:provider/provider.dart';
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    cleaningTask.description,
+                    widget.description,
                     style: TextStyle(fontSize: 15/*, color: Colors.grey[700]*/),
                   ),
                 ),
@@ -48,17 +60,17 @@ import 'package:provider/provider.dart';
             ),
           ),
           trailing: CircularCheckBox(
-            value: cleaningTask.taskDone,
+            value: widget.taskDone,
             materialTapTargetSize: MaterialTapTargetSize.padded,
             onChanged: (check) {
               setState(() {
                 _cleaningTask = CleaningTask(
-                  id: cleaningTask.id,
-                  title: cleaningTask.title,
-                  description: cleaningTask.description,
+                  id: widget.id,
+                  title: widget.title,
+                  description: widget.description,
                   taskDone: check,
                 );
-              Provider.of<CleaningTaskProvider>(context)
+              Provider.of<CleaningProvider>(context)
               .updateCleaningTask(_cleaningTask.id, _cleaningTask);
               });
             },
