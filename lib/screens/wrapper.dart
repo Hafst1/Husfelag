@@ -6,7 +6,6 @@ import '../models/user.dart';
 import '../providers/constructions_provider.dart';
 import '../providers/meetings_provider.dart';
 import '../providers/cleaning_provider.dart';
-import '../providers/cleaning_task_provider.dart';
 import '../screens/authenticate/authenticate.dart';
 import '../providers/documents_provider.dart';
 
@@ -31,9 +30,6 @@ class Wrapper extends StatelessWidget {
           ),
           ChangeNotifierProvider.value(
             value: CleaningProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: CleaningTaskProvider(),
           ),
           ChangeNotifierProvider.value(
             value: DocumentsProvider(),
