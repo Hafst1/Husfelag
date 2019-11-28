@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:husfelagid/services/auth.dart';
-import 'package:husfelagid/services/database.dart';
-import 'package:husfelagid/shared/constants.dart';
-import 'package:husfelagid/shared/loading.dart';
+
+import '../../services/auth.dart';
+import '../../services/database.dart';
+import '../../shared/loading.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
