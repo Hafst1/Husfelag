@@ -24,6 +24,11 @@ class CurrentUser with ChangeNotifier {
     }
   }
 
+  // Future<void> fetchAssociations() {
+  //   DocumentReference documentRef = Firestore.instance
+  //       .collection("ResidentAssociation");
+  // }
+
   String getId() {
     return _id;
   }
