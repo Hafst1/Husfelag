@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CleaningTask with ChangeNotifier{
+class CleaningTask{
     final String id;
     final String title;
     final String description; 

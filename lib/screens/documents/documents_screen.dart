@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/screens/documents/add_document_screen.dart';
 import 'package:provider/provider.dart';
-
-import '../../providers/documents_folder_provider.dart';
+import '../../providers/documents_provider.dart';
+import '../../screens/documents/add_document_screen.dart';
 import '../../widgets/documents_folder_item.dart';
 
 class DocumentsScreen extends StatefulWidget {
@@ -119,8 +118,15 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
           child: Row(
             children: <Widget>[
               Expanded(
-                child: ListView.builder(
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(20),
                   itemCount: folders.length,
+                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 2 / 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 10,
+                  ),
                   itemBuilder: (ctx, i) =>DocumentFolder(
                     id: folders[i].id,
                     title: folders[i].title,

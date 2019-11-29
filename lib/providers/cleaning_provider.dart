@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:husfelagid/models/cleaning_task.dart';
 import '../models/apartment.dart';
 import '../models/cleaning.dart';
 
@@ -7,7 +8,8 @@ enum CleaningStatus { current, ahead, old }
 
 class CleaningProvider with ChangeNotifier {
   List<Cleaning> _cleaningItems = [];
-
+  List<CleaningTask> _cleaningTask = [];
+ 
   List<Apartment> _dummyData2 = [
     Apartment(
       apartmentNumber: "Íbúð 101",
@@ -61,6 +63,10 @@ class CleaningProvider with ChangeNotifier {
 
   List<Apartment> get apartmentItems {
     return [..._dummyData2];
+  }
+  
+  List<CleaningTask> getAllTasks() {
+    return [..._cleaningTask];
   }
 
   Future<void> fetchCleaningItems(BuildContext context) async {
@@ -218,4 +224,50 @@ class CleaningProvider with ChangeNotifier {
     }
     return displayList;
   }
+
+  Future<void> fetchCleaningTasks(BuildContext context) async {
+    DocumentReference cleaningTaskRef = Firestore.instance
+        .collection('ResidentAssociation')
+        .document('09fnlNxhgYk70dMpaRJB');
+    try {
+      final response =
+          await cleaningTaskRef.collection('CleaningTasks').getDocuments();
+      final List<CleaningTask> loadedCleaningTask = [];
+      response.documents.forEach((cleaningTask) {
+        loadedCleaningTask.add(CleaningTask(
+          id: cleaningTask.documentID,
+          title: cleaningTask.data['title'],
+          description: cleaningTask.data['description'],
+          taskDone: true,
+        ));
+      });
+      _cleaningTask = loadedCleaningTask;
+      notifyListeners();
+    } catch (error) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Villa kom upp'),
+          content: Text('Ekki tókst að hlaða upp verkefnalista!'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Halda áfram'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            )
+          ],
+        ),
+      );
+    }
+  }
+  void updateCleaningTask(String id, CleaningTask editedCleaningTask) {
+    final cleaningTaskIndex = _cleaningTask.indexWhere((cleaningTask) => cleaningTask.id == id);
+    _cleaningTask[cleaningTaskIndex] = editedCleaningTask;
+    notifyListeners();
+  }
+
+   CleaningTask findCleaningTaskById(String id) {
+    return _cleaningTask.firstWhere((cleaningTask) => cleaningTask.id == id);
+  } 
 }
