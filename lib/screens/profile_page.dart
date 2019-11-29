@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
+import 'package:husfelagid/services/auth.dart';
 import '../models/user.dart';
 import '../services/database.dart';
 import '../shared/loading.dart';
@@ -16,13 +17,12 @@ class MapScreenState extends State<ProfilePage>
   bool _status = true;
   final FocusNode myFocusNode = FocusNode();
 
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   String _currentName;
   String _currentEmail;
   String _currentHome;
-  String _currentResId;
-  String _currentApartId;
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class MapScreenState extends State<ProfilePage>
                       Column(
                         children: <Widget>[
                           new Container(
-                            height: 250.0,
+                            height: 50.0,
                             color: Colors.white,
                             child: new Column(
                               children: <Widget>[
@@ -117,7 +117,7 @@ class MapScreenState extends State<ProfilePage>
                                 children: <Widget>[
                                   Padding(
                                       padding: EdgeInsets.only(
-                                          left: 25.0, right: 25.0, top: 25.0),
+                                          left: 25.0, right: 25.0, top: 0.0),
                                       child: new Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -357,13 +357,17 @@ class MapScreenState extends State<ProfilePage>
                                                 color: Colors.green,
                                                 onPressed: () async {
                                                   //if (_formKey.currentState.validate()) {
+                                                  
                                                   await DatabaseService( uid: user.uid).updateUserData(
                                                           _currentName ?? userData.name,
                                                           _currentEmail ?? userData.email,
                                                           _currentHome ?? userData.home,
-                                                          _currentResId ?? userData.resId,
-                                                          _currentApartId ?? userData.apartId
+                                                          userData.resId,
+                                                          userData.apartId
                                                       );
+                                                  // if (_currentEmail != userData.email) {
+                                                  //   await _auth.changeEmail(_currentEmail);
+                                                  // }
                                                   //}
                                                   setState(() {
                                                     _status = true;
@@ -426,65 +430,6 @@ class MapScreenState extends State<ProfilePage>
           }
         });
   }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the Widget is disposed
-    myFocusNode.dispose();
-    super.dispose();
-  }
-
-  /*Widget _getActionButtons() {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 45.0),
-      child: new Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Container(
-                  child: new RaisedButton(
-                child: new Text("Vista"),
-                textColor: Colors.white,
-                color: Colors.green,
-                onPressed: () async {
-                  setState(() {
-                    _status = true;
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  });
-                },
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(20.0)),
-              )),
-            ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Container(
-                  child: new RaisedButton(
-                child: new Text("Hætta við"),
-                textColor: Colors.white,
-                color: Colors.red,
-                onPressed: () {
-                  setState(() {
-                    _status = true;
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  });
-                },
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(20.0)),
-              )),
-            ),
-            flex: 2,
-          ),
-        ],
-      ),
-    );
-  }*/
 
   Widget _getEditIcon() {
     return new GestureDetector(
