@@ -228,6 +228,11 @@ class MapScreenState extends State<ProfilePage>
                                               decoration: const InputDecoration(
                                                   hintText:
                                                       "Skráðu netfangið þitt"),
+                                              validator: (val) => val.isEmpty
+                                                  ? 'Vinsamlegast skráðu heimilisfang'
+                                                  : null,
+                                              onChanged: (val) => setState(
+                                                  () => _currentEmail = val),
                                               enabled: !_status,
                                             ),
                                           ),
@@ -357,7 +362,9 @@ class MapScreenState extends State<ProfilePage>
                                                 color: Colors.green,
                                                 onPressed: () async {
                                                   //if (_formKey.currentState.validate()) {
-                                                  
+                                                  if (_currentEmail != userData.email) {
+                                                    await _auth.changeEmail(_currentEmail);
+                                                  }
                                                   await DatabaseService( uid: user.uid).updateUserData(
                                                           _currentName ?? userData.name,
                                                           _currentEmail ?? userData.email,
@@ -365,9 +372,6 @@ class MapScreenState extends State<ProfilePage>
                                                           userData.resId,
                                                           userData.apartId
                                                       );
-                                                  // if (_currentEmail != userData.email) {
-                                                  //   await _auth.changeEmail(_currentEmail);
-                                                  // }
                                                   //}
                                                   setState(() {
                                                     _status = true;
