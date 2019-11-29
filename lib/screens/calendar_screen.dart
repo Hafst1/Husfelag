@@ -36,7 +36,13 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
         _isLoading = true;
       });
    
-    Provider.of<MeetingsProvider>(context).fetchMeetings(context); 
+    Provider.of<MeetingsProvider>(context)
+          .fetchMeetings(context)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     Provider.of<ConstructionsProvider>(context)
           .fetchConstructions(context)
           .then((_) {
@@ -136,19 +142,38 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
                 child: Container(
                   color: Colors.black54,
                   child: ListTile(
+                    contentPadding: EdgeInsets.all(10),
                     leading: Icon(Icons.alarm,color: Colors.deepOrange[400]),
                     title: Text(
                         event[0],/*event.toString().substring(1),*/
                         style: TextStyle(
-                        fontWeight: FontWeight.bold,color: Colors.white),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        color: Colors.white),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                event[1],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       onTap: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text(event[1]),
-                              content: Text(event[3].toString()),
+                              title: Text(event[2]),
+                              content: Text("Kl: " + event[4].toString().substring(11,16)),
                               actions: <Widget> [
                                 FlatButton(
                                   child: Text("Loka"),

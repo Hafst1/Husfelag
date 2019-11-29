@@ -169,16 +169,20 @@ class MeetingsProvider with ChangeNotifier {
   }
 
     Map<DateTime, List> mergeMeetingsAndConstructions(Map<DateTime, List> constructions) {
-    List<Meeting> meetings = [..._meetings];   
+    List<Meeting> meetings = [..._meetings]; 
+    String stringDate = '';  
+    String hoursMinutesSecond= "00:00:00";
     if (meetings == []) {
       return null;
     }else {
       meetings.forEach((item) {
-        if(constructions.containsKey(item.date)) { 
-          constructions[item.date].add(["Fundur:    " + item.title, item.description, 
+        stringDate = item.date.toString().substring(0,11) + hoursMinutesSecond;
+        DateTime newDate = DateTime.parse(stringDate);
+        if(constructions.containsKey(newDate)) { 
+          constructions[newDate].add(["Fundur:    " , item.title, item.description, 
           "Tími:    " ,item.date],);
         }else {
-          constructions[item.date] = [["Fundur:    " + item.title, item.description, 
+          constructions[newDate] = [["Fundur:    " , item.title, item.description, 
           "Tími:    " ,item.date],];
          }
         return constructions;
