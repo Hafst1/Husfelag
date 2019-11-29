@@ -183,10 +183,10 @@ class ConstructionsProvider with ChangeNotifier {
     }else {
       constructions.forEach((item) {
         if(_events.containsKey(item.dateFrom)) { 
-          _events[item.dateFrom].add(["Framkvæmd:    " + item.title,  item.description,  
+          _events[item.dateFrom].add(["Framkvæmd:    " , item.title,  item.description,  
           "Dagsetning:    " , item.dateFrom],); 
         }else {
-             _events[item.dateFrom] = [["Framkvæmd:    " + item.title,  item.description,
+             _events[item.dateFrom] = [["Framkvæmd:    " , item.title,  item.description,
               "Dagsetning:    ", item.dateFrom],];
           }
         return _events; 
