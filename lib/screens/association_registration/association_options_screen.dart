@@ -68,6 +68,7 @@ class AssociationOptionsScreen extends StatelessWidget {
           ],
         ),
       ),
+      resizeToAvoidBottomPadding: false,
     );
   }
 }

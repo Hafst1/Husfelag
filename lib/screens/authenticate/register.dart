@@ -60,15 +60,15 @@ class _RegisterState extends State<Register> {
                         child: Column(
                           children: <Widget>[
                             TextFormField(
-                              decoration: InputDecoration(
-                                hintText: "Fullt nafn",
-                                prefixIcon: Icon(Icons.person),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                decoration: InputDecoration(
+                                  hintText: "Fullt nafn",
+                                  prefixIcon: Icon(Icons.person),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
                                 ),
-                              ),
-                              validator: (val) =>
-                                  val.isEmpty ? 'Sláðu inn fullt nafn' : null,
+                                validator: (val) =>
+                                    val.isEmpty ? 'Sláðu inn fullt nafn' : null,
                                 onChanged: (val) {
                                   setState(() => name = val);
                                 }),
@@ -76,15 +76,16 @@ class _RegisterState extends State<Register> {
                               height: 20,
                             ),
                             TextFormField(
-                              decoration: InputDecoration(
-                                hintText: "Heimilisfang",
-                                prefixIcon: Icon(Icons.home),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                decoration: InputDecoration(
+                                  hintText: "Heimilisfang",
+                                  prefixIcon: Icon(Icons.home),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
                                 ),
-                              ),
-                              validator: (val) =>
-                                  val.isEmpty ? 'Sláðu inn heimilisfang' : null,
+                                validator: (val) => val.isEmpty
+                                    ? 'Sláðu inn heimilisfang'
+                                    : null,
                                 onChanged: (val) {
                                   setState(() => home = val);
                                 }),
@@ -183,18 +184,23 @@ class _RegisterState extends State<Register> {
       onTap: () async {
         if (_formKey.currentState.validate()) {
           setState(() => loading = true);
-          dynamic result =
-              await _auth.registerWithEmailAndPassword(email, password)
-              .then((currentUser) async {
-                await DatabaseService(uid: currentUser.uid).updateUserData(name, email, home, '', '');
-              });
-          if (this.mounted){
-            if (result == null) {
-              setState(() {
-                error = 'Vinsamlegast fylltu út gilt netfang';
-                loading = false;
-              });
+          try {
+            dynamic result = await _auth
+                .registerWithEmailAndPassword(email, password)
+                .then((currentUser) async {
+              await DatabaseService(uid: currentUser.uid)
+                  .updateUserData(name, email, home, '', '');
+            });
+            if (this.mounted) {
+              if (result == null) {
+                setState(() {
+                  error = 'Vinsamlegast fylltu út gilt netfang';
+                  loading = false;
+                });
+              }
             }
+          } catch (error) {
+            // error handling
           }
         }
       },
