@@ -175,9 +175,11 @@ class MeetingsProvider with ChangeNotifier {
     }else {
       meetings.forEach((item) {
         if(constructions.containsKey(item.date)) { 
-          constructions[item.date].add(item.title);
+          constructions[item.date].add(["Fundur:    " + item.title, item.description, 
+          "Tími:    " ,item.date],);
         }else {
-          constructions[item.date] = [item.title,];
+          constructions[item.date] = [["Fundur:    " + item.title, item.description, 
+          "Tími:    " ,item.date],];
          }
         return constructions;
       });
