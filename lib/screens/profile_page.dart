@@ -23,6 +23,8 @@ class MapScreenState extends State<ProfilePage>
   String _currentName;
   String _currentEmail;
   String _currentHome;
+  String _currentPassword;
+  String _oldPassword;
 
   @override
   void initState() {
@@ -48,7 +50,6 @@ class MapScreenState extends State<ProfilePage>
                           fontFamily: 'sans-serif-light',
                           color: Colors.white)),
                 ),
-                key: _formKey,
                 body: new Container(
                   color: Colors.white,
                   child: new ListView(
@@ -111,6 +112,7 @@ class MapScreenState extends State<ProfilePage>
                             color: Color(0xffFFFFFF),
                             child: Padding(
                               padding: EdgeInsets.only(bottom: 25.0),
+                              
                               child: new Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -228,9 +230,9 @@ class MapScreenState extends State<ProfilePage>
                                               decoration: const InputDecoration(
                                                   hintText:
                                                       "Skráðu netfangið þitt"),
-                                              validator: (val) => val.isEmpty
-                                                  ? 'Vinsamlegast skráðu heimilisfang'
-                                                  : null,
+                                              validator: (val) =>
+                                                val.isEmpty ? 'Sláðu inn netfang' 
+                                                : null,
                                               onChanged: (val) => setState(
                                                   () => _currentEmail = val),
                                               enabled: !_status,
@@ -292,7 +294,7 @@ class MapScreenState extends State<ProfilePage>
                                   Expanded(
                                     child: Container(
                                       child: new Text(
-                                        'Lykilorð',
+                                        'Breyta um lykilorð',
                                         style: TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold),
@@ -300,7 +302,7 @@ class MapScreenState extends State<ProfilePage>
                                     ),
                                     flex: 2,
                                   ),
-                                  Expanded(
+                                  /*Expanded(
                                     child: Container(
                                       child: new Text(
                                         'Nýja lykilorðið',
@@ -310,7 +312,7 @@ class MapScreenState extends State<ProfilePage>
                                       ),
                                     ),
                                     flex: 2,
-                                  ),
+                                  ),*/
                                 ],
                               )),
                                   Padding(
@@ -323,18 +325,28 @@ class MapScreenState extends State<ProfilePage>
                                   Flexible(
                                     child: Padding(
                                       padding: EdgeInsets.only(right: 10.0),
-                                      child: new TextField(
+                                      child: new TextFormField(
                                         decoration: const InputDecoration(
                                             hintText: "Gamla lykilorðið"),
+                                        obscureText: true,
+                                        validator: (val) => val != userData.password
+                                          ? 'Ekki rétt lykilorð'
+                                          : null,
                                         enabled: !_status,
                                       ),
                                     ),
                                     flex: 2,
                                   ),
                                   Flexible(
-                                    child: new TextField(
+                                    child: new TextFormField(
                                       decoration: const InputDecoration(
                                           hintText: "Nýja lykilorðið"),
+                                      obscureText: true,
+                                      validator: (val) => val.length < 6
+                                        ? 'Lykilorð þarf að innihalda 6+ stafi'
+                                        : null,
+                                      onChanged: (val) => setState(
+                                                  () => _currentPassword = val),
                                       enabled: !_status,
                                     ),
                                     flex: 2,
@@ -361,17 +373,20 @@ class MapScreenState extends State<ProfilePage>
                                                 textColor: Colors.white,
                                                 color: Colors.green,
                                                 onPressed: () async {
-                                                  //if (_formKey.currentState.validate()) {
-                                                  if (_currentEmail != userData.email) {
-                                                    await _auth.changeEmail(_currentEmail);
-                                                  }
-                                                  await DatabaseService( uid: user.uid).updateUserData(
-                                                          _currentName ?? userData.name,
-                                                          _currentEmail ?? userData.email,
-                                                          _currentHome ?? userData.home,
-                                                          userData.resId,
-                                                          userData.apartId
-                                                      );
+                                                 // if (_formKey.currentState.validate()) {
+                                                    if (_currentEmail != userData.email) {
+                                                      await _auth.changeEmail(_currentEmail);
+                                                    }
+                                                    if (_currentPassword != userData.password){
+                                                        await _auth.changePassword(_currentPassword);
+                                                    }
+                                                    await DatabaseService( uid: user.uid).updateUserData(
+                                                            _currentName ?? userData.name,
+                                                            _currentEmail ?? userData.email,
+                                                            _currentHome ?? userData.home,
+                                                            userData.resId,
+                                                            userData.apartId
+                                                        );
                                                   //}
                                                   setState(() {
                                                     _status = true;
