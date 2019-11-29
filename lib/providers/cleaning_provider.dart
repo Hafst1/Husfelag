@@ -9,6 +9,11 @@ enum CleaningStatus { current, ahead, old }
 class CleaningProvider with ChangeNotifier {
   List<Cleaning> _cleaningItems = [];
   List<CleaningTask> _cleaningTask = [];
+
+  DocumentReference cleaningRef = Firestore.instance
+        .collection('ResidentAssociation')
+        .document('09fnlNxhgYk70dMpaRJB');
+  
  
   List<Apartment> _dummyData2 = [
     Apartment(
@@ -70,9 +75,7 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> fetchCleaningItems(BuildContext context) async {
-    DocumentReference cleaningRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
+  
     try {
       final response =
           await cleaningRef.collection('CleaningItems').getDocuments();
@@ -109,9 +112,7 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> addCleaningItem(Cleaning cleaningItem) async {
-    DocumentReference cleaningRef = Firestore.instance
-        .collection("ResidentAssociation")
-        .document("09fnlNxhgYk70dMpaRJB");
+  
     try {
       final response = await cleaningRef.collection("CleaningItems").add({
         'apartment': cleaningItem.apartment,
@@ -132,9 +133,7 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> deleteCleaningItem(String id) async {
-    DocumentReference cleaningRef = Firestore.instance
-        .collection("ResidentAssociation")
-        .document("09fnlNxhgYk70dMpaRJB");
+
     final deleteIndex =
         _cleaningItems.indexWhere((cleaningItem) => cleaningItem.id == id);
     var deletedCleaningItem = _cleaningItems[deleteIndex];
@@ -154,9 +153,7 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> updateCleaningItem(String id, Cleaning editedCleaning) async {
-    DocumentReference cleaningRef = Firestore.instance
-        .collection("ResidentAssociation")
-        .document("09fnlNxhgYk70dMpaRJB");
+
     try {
       await cleaningRef.collection('CleaningItems').document(id).updateData({
         'apartment': editedCleaning.apartment,
@@ -226,19 +223,17 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> fetchCleaningTasks(BuildContext context) async {
-    DocumentReference cleaningTaskRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
+   
     try {
       final response =
-          await cleaningTaskRef.collection('CleaningTasks').getDocuments();
+          await cleaningRef.collection('CleaningTasks').getDocuments();
       final List<CleaningTask> loadedCleaningTask = [];
       response.documents.forEach((cleaningTask) {
         loadedCleaningTask.add(CleaningTask(
           id: cleaningTask.documentID,
           title: cleaningTask.data['title'],
           description: cleaningTask.data['description'],
-          taskDone: true,
+          taskDone: cleaningTask.data['done'],
         ));
       });
       _cleaningTask = loadedCleaningTask;
@@ -261,10 +256,22 @@ class CleaningProvider with ChangeNotifier {
       );
     }
   }
-  void updateCleaningTask(String id, CleaningTask editedCleaningTask) {
+  void updateCleaningTask(String id, CleaningTask editedCleaningTask) async {
     final cleaningTaskIndex = _cleaningTask.indexWhere((cleaningTask) => cleaningTask.id == id);
-    _cleaningTask[cleaningTaskIndex] = editedCleaningTask;
-    notifyListeners();
+     if (cleaningTaskIndex >= 0) {
+      _cleaningTask[cleaningTaskIndex] = editedCleaningTask;
+     }
+    try {
+
+      await cleaningRef.collection('CleaningTasks').document(id).updateData({
+        'done': editedCleaningTask.taskDone,
+      });
+
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+
   }
 
    CleaningTask findCleaningTaskById(String id) {
