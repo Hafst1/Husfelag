@@ -282,7 +282,7 @@ class MapScreenState extends State<ProfilePage>
                                           ),
                                         ],
                                       )),
-                                  /*Padding(
+                                  Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 25.0),
                               child: new Row(
@@ -292,7 +292,7 @@ class MapScreenState extends State<ProfilePage>
                                   Expanded(
                                     child: Container(
                                       child: new Text(
-                                        'Pin Code',
+                                        'Lykilorð',
                                         style: TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold),
@@ -303,7 +303,7 @@ class MapScreenState extends State<ProfilePage>
                                   Expanded(
                                     child: Container(
                                       child: new Text(
-                                        'State',
+                                        'Nýja lykilorðið',
                                         style: TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold),
@@ -312,8 +312,8 @@ class MapScreenState extends State<ProfilePage>
                                     flex: 2,
                                   ),
                                 ],
-                              )),*/
-                                  /*Padding(
+                              )),
+                                  Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 2.0),
                               child: new Row(
@@ -325,7 +325,7 @@ class MapScreenState extends State<ProfilePage>
                                       padding: EdgeInsets.only(right: 10.0),
                                       child: new TextField(
                                         decoration: const InputDecoration(
-                                            hintText: "Enter Pin Code"),
+                                            hintText: "Gamla lykilorðið"),
                                         enabled: !_status,
                                       ),
                                     ),
@@ -334,13 +334,13 @@ class MapScreenState extends State<ProfilePage>
                                   Flexible(
                                     child: new TextField(
                                       decoration: const InputDecoration(
-                                          hintText: "Enter State"),
+                                          hintText: "Nýja lykilorðið"),
                                       enabled: !_status,
                                     ),
                                     flex: 2,
                                   ),
                                 ],
-                              )),*/
+                              )),
                                   //!_status ? _getActionButtons() : new Container(),
                                   if (!_status)
                                     Padding(
