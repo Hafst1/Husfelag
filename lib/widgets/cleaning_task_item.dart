@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:husfelagid/models/cleaning_task.dart';
+import 'package:husfelagid/providers/cleaning_provider.dart';
+import 'package:provider/provider.dart';
 
   class CleaningTaskItem extends StatefulWidget {
+    final String id;
     final String title;
-    final String description;
+    final String description; 
+    final bool taskDone;
 
-    const CleaningTaskItem({Key key, this.title, this.description}):
-    super(key: key);
+
+  CleaningTaskItem({
+    @required this.id,
+    @required this.title,
+    @required this.description,
+    @required this.taskDone,
+  });
 
     @override
     _CleaningTaskItemState createState() => 
@@ -14,11 +24,16 @@ import 'package:circular_check_box/circular_check_box.dart';
   }
 
   class _CleaningTaskItemState extends State<CleaningTaskItem> {
-  bool check = false; 
-  void valueChanged(bool value) => setState(() => check = value);
-
+    var _cleaningTask = CleaningTask(
+      id: null,
+      title: '',
+      description: '',
+      taskDone: false,
+    );
+ 
   @override
   Widget build(BuildContext context) {
+   // final cleaningTask = Provider.of<CleaningTask>(context);
     return Card(
       margin: EdgeInsets.symmetric(
         vertical: 8,
@@ -45,10 +60,20 @@ import 'package:circular_check_box/circular_check_box.dart';
             ),
           ),
           trailing: CircularCheckBox(
-            value: check,
+            value: widget.taskDone,
             materialTapTargetSize: MaterialTapTargetSize.padded,
-            onChanged: valueChanged,
-            activeColor: Colors.red[200],
+            onChanged: (check) {
+              setState(() {
+                _cleaningTask = CleaningTask(
+                  id: widget.id,
+                  title: widget.title,
+                  description: widget.description,
+                  taskDone: check,
+                );
+              Provider.of<CleaningProvider>(context)
+              .updateCleaningTask(_cleaningTask.id, _cleaningTask);
+              });
+            },
           ),
       )
     );

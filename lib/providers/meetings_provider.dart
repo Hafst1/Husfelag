@@ -167,4 +167,23 @@ class MeetingsProvider with ChangeNotifier {
     }
     return Duration(hours: hours, minutes: minutes);
   }
+
+    Map<DateTime, List> mergeMeetingsAndConstructions(Map<DateTime, List> constructions) {
+    List<Meeting> meetings = [..._meetings];   
+    if (meetings == []) {
+      return null;
+    }else {
+      meetings.forEach((item) {
+        if(constructions.containsKey(item.date)) { 
+          constructions[item.date].add(["Fundur:    " + item.title, item.description, 
+          "Tími:    " ,item.date],);
+        }else {
+          constructions[item.date] = [["Fundur:    " + item.title, item.description, 
+          "Tími:    " ,item.date],];
+         }
+        return constructions;
+      });
+      return constructions; 
+    }
+  }
 }

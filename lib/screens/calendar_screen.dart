@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/providers/meetings_provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
- 
 import '../providers/constructions_provider.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -10,7 +10,8 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStateMixin {
-  Map<DateTime, List> _events;
+  Map<DateTime, List> _events;   //Meetings and Constructions
+  Map<DateTime, List> _constructionEvents;
   List _selectedEvents;
   CalendarController _calendarController;
   AnimationController _animationController;
@@ -18,7 +19,6 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-
     _calendarController = CalendarController();
     _animationController = AnimationController(
       vsync: this,
@@ -26,12 +26,38 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
     );
     _animationController.forward();
   }
+  var _isInit = true;
+  var _isLoading = false;
 
   @override
   void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+   
+    Provider.of<MeetingsProvider>(context).fetchMeetings(context); 
+    Provider.of<ConstructionsProvider>(context)
+          .fetchConstructions(context)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+
+  setState(() {
     final constructionEvents = Provider.of<ConstructionsProvider>(context);
-    _events = constructionEvents.filterForCalendar();
-    _selectedEvents = _events[DateTime.now()] ?? [];
+    _constructionEvents = constructionEvents.filterForCalendar();
+
+    final meetingEvents = Provider.of<MeetingsProvider>(context);
+     _events = meetingEvents.mergeMeetingsAndConstructions(_constructionEvents);
+     _selectedEvents = _events[DateTime.now()] ?? [];
+
+  });
+    
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -41,31 +67,9 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
     super.dispose();
   }
 
-  void _showActionDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Nánar um eventinn"),
-          content: Text("staðsetning, tími"),
-          actions: <Widget> [
-            FlatButton(
-              child: Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ]
-        );
-      }
-    );
-  }
-
   void _onDaySelected(DateTime day, List events) {
-    print('CALLBACK: _onDaySelected');
     setState(() {
       _selectedEvents = events;
-
     });
   }
 
@@ -75,26 +79,33 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
       appBar: AppBar(
       title: Text("Dagatal"),
       ),
-      body: Container (
-        color: Colors.white60,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-          _buildTableCalendar(),
-          const SizedBox(height: 8.0),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: _buildEventList()
+      body: _isLoading 
+          ? Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor),
+              )
+            )
+          : Container (
+              color: Colors.black12,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                _buildTableCalendar(),
+                const SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
+                Expanded(
+                  child: _buildEventList()
+                  ),
+              ],
             ),
-        ],
-      ),
-      ),
+          ),
     );
   }
   Widget _buildTableCalendar() {
     return TableCalendar(
       calendarController: _calendarController,
-      events: _events,                              
+      events: _events,                             
       startingDayOfWeek: StartingDayOfWeek.monday, 
       calendarStyle: CalendarStyle(
         selectedColor: Colors.deepOrange[400],    
@@ -113,7 +124,8 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
     );
   }
 
-  Widget _buildEventList() {              
+  Widget _buildEventList() {
+    print(context);              
     return ListView(
       children: _selectedEvents
           .map((event) => Container(    
@@ -122,14 +134,33 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
                 ),
                 margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: Container(
-                  color: Colors.blueGrey[100],
+                  color: Colors.black54,
                   child: ListTile(
-                    leading: Icon(Icons.alarm),
+                    leading: Icon(Icons.alarm,color: Colors.deepOrange[400]),
                     title: Text(
-                      event.toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                        event[0],/*event.toString().substring(1),*/
+                        style: TextStyle(
+                        fontWeight: FontWeight.bold,color: Colors.white),
                       ),
-                      onTap: () => _showActionDialog(context)/*print('$event tapped!')*/,
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(event[1]),
+                              content: Text(event[3].toString()),
+                              actions: <Widget> [
+                                FlatButton(
+                                  child: Text("Loka"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ]
+                            );
+                          }
+                        );
+                      }
                   ),
                 ),
               ))

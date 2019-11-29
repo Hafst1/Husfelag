@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/providers/documents_folder_provider.dart';
-import 'package:husfelagid/widgets/document_item.dart';
 import 'package:provider/provider.dart';
-
+import '../../widgets/document_item.dart';
 import '../../providers/documents_provider.dart';
 
 class DocumentsFolderScreen extends StatefulWidget {
@@ -109,18 +107,14 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
                   ),
                   child: ListView.builder(
                     itemCount: documents.length,
-                    itemBuilder: (ctx, i) =>DocumentItem(
+                    itemBuilder: (ctx, i) =>Document(
                       folderId: documents[i].folderId,
                       title: documents[i].title,
+                      description: documents[i].description,
                     ),
                   )
                 ),
               ),
-             /* AddDocumentOption(
-                optionIcon: CustomIcons.file_add,
-                optionText: "Bæta við skjali",
-                optionRoute: AddDocumentScreen.routeName,
-              )*/
             ],
           ),
         ),
