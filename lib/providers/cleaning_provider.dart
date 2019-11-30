@@ -256,17 +256,37 @@ class CleaningProvider with ChangeNotifier {
       );
     }
   }
-  void updateCleaningTask(String id, CleaningTask editedCleaningTask) async {
+
+  Future<void> addCleaningTaskItem(CleaningTask cleaningTaskItem) async {
+  
+    try {
+      final response = await cleaningRef.collection("CleaningTasks").add({
+        'title': cleaningTaskItem.title,
+        'description': cleaningTaskItem.description,
+        'taskDone': cleaningTaskItem.taskDone,
+      });
+      final newCleaningTaskItem = CleaningTask(
+        title: cleaningTaskItem.title,
+        description: cleaningTaskItem.description,
+        taskDone: cleaningTaskItem.taskDone,
+        id: response.documentID,
+      );
+      _cleaningTask.add(newCleaningTaskItem);
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  void updateCleaningTaskItem(String id, CleaningTask editedCleaningTask) async {
     final cleaningTaskIndex = _cleaningTask.indexWhere((cleaningTask) => cleaningTask.id == id);
      if (cleaningTaskIndex >= 0) {
       _cleaningTask[cleaningTaskIndex] = editedCleaningTask;
      }
     try {
-
       await cleaningRef.collection('CleaningTasks').document(id).updateData({
         'done': editedCleaningTask.taskDone,
       });
-
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -277,4 +297,21 @@ class CleaningProvider with ChangeNotifier {
    CleaningTask findCleaningTaskById(String id) {
     return _cleaningTask.firstWhere((cleaningTask) => cleaningTask.id == id);
   } 
+
+
+Future<void> deleteCleaningTaskItem(String id) async {
+
+    final deleteIndex =
+        _cleaningTask.indexWhere((cleaningTask) => cleaningTask.id == id);
+    var deletedCleaningItem = _cleaningTask[deleteIndex];
+    _cleaningTask.removeAt(deleteIndex);
+    notifyListeners();
+    try {
+      await cleaningRef.collection('CleaningTasks').document(id).delete();
+      deletedCleaningItem = null;
+    } catch (error) {
+      _cleaningTask.insert(deleteIndex, deletedCleaningItem);
+      notifyListeners();
+    }
+  }
 }
