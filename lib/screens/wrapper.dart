@@ -10,14 +10,15 @@ import '../providers/meetings_provider.dart';
 import '../providers/cleaning_provider.dart';
 import '../providers/cleaning_task_provider.dart';
 import '../screens/authenticate/authenticate.dart';
-import '../providers/current_user.dart';
+import '../providers/current_user_provider.dart';
 import '../screens/association_registration/association_options_screen.dart';
 
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    final currentUser = Provider.of<CurrentUser>(context, listen: false);
+    final currentUser =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     // return Authenticate page if user has value of null
     if (user == null) {
       return Authenticate();
@@ -38,8 +39,6 @@ class Wrapper extends StatelessWidget {
                 ),
               );
             case ConnectionState.done:
-              // currentUser.setResidentAssociationNumber('Tokyo');
-              // print(currentUser.getResidentAssociationNumber());
               // send user to home page if he contains a resident association number
               return currentUser.containsRAN()
                   ? MultiProvider(

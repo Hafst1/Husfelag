@@ -16,6 +16,7 @@ class CurrentUserProvider with ChangeNotifier {
   List<ResidentAssociation> _residentAssociations = [];
   List<Apartment> _apartments = [];
 
+  // fetch user when starting application and store in the variables above.
   Future<void> fetchCurrentUser(String id) async {
     DocumentReference userRef =
         Firestore.instance.collection('user').document(id);
@@ -35,6 +36,7 @@ class CurrentUserProvider with ChangeNotifier {
     }
   }
 
+  // fetch associations from firebase and store in _residentAssociation list.
   Future<void> fetchAssociations(BuildContext context) async {
     CollectionReference associatonRef =
         Firestore.instance.collection('ResidentAssociation');
@@ -70,6 +72,8 @@ class CurrentUserProvider with ChangeNotifier {
     }
   }
 
+  // function for creating a resident association which also adds apartment
+  // to it and updates user info on firebase.
   Future<String> createAssociation(
       ResidentAssociation association, Apartment apartment) async {
     CollectionReference associatonRef =
@@ -100,13 +104,13 @@ class CurrentUserProvider with ChangeNotifier {
         apartmentId.documentID,
         response.documentID,
       );
-      // mögulega notify listeners
       return response.documentID;
     } catch (error) {
       throw (error);
     }
   }
 
+  // function which checks whether an association address is available or not.
   bool associationAddressIsAvailable(String query) {
     String searchQuery = query.toLowerCase();
     bool retVal = true;
@@ -119,6 +123,8 @@ class CurrentUserProvider with ChangeNotifier {
     return retVal;
   }
 
+  // function which fetches apartments from firebase and stores them in the 
+  // _apartments list in the provider.
   Future<void> fetchApartments(String residentAssociationId) async {
     DocumentReference apartmentRef = Firestore.instance
         .collection('ResidentAssociation')
@@ -142,6 +148,7 @@ class CurrentUserProvider with ChangeNotifier {
     }
   }
 
+  // function which adds an apartment to a resident association on firebase.
   Future<void> addApartment(
       String residentAssociationId, Apartment apartment) async {
     DocumentReference apartmentRef = Firestore.instance
@@ -165,6 +172,8 @@ class CurrentUserProvider with ChangeNotifier {
     }
   }
 
+  // function which adds resident to an apartment of a resident 
+  // association on firebase.
   Future<void> joinApartment(
       String residentAssociationId, String apartmentId) async {
     DocumentReference apartmentRef = Firestore.instance
@@ -194,10 +203,12 @@ class CurrentUserProvider with ChangeNotifier {
     }
   }
 
+  // getter for the apartments list.
   List<Apartment> getApartments() {
     return [..._apartments];
   }
 
+  // function which checks whether an apartment number is available or not.
   bool apartmentIsAvailable(String query) {
     String searchQuery = query.toLowerCase();
     bool retVal = true;
@@ -210,6 +221,8 @@ class CurrentUserProvider with ChangeNotifier {
     return retVal;
   }
 
+  // function which returns an association list filtered by the search query
+  // taken in as parameter.
   List<ResidentAssociation> filteredItems(String query) {
     List<ResidentAssociation> associations = [..._residentAssociations];
     String searchQuery = query.toLowerCase();
@@ -225,38 +238,47 @@ class CurrentUserProvider with ChangeNotifier {
     return displayList;
   }
 
+  // function which checks whether the user is part of a resident association or not.
   bool containsRAN() {
     return _residentAssociationNumber != '';
   }
 
+  // getter for the user id.
   String getId() {
     return _id;
   }
 
+  // getter for the user email.
   String getEmail() {
     return _email;
   }
 
+  // getter for the user name.
   String getName() {
     return _name;
   }
 
+  // getter for the user address.
   String getHome() {
     return _home;
   }
 
+  // getter for the user resident assocation number.
   String getResidentAssociationNumber() {
     return _residentAssociationNumber;
   }
 
+  // getter for the user apartment id.
   String getApartmentId() {
     return _apartmentId;
   }
 
+  // setter for the user resident association number.
   void setResidentAssociationNumber(String residentAssociationNumber) {
     _residentAssociationNumber = residentAssociationNumber;
   }
 
+  // setter for the user apartment id.
   void setApartmentId(String apartmentId) {
     _apartmentId = apartmentId;
   }
