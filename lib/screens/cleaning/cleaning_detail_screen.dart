@@ -6,47 +6,46 @@ import '../../providers/cleaning_provider.dart';
 import '../../models/cleaning_task.dart';
 import '../../widgets/custom_icons_icons.dart';
 
-class CleaningDetailScreen extends StatelessWidget {
-  final List<CleaningTask> tasks = [
-    CleaningTask(
-      id: "firebasekey1",
-      title: "Ryksuga stigagang",
-      description: "Ryksuga þarf allar hæðir",
-    ),
-    CleaningTask(
-      id: "firebasekey2",
-      title: "Skúra flísar",
-      description:
-          "Skúra flísar með sápu og muna ganga frá skúringardóti inní geymslu",
-    ),
-    CleaningTask(
-      id: "firebasekey3",
-      title: "Þurrka af",
-      description: "Þurka af gluggakistum og handriði",
-    ),
-    CleaningTask(
-      id: "firebasekey1",
-      title: "Ryksuga stigagang",
-      description: "Ryksuga þarf allar hæðir",
-    ),
-    CleaningTask(
-      id: "firebasekey2",
-      title: "Skúra flísar",
-      description:
-          "Skúra flísar með sápu og muna ganga frá skúringardóti inní geymslu",
-    ),
-    CleaningTask(
-      id: "firebasekey3",
-      title: "Þurrka af",
-      description: "Þurka af gluggakistum og handriði",
-    ),
-  ];
+
+class CleaningDetailScreen extends StatefulWidget {
+  static const routeName = '/cleaning-tasks';
+
+  @override
+  _CleaningDetailScreenState createState() => 
+    _CleaningDetailScreenState();
+  }
+
+class _CleaningDetailScreenState extends State<CleaningDetailScreen> {
+  var _isInit = true;
+  var _isLoading = false;
+  List<CleaningTask> tasks = [];
+
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<CleaningProvider>(context)
+          .fetchCleaningTasks(context)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
+     Provider.of<CleaningProvider>(context).fetchCleaningTasks(context);
     final cleaningId = ModalRoute.of(context).settings.arguments as String;
     final cleaning =
         Provider.of<CleaningProvider>(context, listen: false).findById(cleaningId);
+    tasks =
+        Provider.of<CleaningProvider>(context, listen: false).getAllTasks();
+       
     return Scaffold(
       appBar: AppBar(
         title: Text("Þrif á sameign"),

@@ -26,7 +26,6 @@ import 'package:provider/provider.dart';
     'appbar-title': 'Bæta við verkefni',
     'save-text': 'BÆTA VIÐ',
   };
-  //var _isInit = true;
   var _isLoading = false;
 
 
