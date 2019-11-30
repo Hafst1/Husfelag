@@ -1,67 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/apartment.dart';
 import '../models/cleaning.dart';
 
 enum CleaningStatus { current, ahead, old }
 
 class CleaningProvider with ChangeNotifier {
   List<Cleaning> _cleaningItems = [];
-
-  List<Apartment> _dummyData2 = [
-    Apartment(
-      apartmentNumber: "Íbúð 101",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 102",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 103",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 104",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 201",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 202",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 203",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 204",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 301",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 302",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 303",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 304",
-      residents: ["Siggi", "Baddi"],
-    ),
-  ];
-
-  List<Apartment> get apartmentItems {
-    return [..._dummyData2];
-  }
 
   Future<void> fetchCleaningItems(BuildContext context) async {
     DocumentReference cleaningRef = Firestore.instance
