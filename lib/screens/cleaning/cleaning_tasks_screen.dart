@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:husfelagid/providers/cleaning_provider.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/cleaning_task_item.dart';
+import 'add_cleaningTask_screen.dart';
 
 class CleaningTasksScreen extends StatefulWidget {
   static const routeName = '/cleaning-tasks';
@@ -40,11 +41,33 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
     final cleaningTaskData = Provider.of<CleaningProvider>(context);
     final cleaningTasks = cleaningTaskData.getAllTasks();    
     return Scaffold(
-      appBar: appBar,
+      appBar: AppBar(
+      ),
       body: 
       Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Expanded(
+          Card(
+            margin: EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 5,
+            ),
+            child: MaterialButton(
+              color: Colors.white,
+              textColor: Colors.lightBlueAccent,
+              padding: EdgeInsets.all(20.0),
+              child: Text("Bæta við verkefni"),
+              onPressed: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder:(context) => AddCleaningTaskScreen(),
+                  )
+                );
+              },
+            ),
+          ),
+           Expanded(
             child: ListView.builder(
               itemCount: cleaningTasks.length,
               itemBuilder: (ctx, i) => CleaningTaskItem(
@@ -54,10 +77,10 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
                   taskDone: cleaningTasks[i].taskDone,
             )
           )
-          )
+          ),
         ],
-      
-      )
+        
+      ),
     );
   }
 }
