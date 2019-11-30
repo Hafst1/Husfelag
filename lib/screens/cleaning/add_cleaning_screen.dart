@@ -182,6 +182,8 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           decoration: InputDecoration(
                             hintText: "Íbúð...",
                             prefixIcon: Icon(Icons.home),
+                            prefixText:
+                                _apartmentController.text != "" ? "Íbúð: " : "",
                             border: OutlineInputBorder(),
                           ),
                           validator: (value) {

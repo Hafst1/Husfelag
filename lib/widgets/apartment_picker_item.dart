@@ -35,7 +35,7 @@ class ApartmentPickerItem extends StatelessWidget {
             ),
             FittedBox(
               child: Text(
-                apartment,
+                'Íbúð ' + apartment,
                 style: TextStyle(
                   fontSize: 15,
                 ),

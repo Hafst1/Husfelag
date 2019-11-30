@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:husfelagid/models/cleaning_task.dart';
+
+import '../models/cleaning_task.dart';
 import '../models/apartment.dart';
 import '../models/cleaning.dart';
 
@@ -11,71 +12,10 @@ class CleaningProvider with ChangeNotifier {
   List<CleaningTask> _cleaningTask = [];
 
   DocumentReference cleaningRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
-  
- 
-  List<Apartment> _dummyData2 = [
-    Apartment(
-      apartmentNumber: "Íbúð 101",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 102",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 103",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 104",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 201",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 202",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 203",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 204",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 301",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 302",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 303",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 304",
-      residents: ["Siggi", "Baddi"],
-    ),
-  ];
-
-  List<Apartment> get apartmentItems {
-    return [..._dummyData2];
-  }
-  
-  List<CleaningTask> getAllTasks() {
-    return [..._cleaningTask];
-  }
+      .collection('ResidentAssociation')
+      .document('09fnlNxhgYk70dMpaRJB');
 
   Future<void> fetchCleaningItems(BuildContext context) async {
-  
     try {
       final response =
           await cleaningRef.collection('CleaningItems').getDocuments();
@@ -112,7 +52,6 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> addCleaningItem(Cleaning cleaningItem) async {
-  
     try {
       final response = await cleaningRef.collection("CleaningItems").add({
         'apartment': cleaningItem.apartment,
@@ -133,7 +72,6 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> deleteCleaningItem(String id) async {
-
     final deleteIndex =
         _cleaningItems.indexWhere((cleaningItem) => cleaningItem.id == id);
     var deletedCleaningItem = _cleaningItems[deleteIndex];
@@ -153,7 +91,6 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> updateCleaningItem(String id, Cleaning editedCleaning) async {
-
     try {
       await cleaningRef.collection('CleaningItems').document(id).updateData({
         'apartment': editedCleaning.apartment,
@@ -223,7 +160,6 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> fetchCleaningTasks(BuildContext context) async {
-   
     try {
       final response =
           await cleaningRef.collection('CleaningTasks').getDocuments();
@@ -258,7 +194,6 @@ class CleaningProvider with ChangeNotifier {
   }
 
   Future<void> addCleaningTaskItem(CleaningTask cleaningTaskItem) async {
-  
     try {
       final response = await cleaningRef.collection("CleaningTasks").add({
         'title': cleaningTaskItem.title,
@@ -278,11 +213,13 @@ class CleaningProvider with ChangeNotifier {
     }
   }
 
-  void updateCleaningTaskItem(String id, CleaningTask editedCleaningTask) async {
-    final cleaningTaskIndex = _cleaningTask.indexWhere((cleaningTask) => cleaningTask.id == id);
-     if (cleaningTaskIndex >= 0) {
+  void updateCleaningTaskItem(
+      String id, CleaningTask editedCleaningTask) async {
+    final cleaningTaskIndex =
+        _cleaningTask.indexWhere((cleaningTask) => cleaningTask.id == id);
+    if (cleaningTaskIndex >= 0) {
       _cleaningTask[cleaningTaskIndex] = editedCleaningTask;
-     }
+    }
     try {
       await cleaningRef.collection('CleaningTasks').document(id).updateData({
         'done': editedCleaningTask.taskDone,
@@ -291,16 +228,13 @@ class CleaningProvider with ChangeNotifier {
     } catch (error) {
       throw (error);
     }
-
   }
 
-   CleaningTask findCleaningTaskById(String id) {
+  CleaningTask findCleaningTaskById(String id) {
     return _cleaningTask.firstWhere((cleaningTask) => cleaningTask.id == id);
-  } 
+  }
 
-
-Future<void> deleteCleaningTaskItem(String id) async {
-
+  Future<void> deleteCleaningTaskItem(String id) async {
     final deleteIndex =
         _cleaningTask.indexWhere((cleaningTask) => cleaningTask.id == id);
     var deletedCleaningItem = _cleaningTask[deleteIndex];
@@ -313,5 +247,9 @@ Future<void> deleteCleaningTaskItem(String id) async {
       _cleaningTask.insert(deleteIndex, deletedCleaningItem);
       notifyListeners();
     }
+  }
+
+  List<CleaningTask> getAllTasks() {
+    return [..._cleaningTask];
   }
 }
