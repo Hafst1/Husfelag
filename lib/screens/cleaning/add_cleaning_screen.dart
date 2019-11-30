@@ -160,14 +160,6 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-                _saveForm();
-              }),
-        ],
       ),
       body: _isLoading
           ? Center(

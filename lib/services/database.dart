@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:husfelagid/models/user.dart';
 
 class DatabaseService {
 
@@ -18,8 +19,19 @@ class DatabaseService {
     });
   }
 
-  // get user stream
-  Stream<QuerySnapshot> get info {
-    return residentCollection.snapshots();
+  // user data from snapshot
+  UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
+    return UserData(
+      uid: uid,
+      name: snapshot.data['name'],
+      email: snapshot.data['email'],
+      home: snapshot.data['home'],
+    );
+  }
+
+  // get user doc stream
+  Stream<UserData> get userData {
+    return residentCollection.document(uid).snapshots()
+    .map(_userDataFromSnapshot);
   }
 }

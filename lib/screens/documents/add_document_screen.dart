@@ -4,9 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:firebase_storage/firebase_storage.dart'; 
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:husfelagid/models/document.dart';
-import 'package:husfelagid/widgets/custom_icons_icons.dart';
-import 'package:husfelagid/widgets/save_button.dart';
+import 'package:provider/provider.dart';
+import '../../models/document.dart';
+import '../../providers/documents_provider.dart';
+import '../../widgets/custom_icons_icons.dart';
+import '../../widgets/save_button.dart';
 
 //ath vantar að setja í android manifest use permission og ios/Runner/Info.plist
 
@@ -22,27 +24,40 @@ class AddDocumentScreen extends StatefulWidget {
 }
 
 class _AddDocumentScreenState extends State<AddDocumentScreen> {
+
   String _path;
+  //Map<String, String> _paths;
   String _extension;
   FileType _pickType;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  List<StorageUploadTask> _tasks = <StorageUploadTask>[];
+  //bool _multiPick = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _form = GlobalKey<FormState>();
+  List<StorageUploadTask> _tasks = <StorageUploadTask>[];
   var _newDocument = Document(
-    id: null,
+    id: "5",
     title: "",
     description: "",
     documentItem: File(''),
-    folderId: null,
+    folderId: "2",
   );
  
+  void _saveForm() {
+    var isValid = _form.currentState.validate();
+    if (!isValid) {
+      return;
+    }
+    _form.currentState.save();
+    Provider.of<DocumentsProvider>(context, listen: false)
+        .addDocument(_newDocument);
+    Navigator.of(context).pop();
+  }
+
   void openFileExplorer() async {
     try {
       _path = null;
-      _path = await FilePicker.getFilePath( 
-        type: _pickType, 
-        fileExtension: _extension
-      );
+      _path = await FilePicker.getFilePath(
+      type: _pickType, fileExtension: _extension);
+      print("path: " + _path);
       uploadToFirebase();
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
@@ -71,19 +86,36 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     });
   }
 
-  String _bytesTransferred(StorageTaskSnapshot snapshot) {
-    return '${snapshot.bytesTransferred}/${snapshot.totalByteCount}';
+  dropDown() {
+    return DropdownButton(
+      hint: new Text('Select'),
+      value: _pickType,
+      items: <DropdownMenuItem>[
+        new DropdownMenuItem(
+          child: new Text('Audio'),
+          value: FileType.AUDIO,
+        ),
+        new DropdownMenuItem(
+          child: new Text('Image'),
+          value: FileType.IMAGE,
+        ),
+        new DropdownMenuItem(
+          child: new Text('Video'),
+          value: FileType.VIDEO,
+        ),
+        new DropdownMenuItem(
+          child: new Text('Any'),
+          value: FileType.ANY,
+        ),
+      ],
+      onChanged: (value) => setState(() {
+            _pickType = value;
+          }),
+    );
   }
 
-  void _saveForm() {
-    var isValid = _form.currentState.validate();
-    if (!isValid) {
-      return;
-    }
-    _form.currentState.save();
-    /*Provider.of<DocumentsProvider>(context, listen: false)
-        .addDocument(_newDocument);*/
-    Navigator.of(context).pop();
+  String _bytesTransferred(StorageTaskSnapshot snapshot) {
+    return '${snapshot.bytesTransferred}/${snapshot.totalByteCount}';
   }
  
   @override
@@ -97,104 +129,91 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
       );
       children.add(tile);
     });
-    //final folderData = Provider.of<DocumentsFolderProvider>(context, listen: false).getAllFolders();
-    
+ 
     return new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
           title: Text(widget.title),
         ),
-        body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
+        body: Form(
           key: _form,
-          child: Column(
-            children: <Widget>[
-              OutlineButton(
-                onPressed: () => openFileExplorer(),
-                child: new Text("Sækja skjal"),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Titill...",
-                  prefixIcon: Icon(CustomIcons.pencil),
-                  border: OutlineInputBorder(),
+          child:Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+               // dropDown(),
+                OutlineButton(
+                  onPressed: () => openFileExplorer(),
+                  child: new Text("Velja skjal"),
                 ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return "Titill skjals getur ekki verið tómur strengur!";
-                  }
-                  if (value.length > 40) {
-                    return "Titill skjals getur ekki verið meira en 40 stafir á lengd!";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _newDocument = Document(
-                    id: _newDocument.id,
-                    title: value,
-                    description: _newDocument.description,
-                    documentItem: _newDocument.documentItem,
-                    folderId: _newDocument.folderId,
-                  );
-                },
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              TextFormField(
-                maxLines: 6,
-                decoration: InputDecoration(
-                  hintText: "Nánari lýsing...",
-                  border: OutlineInputBorder(),
+                Expanded(
+                  child: ListView(
+                    children: children,
+                  ),
                 ),
-                keyboardType: TextInputType.text,
-                validator: (value) {
-                  if (value.length < 10) {
-                    return "Lýsing á skjali þarf að vera a.m.k. 10 stafir á lengd!";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _newDocument = Document(
-                    id: _newDocument.id,
-                    title: _newDocument.title,
-                    description: value,
-                    documentItem: _newDocument.documentItem,
-                    folderId: _newDocument.folderId,
-                  );
-                },
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              DropdownButton(
-                hint: new Text('Veldu möppu'),
-                value: _pickType,
-                items: <DropdownMenuItem>[
-                  //harðkóðað.....
-                    new DropdownMenuItem(
-                        child: new Text('Teikningar'),
-                        value: "Teikningar",
+                Expanded(
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: "Titill...",
+                      prefixIcon: Icon(CustomIcons.pencil),
+                      border: OutlineInputBorder(),
                     ),
-                    new DropdownMenuItem(
-                        child: new Text('Reikningar'),
-                        value: "Reikningar",
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "Titill skjals getur ekki verið tómur strengur!";
+                      }
+                      if (value.length > 40) {
+                        return "Titill skjals getur ekki verið meira en 40 stafir á lengd!";
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _newDocument = Document(
+                        id: _newDocument.id,
+                        title: value,
+                        description: _newDocument.description,
+                        documentItem: _newDocument.documentItem,
+                        folderId: _newDocument.folderId,
+                      );
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: TextFormField(
+                    maxLines: 6,
+                    decoration: InputDecoration(
+                      hintText: "Nánari lýsing...",
+                      border: OutlineInputBorder(),
                     ),
-                ],
-                onChanged: (value) => setState(() {
-                  _pickType = value;
-                }),
-              ),
-              SaveButton(saveFunc: _saveForm),
-            ],
+                    keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value.length < 10) {
+                        return "Lýsing á skjali þarf að vera a.m.k. 10 stafir á lengd!";
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _newDocument = Document(
+                        id: _newDocument.id,
+                        title: _newDocument.title,
+                        description: value,
+                        documentItem: _newDocument.documentItem,
+                        folderId: _newDocument.folderId,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                SaveButton(saveFunc: _saveForm, text: "Vista skjal"),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
  
   Future<void> downloadFile(StorageReference ref) async {
@@ -276,7 +295,7 @@ class UploadTaskListTile extends StatelessWidget {
           key: Key(task.hashCode.toString()),
           onDismissed: (_) => onDismissed(),
           child: ListTile(
-            title: Text('Upload Task #${task.hashCode}'),
+            title: Text('Hleður niður #${task.hashCode}'),
             subtitle: subtitle,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

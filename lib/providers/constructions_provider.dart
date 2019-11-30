@@ -7,10 +7,6 @@ enum ConstructionStatus { current, ahead, old }
 class ConstructionsProvider with ChangeNotifier {
   List<Construction> _constructions = [];
 
-  List<Construction> getAllItemsForCalendar() {
-    return [..._constructions];
-  }
-
   Future<void> fetchConstructions(BuildContext context) async {
     DocumentReference constructionRef = Firestore.instance
         .collection('ResidentAssociation')
@@ -184,15 +180,19 @@ class ConstructionsProvider with ChangeNotifier {
     Map<DateTime, List> _events = Map();
     if (constructions == []) {
       return null;
-    } else {
+    }else {
       constructions.forEach((item) {
-        if (_events.containsKey(item.dateFrom)) {}
-        _events[item.dateFrom] = [
-          item.title,
-        ];
+        if(_events.containsKey(item.dateFrom)) { 
+          _events[item.dateFrom].add(["Framkvæmd:    " , item.title,  item.description,  
+           "Framkvæmd"],); 
+        }else {
+             _events[item.dateFrom] = [["Framkvæmd:    " , item.title,  item.description,
+               "Framkvæmd"],];
+          }
+        return _events; 
       });
-      _events.forEach((key, value) => print("key: $key and value: $value"));
-      return _events;
+    return _events;
     }
   }
 }
+
