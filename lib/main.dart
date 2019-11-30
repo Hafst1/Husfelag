@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import './models/user.dart';
 import './screens/wrapper.dart';
 import './services/auth.dart';
-import './providers/current_user.dart';
+import './providers/current_user_provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,7 +17,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
-      value: CurrentUser(),
+      value: CurrentUserProvider(),
       child: StreamProvider<User>.value(
         value: AuthService().user,
         child: MaterialApp(
