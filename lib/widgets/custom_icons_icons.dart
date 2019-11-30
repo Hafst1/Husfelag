@@ -57,6 +57,7 @@ class CustomIcons {
   static const IconData pencil = const IconData(0xe806, fontFamily: _kFontFam);
   static const IconData dot_3 = const IconData(0xe807, fontFamily: _kFontFam);
   static const IconData apartment = const IconData(0xe808, fontFamily: _kFontFam);
+  static const IconData home = const IconData(0xe809, fontFamily: _kFontFam);
   static const IconData file_add = const IconData(0xe81e, fontFamily: _kFontFam);
   static const IconData trash = const IconData(0xf083, fontFamily: _kFontFam);
   static const IconData doc_text = const IconData(0xf0f6, fontFamily: _kFontFam);
