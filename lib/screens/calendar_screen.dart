@@ -130,8 +130,7 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
     );
   }
 
-  Widget _buildEventList() {
-    print(context);              
+  Widget _buildEventList() {             
     return ListView(
       children: _selectedEvents
           .map((event) => Container(    
@@ -145,7 +144,7 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
                     contentPadding: EdgeInsets.all(10),
                     leading: Icon(Icons.alarm,color: Colors.deepOrange[400]),
                     title: Text(
-                        event[0],/*event.toString().substring(1),*/
+                        event[1],/*event.toString().substring(1),*/
                         style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 22,
@@ -157,7 +156,7 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
                           children: <Widget>[
                             Expanded(
                               child: Text(
-                                event[1],
+                                event[0],
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
