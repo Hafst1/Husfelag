@@ -170,7 +170,8 @@ class MeetingsProvider with ChangeNotifier {
 
     Map<DateTime, List> mergeMeetingsAndConstructions(Map<DateTime, List> constructions) {
     List<Meeting> meetings = [..._meetings]; 
-    String stringDate = '';  
+    String stringDate = ''; 
+    String newTimeForMeetings = ''; 
     String hoursMinutesSecond= "00:00:00";
     if (meetings == []) {
       return null;
@@ -178,12 +179,14 @@ class MeetingsProvider with ChangeNotifier {
       meetings.forEach((item) {
         stringDate = item.date.toString().substring(0,11) + hoursMinutesSecond;
         DateTime newDate = DateTime.parse(stringDate);
+        print(item.date);
+        newTimeForMeetings = "Klukkan: " + item.date.toString().substring(12,16);
         if(constructions.containsKey(newDate)) { 
           constructions[newDate].add(["Fundur:    " , item.title, item.description, 
-          "Tími:    " ,item.date],);
+           newTimeForMeetings],);
         }else {
           constructions[newDate] = [["Fundur:    " , item.title, item.description, 
-          "Tími:    " ,item.date],];
+           newTimeForMeetings],];
          }
         return constructions;
       });

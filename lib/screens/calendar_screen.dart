@@ -173,7 +173,7 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(event[2]),
-                              content: Text("Kl: " + event[4].toString().substring(11,16)),
+                              content: Text(event[3]/*.toString().substring(11,16)*/),
                               actions: <Widget> [
                                 FlatButton(
                                   child: Text("Loka"),
