@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/constructions_list_item.dart';
 import '../../widgets/tab_filter_button.dart';
 import '../../providers/constructions_provider.dart';
+import '../../providers/current_user_provider.dart';
 
 class ConstructionsListScreen extends StatefulWidget {
   static const routeName = '/constructions-list';
@@ -26,8 +27,11 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
       setState(() {
         _isLoading = true;
       });
+      final residentAssociationId =
+          Provider.of<CurrentUserProvider>(context, listen: false)
+              .getResidentAssociationNumber();
       Provider.of<ConstructionsProvider>(context)
-          .fetchConstructions(context)
+          .fetchConstructions(residentAssociationId, context)
           .then((_) {
         setState(() {
           _isLoading = false;
@@ -38,9 +42,10 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
     super.didChangeDependencies();
   }
 
-  Future<void> _refreshConstructions(BuildContext context) async {
+  Future<void> _refreshConstructions(
+      String residentAssociationId, BuildContext context) async {
     await Provider.of<ConstructionsProvider>(context)
-        .fetchConstructions(context);
+        .fetchConstructions(residentAssociationId, context);
   }
 
   _selectFilter(int index) {
@@ -79,6 +84,9 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     final constructionData = Provider.of<ConstructionsProvider>(context);
     final constructions = constructionData.filteredItems(
       _searchQuery,
@@ -153,7 +161,8 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () => _refreshConstructions(context),
+                      onRefresh: () =>
+                          _refreshConstructions(residentAssociationId, context),
                       child: Container(
                         padding: const EdgeInsets.only(
                           bottom: 5,

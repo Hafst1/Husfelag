@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../../providers/constructions_provider.dart';
+import '../../providers/current_user_provider.dart';
 import '../../widgets/custom_icons_icons.dart';
 import '../../models/construction.dart';
 import '../../widgets/save_button.dart';
@@ -105,17 +106,20 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     setState(() {
       _isLoading = true;
     });
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     if (_construction.id != null) {
       try {
         await Provider.of<ConstructionsProvider>(context, listen: false)
-            .updateConstruction(_construction.id, _construction);
+            .updateConstruction(residentAssociationId, _construction);
       } catch (error) {
         await printErrorDialog('Ekki tókst að breyta framkvæmd!');
       }
     } else {
       try {
         await Provider.of<ConstructionsProvider>(context, listen: false)
-            .addConstruction(_construction);
+            .addConstruction(residentAssociationId, _construction);
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við framkvæmd!');
       }

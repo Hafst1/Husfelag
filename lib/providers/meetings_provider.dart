@@ -7,7 +7,7 @@ enum MeetingStatus { ahead, old }
 class MeetingsProvider with ChangeNotifier {
   List<Meeting> _meetings = [];
 
-  // collection reference for the resident associations.
+  // collection reference to the resident associations.
   CollectionReference _associationRef =
       Firestore.instance.collection('ResidentAssociation');
 
