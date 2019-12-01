@@ -16,13 +16,14 @@ class CurrentUserProvider with ChangeNotifier {
   List<ResidentAssociation> _residentAssociations = [];
   List<Apartment> _apartments = [];
 
+  CollectionReference _associationRef =
+      Firestore.instance.collection('ResidentAssociation');
+  CollectionReference _userRef = Firestore.instance.collection('user');
+
   // fetch user when starting application and store in the variables above.
   Future<void> fetchCurrentUser(String id) async {
-    DocumentReference userRef =
-        Firestore.instance.collection('user').document(id);
     try {
-      final fetchedUser = await userRef.get();
-
+      final fetchedUser = await _userRef.document(id).get();
       _id = fetchedUser.documentID;
       _email = fetchedUser.data['email'];
       _name = fetchedUser.data['name'];
@@ -38,11 +39,9 @@ class CurrentUserProvider with ChangeNotifier {
 
   // fetch associations from firebase and store in _residentAssociation list.
   Future<void> fetchAssociations(BuildContext context) async {
-    CollectionReference associatonRef =
-        Firestore.instance.collection('ResidentAssociation');
     List<ResidentAssociation> loadedAssociations = [];
     try {
-      final response = await associatonRef.getDocuments();
+      final response = await _associationRef.getDocuments();
       response.documents.forEach((association) {
         loadedAssociations.add(ResidentAssociation(
           id: association.documentID,
@@ -76,20 +75,18 @@ class CurrentUserProvider with ChangeNotifier {
   // to it and updates user info on firebase.
   Future<String> createAssociation(
       ResidentAssociation association, Apartment apartment) async {
-    CollectionReference associatonRef =
-        Firestore.instance.collection('ResidentAssociation');
     try {
-      final response = await associatonRef.add({
+      final response = await _associationRef.add({
         'address': association.address,
         'description': association.description,
         'accessCode': association.accessCode,
       });
-      await associatonRef.document(response.documentID).updateData({
+      await _associationRef.document(response.documentID).updateData({
         'address': association.address,
         'description': association.description,
         'accessCode': response.documentID,
       });
-      final apartmentId = await associatonRef
+      final apartmentId = await _associationRef
           .document(response.documentID)
           .collection('Apartments')
           .add({
@@ -123,16 +120,15 @@ class CurrentUserProvider with ChangeNotifier {
     return retVal;
   }
 
-  // function which fetches apartments from firebase and stores them in the 
+  // function which fetches apartments from firebase and stores them in the
   // _apartments list in the provider.
   Future<void> fetchApartments(String residentAssociationId) async {
-    DocumentReference apartmentRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document(residentAssociationId);
     List<Apartment> loadedApartments = [];
     try {
-      final response =
-          await apartmentRef.collection('Apartments').getDocuments();
+      final response = await _associationRef
+          .document(residentAssociationId)
+          .collection('Apartments')
+          .getDocuments();
       response.documents.forEach((apartment) {
         loadedApartments.add(Apartment(
           id: apartment.documentID,
@@ -151,11 +147,11 @@ class CurrentUserProvider with ChangeNotifier {
   // function which adds an apartment to a resident association on firebase.
   Future<void> addApartment(
       String residentAssociationId, Apartment apartment) async {
-    DocumentReference apartmentRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document(residentAssociationId);
     try {
-      final response = await apartmentRef.collection('Apartments').add({
+      final response = await _associationRef
+          .document(residentAssociationId)
+          .collection('Apartments')
+          .add({
         'apartmentNumber': apartment.apartmentNumber,
         'accessCode': apartment.accessCode,
         'residents': apartment.residents,
@@ -172,18 +168,16 @@ class CurrentUserProvider with ChangeNotifier {
     }
   }
 
-  // function which adds resident to an apartment of a resident 
+  // function which adds resident to an apartment of a resident
   // association on firebase.
   Future<void> joinApartment(
       String residentAssociationId, String apartmentId) async {
-    DocumentReference apartmentRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document(residentAssociationId);
     final apartment =
         _apartments.firstWhere((apartment) => apartment.id == apartmentId);
     apartment.residents.add(_id);
     try {
-      await apartmentRef
+      await _associationRef
+          .document(residentAssociationId)
           .collection('Apartments')
           .document(apartmentId)
           .updateData({
