@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import './custom_icons_icons.dart';
 import '../screens/cleaning/cleaning_detail_screen.dart';
 import '../providers/cleaning_provider.dart';
+import '../providers/current_user_provider.dart';
 import '../screens/cleaning/add_cleaning_screen.dart';
 import '../widgets/action_dialog.dart';
 
@@ -27,8 +28,11 @@ class CleaningListItem extends StatelessWidget {
       builder: (BuildContext ctx) {
         return ActionDialog(
           deleteFunc: () {
+            final residentAssociationId =
+                Provider.of<CurrentUserProvider>(context, listen: false)
+                    .getResidentAssociationNumber();
             Provider.of<CleaningProvider>(context, listen: false)
-                .deleteCleaningItem(id);
+                .deleteCleaningItem(residentAssociationId, id);
           },
           editFunc: () {
             Navigator.of(ctx).pop();
@@ -76,7 +80,7 @@ class CleaningListItem extends StatelessWidget {
           ),
         ),
         title: Text(
-          apartment,
+          'Íbúð ' + apartment,
           style: Theme.of(context).textTheme.title,
         ),
         subtitle: Container(

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../../providers/cleaning_provider.dart';
+import '../../providers/current_user_provider.dart';
 import '../../models/cleaning.dart';
 import '../../widgets/save_button.dart';
 import './apartment_picker_screen.dart';
@@ -116,17 +117,20 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     setState(() {
       _isLoading = true;
     });
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     if (_cleaningItem.id != null) {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
-            .updateCleaningItem(_cleaningItem.id, _cleaningItem);
+            .updateCleaningItem(residentAssociationId, _cleaningItem);
       } catch (error) {
         await printErrorDialog('Ekki tókst að breyta þrifum!');
       }
     } else {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
-            .addCleaningItem(_cleaningItem);
+            .addCleaningItem(residentAssociationId, _cleaningItem);
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við þrif!');
       }
