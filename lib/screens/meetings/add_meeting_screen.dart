@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../models/meeting.dart';
 import '../../providers/meetings_provider.dart';
+import '../../providers/current_user_provider.dart';
 import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/save_button.dart';
 
@@ -160,17 +161,20 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     setState(() {
       _isLoading = true;
     });
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     if (_meeting.id != null) {
       try {
         await Provider.of<MeetingsProvider>(context, listen: false)
-            .updateMeeting(_meeting.id, _meeting);
+            .updateMeeting(residentAssociationId, _meeting);
       } catch (error) {
         await printErrorDialog('Ekki tókst að breyta fundi!');
       }
     } else {
       try {
         await Provider.of<MeetingsProvider>(context, listen: false)
-            .addMeeting(_meeting);
+            .addMeeting(residentAssociationId, _meeting);
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við fundi!');
       }

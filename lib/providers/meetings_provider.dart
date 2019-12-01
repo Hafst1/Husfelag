@@ -7,13 +7,19 @@ enum MeetingStatus { ahead, old }
 class MeetingsProvider with ChangeNotifier {
   List<Meeting> _meetings = [];
 
-  Future<void> fetchMeetings(BuildContext context) async {
-    DocumentReference meetingRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
+  // collection reference for the resident associations.
+  CollectionReference _associationRef =
+      Firestore.instance.collection('ResidentAssociation');
+
+  // function which fetches meetings from a resident association and stores
+  // them in the _meetings list.
+  Future<void> fetchMeetings(
+      String residentAssociationId, BuildContext context) async {
     try {
-      final response =
-          await meetingRef.collection('MeetingItems').getDocuments();
+      final response = await _associationRef
+          .document(residentAssociationId)
+          .collection('MeetingItems')
+          .getDocuments();
       final List<Meeting> loadedMeetings = [];
       response.documents.forEach((meeting) {
         loadedMeetings.add(Meeting(
@@ -46,12 +52,13 @@ class MeetingsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addMeeting(Meeting meeting) async {
-    DocumentReference meetingRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
+  // function whichs adds meeting to a resident association.
+  Future<void> addMeeting(String residentAssociationId, Meeting meeting) async {
     try {
-      final response = await meetingRef.collection('MeetingItems').add({
+      final response = await _associationRef
+          .document(residentAssociationId)
+          .collection('MeetingItems')
+          .add({
         'title': meeting.title,
         'date': meeting.date.millisecondsSinceEpoch,
         'duration': meeting.duration.toString(),
@@ -73,16 +80,20 @@ class MeetingsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteMeeting(String id) async {
-    DocumentReference meetingRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
-    final deleteIndex = _meetings.indexWhere((meeting) => meeting.id == id);
+  // function which deletes a meeting in a resident association.
+  Future<void> deleteMeeting(
+      String residentAssociationId, String meetingId) async {
+    final deleteIndex =
+        _meetings.indexWhere((meeting) => meeting.id == meetingId);
     var deletedMeeting = _meetings[deleteIndex];
     _meetings.removeAt(deleteIndex);
     notifyListeners();
     try {
-      await meetingRef.collection('MeetingItems').document(id).delete();
+      await _associationRef
+          .document(residentAssociationId)
+          .collection('MeetingItems')
+          .document(meetingId)
+          .delete();
       deletedMeeting = null;
     } catch (error) {
       _meetings.insert(deleteIndex, deletedMeeting);
@@ -90,23 +101,28 @@ class MeetingsProvider with ChangeNotifier {
     }
   }
 
+  // function whichs returns a meeting which has the id taken in as parameter, if found.
   Meeting findById(String id) {
     return _meetings.firstWhere((meeting) => meeting.id == id);
   }
 
-  Future<void> updateMeeting(String id, Meeting editedMeeting) async {
-    DocumentReference meetingRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
+  // function which updates a meeting in a resident association.
+  Future<void> updateMeeting(
+      String residentAssociationId, Meeting editedMeeting) async {
     try {
-      await meetingRef.collection('MeetingItems').document(id).updateData({
+      await _associationRef
+          .document(residentAssociationId)
+          .collection('MeetingItems')
+          .document(editedMeeting.id)
+          .updateData({
         'title': editedMeeting.title,
         'date': editedMeeting.date.millisecondsSinceEpoch,
         'duration': editedMeeting.duration.toString(),
         'location': editedMeeting.location,
         'description': editedMeeting.description,
       });
-      final meetingIndex = _meetings.indexWhere((meeting) => meeting.id == id);
+      final meetingIndex =
+          _meetings.indexWhere((meeting) => meeting.id == editedMeeting.id);
       if (meetingIndex >= 0) {
         _meetings[meetingIndex] = editedMeeting;
       }
@@ -116,6 +132,7 @@ class MeetingsProvider with ChangeNotifier {
     }
   }
 
+  // function which filters meetings whether they are ahead or already taken place.
   bool _meetingStatusFilter(int filterIndex, DateTime date) {
     MeetingStatus status = MeetingStatus.values[filterIndex];
     DateTime currentDate = DateTime.now();
@@ -129,6 +146,8 @@ class MeetingsProvider with ChangeNotifier {
     }
   }
 
+  // functions which returns a list of meetings which satisfies the query string and
+  // a given status filter (ahead or old).
   List<Meeting> filteredItems(String query, int filterIndex) {
     List<Meeting> constructions = [..._meetings];
     String searchQuery = query.toLowerCase();
@@ -156,6 +175,7 @@ class MeetingsProvider with ChangeNotifier {
     return displayList;
   }
 
+  // function which parses a duration-like string to a Duration.
   Duration parseDuration(String durationString) {
     int hours = 0;
     int minutes = 0;
@@ -168,29 +188,33 @@ class MeetingsProvider with ChangeNotifier {
     return Duration(hours: hours, minutes: minutes);
   }
 
-    Map<DateTime, List> mergeMeetingsAndConstructions(Map<DateTime, List> constructions) {
-    List<Meeting> meetings = [..._meetings]; 
-    String stringDate = ''; 
-    String newTimeForMeetings = ''; 
-    String hoursMinutesSecond= "00:00:00";
+  Map<DateTime, List> mergeMeetingsAndConstructions(
+      Map<DateTime, List> constructions) {
+    List<Meeting> meetings = [..._meetings];
+    String stringDate = '';
+    String newTimeForMeetings = '';
+    String hoursMinutesSecond = "00:00:00";
     if (meetings == []) {
       return null;
-    }else {
+    } else {
       meetings.forEach((item) {
-        stringDate = item.date.toString().substring(0,11) + hoursMinutesSecond;
+        stringDate = item.date.toString().substring(0, 11) + hoursMinutesSecond;
         DateTime newDate = DateTime.parse(stringDate);
         print(item.date);
-        newTimeForMeetings = "Klukkan: " + item.date.toString().substring(12,16);
-        if(constructions.containsKey(newDate)) { 
-          constructions[newDate].add(["Fundur:    " , item.title, item.description, 
-           newTimeForMeetings],);
-        }else {
-          constructions[newDate] = [["Fundur:    " , item.title, item.description, 
-           newTimeForMeetings],];
-         }
+        newTimeForMeetings =
+            "Klukkan: " + item.date.toString().substring(12, 16);
+        if (constructions.containsKey(newDate)) {
+          constructions[newDate].add(
+            ["Fundur:    ", item.title, item.description, newTimeForMeetings],
+          );
+        } else {
+          constructions[newDate] = [
+            ["Fundur:    ", item.title, item.description, newTimeForMeetings],
+          ];
+        }
         return constructions;
       });
-      return constructions; 
+      return constructions;
     }
   }
 }
