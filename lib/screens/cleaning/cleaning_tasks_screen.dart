@@ -5,6 +5,7 @@ import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../widgets/cleaning_task_item.dart';
 import 'add_cleaningTask_screen.dart';
+import '../../shared/loading_spinner.dart';
 
 class CleaningTasksScreen extends StatefulWidget {
   static const routeName = '/cleaning-tasks';
@@ -47,12 +48,7 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
         centerTitle: true,
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,

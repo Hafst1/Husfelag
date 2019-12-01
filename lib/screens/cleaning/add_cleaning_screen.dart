@@ -7,6 +7,7 @@ import '../../providers/current_user_provider.dart';
 import '../../models/cleaning.dart';
 import '../../widgets/save_button.dart';
 import './apartment_picker_screen.dart';
+import '../../shared/loading_spinner.dart';
 
 class AddCleaningScreen extends StatefulWidget {
   static const routeName = '/add-cleaning';
@@ -164,14 +165,10 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
+        centerTitle: true,
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Form(

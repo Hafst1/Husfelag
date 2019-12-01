@@ -10,6 +10,7 @@ import '../screens/authenticate/authenticate.dart';
 import '../providers/current_user_provider.dart';
 import '../screens/association_registration/association_options_screen.dart';
 import '../providers/documents_provider.dart';
+import '../shared/loading_spinner.dart';
 
 class Wrapper extends StatelessWidget {
   @override
@@ -29,12 +30,7 @@ class Wrapper extends StatelessWidget {
               return Container();
             case ConnectionState.waiting:
               return Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).primaryColor),
-                  ),
-                ),
+                body: LoadingSpinner(),
               );
             case ConnectionState.done:
               // send user to home page if he contains a resident association number

@@ -5,6 +5,7 @@ import '../../widgets/cleaning_list_item.dart';
 import '../../widgets/tab_filter_button.dart';
 import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
+import '../../shared/loading_spinner.dart';
 
 class CleaningListScreen extends StatefulWidget {
   static const routeName = '/cleaning-list';
@@ -77,6 +78,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
       title: Text("Yfirlit þrifa"),
+      centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
         mediaQuery.padding.top -
@@ -93,12 +95,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     return Scaffold(
       appBar: appBar,
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : GestureDetector(
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
