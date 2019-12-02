@@ -23,7 +23,7 @@ class CurrentUserProvider with ChangeNotifier {
       Firestore.instance.collection('ResidentAssociation');
   CollectionReference _userRef = Firestore.instance.collection('user');
 
-  // fetch user when starting application and store in the variables above.
+  // fetch user when starting application and store in the _currentUser object.
   Future<void> fetchCurrentUser(String id) async {
     try {
       final fetchedUser = await _userRef.document(id).get();
@@ -99,11 +99,6 @@ class CurrentUserProvider with ChangeNotifier {
         'residents': [_currentUser.id],
       });
       await DatabaseService(uid: _currentUser.id).updateUserData(
-        // _name,
-        // _email,
-        // _home,
-        // apartmentId.documentID,
-        // response.documentID,
         _currentUser.name,
         _currentUser.email,
         response.documentID,
@@ -171,11 +166,6 @@ class CurrentUserProvider with ChangeNotifier {
         residentAssociationId,
         response.documentID,
         _currentUser.isAdmin,
-        // _name,
-        // _email,
-        // _home,
-        // response.documentID,
-        // residentAssociationId,
       );
     } catch (error) {
       throw (error);
@@ -205,11 +195,6 @@ class CurrentUserProvider with ChangeNotifier {
         residentAssociationId,
         apartmentId,
         _currentUser.isAdmin,
-        // _name,
-        // _email,
-        // _home,
-        // apartmentId,
-        // residentAssociationId,
       );
     } catch (error) {
       throw (error);
