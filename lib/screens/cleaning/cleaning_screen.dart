@@ -13,7 +13,8 @@ class CleaningScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Þrif"),
+        title: Text("Þrif á sameign"),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),

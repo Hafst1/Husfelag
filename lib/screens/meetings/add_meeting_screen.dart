@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 import '../../models/meeting.dart';
 import '../../providers/meetings_provider.dart';
+import '../../providers/current_user_provider.dart';
 import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/save_button.dart';
+import '../../shared/loading_spinner.dart';
 
 class AddMeetingScreen extends StatefulWidget {
   static const routeName = '/add-meeting';
@@ -160,17 +163,20 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     setState(() {
       _isLoading = true;
     });
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     if (_meeting.id != null) {
       try {
         await Provider.of<MeetingsProvider>(context, listen: false)
-            .updateMeeting(_meeting.id, _meeting);
+            .updateMeeting(residentAssociationId, _meeting);
       } catch (error) {
         await printErrorDialog('Ekki tókst að breyta fundi!');
       }
     } else {
       try {
         await Provider.of<MeetingsProvider>(context, listen: false)
-            .addMeeting(_meeting);
+            .addMeeting(residentAssociationId, _meeting);
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við fundi!');
       }
@@ -204,22 +210,21 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
+        centerTitle: true,
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-                _saveForm();
-              }),
+          Platform.isIOS
+              ? IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    _saveForm();
+                  },
+                )
+              : Container(),
         ],
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -437,10 +442,12 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     SizedBox(
                       height: 15,
                     ),
-                    SaveButton(
-                      text: _initValues['save-text'],
-                      saveFunc: _saveForm,
-                    )
+                    Platform.isAndroid
+                        ? SaveButton(
+                            text: _initValues['save-text'],
+                            saveFunc: _saveForm,
+                          )
+                        : Container()
                   ],
                 ),
               ),

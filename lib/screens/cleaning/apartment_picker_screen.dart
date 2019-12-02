@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../widgets/apartment_picker_item.dart';
 import '../../providers/current_user_provider.dart';
+import '../../shared/loading_spinner.dart';
 
 class ApartMentPickerScreen extends StatefulWidget {
   @override
@@ -46,12 +47,7 @@ class _ApartMentPickerScreenState extends State<ApartMentPickerScreen> {
         centerTitle: true,
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : GridView(
               padding: const EdgeInsets.all(25),
               children: apartments

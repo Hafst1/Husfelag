@@ -12,6 +12,7 @@ class AssociationOptionsScreen extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
       title: Text('Húsfélagið'),
+      centerTitle: true,
       actions: <Widget>[
         FlatButton.icon(
             icon: Icon(Icons.person, color: Colors.white),

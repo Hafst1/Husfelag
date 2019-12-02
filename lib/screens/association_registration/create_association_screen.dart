@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 import '../../models/resident_association.dart';
 import '../../models/apartment.dart';
 import '../../widgets/save_button.dart';
 import '../../providers/current_user_provider.dart';
+import '../../shared/loading_spinner.dart';
 
 class CreateAssociationScreen extends StatefulWidget {
   @override
@@ -58,7 +60,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       _isLoading = true;
     });
     try {
-      final response = await Provider.of<CurrentUserProvider>(context)
+      final response = await Provider.of<CurrentUserProvider>(context, listen: false)
           .createAssociation(_newAssociation, _newApartment);
       await _printConfirmationDialog(response);
     } catch (error) {
@@ -117,14 +119,19 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       appBar: AppBar(
         title: Text('Stofna húsfélag'),
         centerTitle: true,
+        actions: <Widget>[
+          Platform.isIOS
+              ? IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    _saveForm();
+                  })
+              : Container(),
+        ],
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -235,10 +242,10 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                     SizedBox(
                       height: 15,
                     ),
-                    SaveButton(
+                    Platform.isAndroid ? SaveButton(
                       text: 'STOFNA',
                       saveFunc: _saveForm,
-                    ),
+                    ) : Container(),
                   ],
                 ),
               ),

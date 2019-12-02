@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../widgets/cleaning_list_item.dart';
 import '../../widgets/tab_filter_button.dart';
 import '../../providers/cleaning_provider.dart';
+import '../../providers/current_user_provider.dart';
+import '../../shared/loading_spinner.dart';
 
 class CleaningListScreen extends StatefulWidget {
   static const routeName = '/cleaning-list';
@@ -25,8 +27,11 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
       setState(() {
         _isLoading = true;
       });
+      final residentAssociationId =
+          Provider.of<CurrentUserProvider>(context, listen: false)
+              .getResidentAssociationNumber();
       Provider.of<CleaningProvider>(context)
-          .fetchCleaningItems(context)
+          .fetchCleaningItems(residentAssociationId, context)
           .then((_) {
         setState(() {
           _isLoading = false;
@@ -37,8 +42,10 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     super.didChangeDependencies();
   }
 
-  Future<void> _refreshCleaningItems(BuildContext context) async {
-    await Provider.of<CleaningProvider>(context).fetchCleaningItems(context);
+  Future<void> _refreshCleaningItems(
+      String residentAssociationId, BuildContext context) async {
+    await Provider.of<CleaningProvider>(context)
+        .fetchCleaningItems(residentAssociationId, context);
   }
 
   _selectFilter(int index) {
@@ -71,11 +78,15 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
       title: Text("Yfirlit þrifa"),
+      centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     final cleaningData = Provider.of<CleaningProvider>(context);
     final cleanings = cleaningData.filteredItems(
       _searchQuery,
@@ -84,12 +95,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     return Scaffold(
       appBar: appBar,
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : GestureDetector(
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
@@ -150,7 +156,8 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () => _refreshCleaningItems(context),
+                      onRefresh: () =>
+                          _refreshCleaningItems(residentAssociationId, context),
                       child: Container(
                         padding: const EdgeInsets.only(
                           bottom: 5,
