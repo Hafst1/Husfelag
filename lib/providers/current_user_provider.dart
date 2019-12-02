@@ -33,15 +33,8 @@ class CurrentUserProvider with ChangeNotifier {
         name: fetchedUser.data['name'],
         residentAssociationId: fetchedUser.data['residentAssociationId'],
         apartmentId: fetchedUser['apartmentId'],
-        isAdmin: false,
+        isAdmin: fetchedUser['isAdmin'],
       );
-      // _id = fetchedUser.documentID;
-      // _email = fetchedUser.data['email'];
-      // _name = fetchedUser.data['name'];
-      // _home = fetchedUser.data['home'];
-      // _residentAssociationNumber =
-      //     fetchedUser.data['residentAssociationId'];
-      // _apartmentId = fetchedUser['apartmentId'];
     } catch (error) {
       print(error);
       // error handling vantar
@@ -286,6 +279,11 @@ class CurrentUserProvider with ChangeNotifier {
   // getter for the user apartment id.
   String getApartmentId() {
     return _currentUser.apartmentId;
+  }
+
+  // function which returns true if current user is admin, false otherwise.
+  bool isAdmin() {
+    return _currentUser.isAdmin;
   }
 
   // setter for the user resident association number.

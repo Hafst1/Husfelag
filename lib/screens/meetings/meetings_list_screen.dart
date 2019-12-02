@@ -84,9 +84,8 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationId();
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final meetingData = Provider.of<MeetingsProvider>(context);
     final meetings =
         meetingData.filteredItems(_searchQuery, _selectedFilterIndex);
@@ -146,8 +145,10 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () =>
-                          _refreshMeetings(residentAssociationId, context),
+                      onRefresh: () => _refreshMeetings(
+                        currentUserData.getResidentAssociationId(),
+                        context,
+                      ),
                       child: Container(
                         padding: const EdgeInsets.only(
                           bottom: 5,
@@ -159,6 +160,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                             title: meetings[i].title,
                             date: meetings[i].date,
                             location: meetings[i].location,
+                            isAdmin: currentUserData.isAdmin(),
                           ),
                         ),
                       ),
