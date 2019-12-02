@@ -87,8 +87,8 @@ class MeetingDetailScreen extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.only(
-                left: 35,
-                right: 35,
+                left: 30,
+                right: 30,
                 top: 25,
                 bottom: 25,
               ),

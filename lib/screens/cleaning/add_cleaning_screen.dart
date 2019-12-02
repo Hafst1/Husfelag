@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
@@ -166,6 +167,16 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
         centerTitle: true,
+        actions: <Widget>[
+          Platform.isIOS
+              ? IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    _saveForm();
+                  })
+              : Container(),
+        ],
       ),
       body: _isLoading
           ? LoadingSpinner()
@@ -286,10 +297,12 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                     SizedBox(
                       height: 15,
                     ),
-                    SaveButton(
-                      text: _initValues['save-text'],
-                      saveFunc: _saveForm,
-                    ),
+                    Platform.isAndroid
+                        ? SaveButton(
+                            text: _initValues['save-text'],
+                            saveFunc: _saveForm,
+                          )
+                        : Container(),
                   ],
                 ),
               ),

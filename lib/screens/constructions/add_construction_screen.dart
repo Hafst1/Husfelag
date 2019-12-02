@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 import '../../providers/constructions_provider.dart';
 import '../../providers/current_user_provider.dart';
@@ -156,12 +157,15 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
         title: Text(_initValues['appbar-title']),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-                _saveForm();
-              }),
+          Platform.isIOS
+              ? IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    _saveForm();
+                  },
+                )
+              : Container(),
         ],
       ),
       body: _isLoading
@@ -303,10 +307,12 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                     SizedBox(
                       height: 15,
                     ),
-                    SaveButton(
-                      text: _initValues['save-text'],
-                      saveFunc: _saveForm,
-                    ),
+                    Platform.isAndroid
+                        ? SaveButton(
+                            text: _initValues['save-text'],
+                            saveFunc: _saveForm,
+                          )
+                        : Container(),
                   ],
                 ),
               ),

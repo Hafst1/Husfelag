@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 import '../../models/meeting.dart';
 import '../../providers/meetings_provider.dart';
@@ -211,12 +212,15 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         title: Text(_initValues['appbar-title']),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-                _saveForm();
-              }),
+          Platform.isIOS
+              ? IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    _saveForm();
+                  },
+                )
+              : Container(),
         ],
       ),
       body: _isLoading
@@ -438,10 +442,12 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     SizedBox(
                       height: 15,
                     ),
-                    SaveButton(
-                      text: _initValues['save-text'],
-                      saveFunc: _saveForm,
-                    )
+                    Platform.isAndroid
+                        ? SaveButton(
+                            text: _initValues['save-text'],
+                            saveFunc: _saveForm,
+                          )
+                        : Container()
                   ],
                 ),
               ),

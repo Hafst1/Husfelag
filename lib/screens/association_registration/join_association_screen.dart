@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 import '../../providers/current_user_provider.dart';
 import '../../widgets/association_list_item.dart';
@@ -8,6 +9,7 @@ import '../../widgets/choice_tab_button.dart';
 import '../../models/apartment.dart';
 import '../../models/resident_association.dart';
 import '../../widgets/save_button.dart';
+import '../../shared/loading_spinner.dart';
 
 class JoinAssociationScreen extends StatefulWidget {
   @override
@@ -208,14 +210,19 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       appBar: AppBar(
         title: Text('Ganga í húsfélag'),
         centerTitle: true,
+        actions: <Widget>[
+          (Platform.isIOS && _showApartmentSection && _selectedChoiceIndex == 0)
+              ? IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    _validateForm();
+                  })
+              : Container(),
+        ],
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : _showApartmentSection
               ? _buildApartmentSection(currentUserData, apartments)
               : _buildAssociationSection(associations),
@@ -327,10 +334,12 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
             SizedBox(
               height: 20,
             ),
-            SaveButton(
-              text: 'BÆTA VIÐ',
-              saveFunc: _validateForm,
-            ),
+            Platform.isAndroid
+                ? SaveButton(
+                    text: 'BÆTA VIÐ',
+                    saveFunc: _validateForm,
+                  )
+                : Container(),
           ],
         ),
       ),
