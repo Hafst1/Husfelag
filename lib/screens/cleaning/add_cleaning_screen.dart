@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 import '../../providers/cleaning_provider.dart';
+import '../../providers/current_user_provider.dart';
 import '../../models/cleaning.dart';
 import '../../widgets/save_button.dart';
 import './apartment_picker_screen.dart';
+import '../../shared/loading_spinner.dart';
 
 class AddCleaningScreen extends StatefulWidget {
   static const routeName = '/add-cleaning';
@@ -116,17 +119,20 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     setState(() {
       _isLoading = true;
     });
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     if (_cleaningItem.id != null) {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
-            .updateCleaningItem(_cleaningItem.id, _cleaningItem);
+            .updateCleaningItem(residentAssociationId, _cleaningItem);
       } catch (error) {
         await printErrorDialog('Ekki tókst að breyta þrifum!');
       }
     } else {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
-            .addCleaningItem(_cleaningItem);
+            .addCleaningItem(residentAssociationId, _cleaningItem);
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við þrif!');
       }
@@ -160,14 +166,20 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
+        centerTitle: true,
+        actions: <Widget>[
+          Platform.isIOS
+              ? IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    _saveForm();
+                  })
+              : Container(),
+        ],
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -182,6 +194,8 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           decoration: InputDecoration(
                             hintText: "Íbúð...",
                             prefixIcon: Icon(Icons.home),
+                            prefixText:
+                                _apartmentController.text != "" ? "Íbúð: " : "",
                             border: OutlineInputBorder(),
                           ),
                           validator: (value) {
@@ -283,10 +297,12 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                     SizedBox(
                       height: 15,
                     ),
-                    SaveButton(
-                      text: _initValues['save-text'],
-                      saveFunc: _saveForm,
-                    ),
+                    Platform.isAndroid
+                        ? SaveButton(
+                            text: _initValues['save-text'],
+                            saveFunc: _saveForm,
+                          )
+                        : Container(),
                   ],
                 ),
               ),

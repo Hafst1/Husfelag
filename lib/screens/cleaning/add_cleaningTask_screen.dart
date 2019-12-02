@@ -1,19 +1,21 @@
- import 'package:flutter/material.dart';
-import 'package:husfelagid/models/cleaning_task.dart';
-import 'package:husfelagid/providers/cleaning_provider.dart';
-import 'package:husfelagid/widgets/custom_icons_icons.dart';
-import 'package:husfelagid/widgets/save_button.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
- 
- class AddCleaningTaskScreen extends StatefulWidget {
+
+import '../../models/cleaning_task.dart';
+import '../../providers/cleaning_provider.dart';
+import '../../providers/current_user_provider.dart';
+import '../../widgets/custom_icons_icons.dart';
+import '../../widgets/save_button.dart';
+import '../../shared/loading_spinner.dart';
+
+class AddCleaningTaskScreen extends StatefulWidget {
   static const routeName = '/add-cleaningTask';
 
   @override
   _AddCleaningTaskScreenState createState() => _AddCleaningTaskScreenState();
 }
- 
- class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
 
+class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
   final _form = GlobalKey<FormState>();
   var _cleaningTaskItem = CleaningTask(
     id: null,
@@ -22,13 +24,35 @@ import 'package:provider/provider.dart';
     taskDone: false,
   );
 
-   var _initValues = {
+  var _initValues = {
     'appbar-title': 'Bæta við verkefni',
     'save-text': 'BÆTA VIÐ',
+    'title': '',
+    'description': '',
   };
-  //var _isInit = true;
+  var _isInit = true;
   var _isLoading = false;
 
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final cleaningTaskId =
+          ModalRoute.of(context).settings.arguments as String;
+      if (cleaningTaskId != null) {
+        _cleaningTaskItem =
+            Provider.of<CleaningProvider>(context, listen: false)
+                .findCleaningTaskById(cleaningTaskId);
+        _initValues = {
+          'appbar-title': 'Breyta verkefni',
+          'save-text': 'BREYTA',
+          'title': _cleaningTaskItem.title,
+          'description': _cleaningTaskItem.description,
+        };
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   void _saveForm() async {
     var isValid = _form.currentState.validate();
@@ -39,17 +63,20 @@ import 'package:provider/provider.dart';
     setState(() {
       _isLoading = true;
     });
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     if (_cleaningTaskItem.id != null) {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
-            .updateCleaningTaskItem(_cleaningTaskItem.id, _cleaningTaskItem);
+            .updateCleaningTaskItem(residentAssociationId, _cleaningTaskItem);
       } catch (error) {
         await printErrorDialog('Ekki tókst að breyta verkefni!');
       }
     } else {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
-            .addCleaningTaskItem(_cleaningTaskItem);
+            .addCleaningTaskItem(residentAssociationId, _cleaningTaskItem);
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við verkefni!');
       }
@@ -59,7 +86,6 @@ import 'package:provider/provider.dart';
     });
     Navigator.of(context).pop();
   }
-
 
   Future<void> printErrorDialog(String errorMessage) {
     return showDialog(
@@ -78,21 +104,16 @@ import 'package:provider/provider.dart';
       ),
     );
   }
- 
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
+        centerTitle: true,
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Form(

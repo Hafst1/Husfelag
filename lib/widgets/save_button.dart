@@ -14,26 +14,19 @@ class SaveButton extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        GestureDetector(
-          onTap: () {
+        FlatButton(
+          onPressed: () {
             FocusScope.of(context).requestFocus(FocusNode());
             saveFunc();
           },
-          child: Container(
-            height: 50,
-            width: 120,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.green[100],
-              border: Border.all(color: Colors.green[300]),
-            ),
-            child: Text(
-              text,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
             ),
           ),
+          color: Colors.green[200],
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         ),
       ],
     );

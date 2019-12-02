@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/providers/meetings_provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/constructions_provider.dart';
+import '../providers/current_user_provider.dart';
+import '../providers/meetings_provider.dart';
+import '../shared/loading_spinner.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
   _CalendarScreenState createState() => _CalendarScreenState();
 }
 
-class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStateMixin {
-  Map<DateTime, List> _events;   //Meetings and Constructions
+class _CalendarScreenState extends State<CalendarScreen>
+    with TickerProviderStateMixin {
+  Map<DateTime, List> _events; //Meetings and Constructions
   Map<DateTime, List> _constructionEvents;
   List _selectedEvents;
   CalendarController _calendarController;
@@ -26,6 +30,7 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
     );
     _animationController.forward();
   }
+
   var _isInit = true;
   var _isLoading = false;
 
@@ -35,16 +40,18 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
       setState(() {
         _isLoading = true;
       });
-   
-    Provider.of<MeetingsProvider>(context)
-          .fetchMeetings(context)
+      final residentAssociationId =
+          Provider.of<CurrentUserProvider>(context, listen: false)
+              .getResidentAssociationNumber();
+      Provider.of<MeetingsProvider>(context)
+          .fetchMeetings(residentAssociationId, context)
           .then((_) {
         setState(() {
           _isLoading = false;
         });
       });
-    Provider.of<ConstructionsProvider>(context)
-          .fetchConstructions(context)
+      Provider.of<ConstructionsProvider>(context)
+          .fetchConstructions(residentAssociationId, context)
           .then((_) {
         setState(() {
           _isLoading = false;
@@ -52,16 +59,16 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
       });
     }
 
-  setState(() {
-    final constructionEvents = Provider.of<ConstructionsProvider>(context);
-    _constructionEvents = constructionEvents.filterForCalendar();
+    setState(() {
+      final constructionEvents = Provider.of<ConstructionsProvider>(context);
+      _constructionEvents = constructionEvents.filterForCalendar();
 
-    final meetingEvents = Provider.of<MeetingsProvider>(context);
-     _events = meetingEvents.mergeMeetingsAndConstructions(_constructionEvents);
-     _selectedEvents = _events[DateTime.now()] ?? [];
+      final meetingEvents = Provider.of<MeetingsProvider>(context);
+      _events =
+          meetingEvents.mergeMeetingsAndConstructions(_constructionEvents);
+      _selectedEvents = _events[DateTime.now()] ?? [];
+    });
 
-  });
-    
     _isInit = false;
     super.didChangeDependencies();
   }
@@ -83,61 +90,58 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      title: Text("Dagatal"),
+        title: Text("Dagatal"),
+        centerTitle: true,
       ),
-      body: _isLoading 
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor),
-              )
-            )
-          : Container (
+      body: _isLoading
+          ? LoadingSpinner()
+          : Container(
               color: Colors.black12,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                _buildTableCalendar(),
-                const SizedBox(height: 8.0),
-                const SizedBox(height: 8.0),
-                Expanded(
-                  child: _buildEventList()
-                  ),
-              ],
+                  _buildTableCalendar(),
+                  const SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
+                  Expanded(child: _buildEventList()),
+                ],
+              ),
             ),
-          ),
     );
   }
+
   Widget _buildTableCalendar() {
     return TableCalendar(
       calendarController: _calendarController,
-      events: _events,                             
-      startingDayOfWeek: StartingDayOfWeek.monday, 
+      events: _events,
+      startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],    
+        selectedColor: Colors.deepOrange[400],
         todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],        
+        markersColor: Colors.brown[700],
         outsideDaysVisible: false,
       ),
-      headerStyle: HeaderStyle(              
-        formatButtonTextStyle: TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
+      headerStyle: HeaderStyle(
+        formatButtonTextStyle:
+            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
         formatButtonDecoration: BoxDecoration(
           color: Colors.deepOrange[400],
           borderRadius: BorderRadius.circular(16.0),
         ),
       ),
-      onDaySelected: _onDaySelected,                   
+      onDaySelected: _onDaySelected,
     );
   }
 
   Widget _buildEventList() {             
     return ListView(
       children: _selectedEvents
-          .map((event) => Container(    
+          .map((event) => Container(
                 decoration: BoxDecoration(
                   border: Border.all(width: 0.8),
                 ),
-                margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: Container(
                   color: Colors.black54,
                   child: ListTile(
@@ -146,9 +150,9 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
                     title: Text(
                         event[1],/*event.toString().substring(1),*/
                         style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                        color: Colors.white),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                            color: Colors.white),
                       ),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 10),
@@ -158,9 +162,9 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
                               child: Text(
                                 event[0],
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: Colors.white),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.white),
                               ),
                             ),
                           ],
@@ -168,24 +172,22 @@ class _CalendarScreenState extends State<CalendarScreen> with TickerProviderStat
                       ),
                       onTap: () {
                         showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text(event[2]),
-                              content: Text(event[3]/*.toString().substring(11,16)*/),
-                              actions: <Widget> [
-                                FlatButton(
-                                  child: Text("Loka"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              ]
-                            );
-                          }
-                        );
-                      }
-                  ),
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  title: Text(event[2]),
+                                  content: Text(event[
+                                      3] /*.toString().substring(11,16)*/),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text("Loka"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ]);
+                            });
+                      }),
                 ),
               ))
           .toList(),

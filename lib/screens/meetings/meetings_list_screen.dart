@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/meetings_provider.dart';
+import '../../providers/current_user_provider.dart';
 import '../../widgets/meetings_list_item.dart';
 import '../../widgets/tab_filter_button.dart';
+import '../../shared/loading_spinner.dart';
 
 class MeetingsListScreen extends StatefulWidget {
   static const routeName = '/meetings-list';
@@ -25,7 +27,12 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<MeetingsProvider>(context).fetchMeetings(context).then((_) {
+      final residentAssociationId =
+          Provider.of<CurrentUserProvider>(context, listen: false)
+              .getResidentAssociationNumber();
+      Provider.of<MeetingsProvider>(context)
+          .fetchMeetings(residentAssociationId, context)
+          .then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -35,8 +42,10 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
     super.didChangeDependencies();
   }
 
-  Future<void> _refreshMeetings(BuildContext context) async {
-    await Provider.of<MeetingsProvider>(context).fetchMeetings(context);
+  Future<void> _refreshMeetings(
+      String residentAssociationId, BuildContext context) async {
+    await Provider.of<MeetingsProvider>(context)
+        .fetchMeetings(residentAssociationId, context);
   }
 
   _selectFilter(int index) {
@@ -69,23 +78,22 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
       title: Text("Yfirlit funda"),
+      centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     final meetingData = Provider.of<MeetingsProvider>(context);
     final meetings =
         meetingData.filteredItems(_searchQuery, _selectedFilterIndex);
     return Scaffold(
       appBar: appBar,
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : GestureDetector(
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
@@ -138,7 +146,8 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () => _refreshMeetings(context),
+                      onRefresh: () =>
+                          _refreshMeetings(residentAssociationId, context),
                       child: Container(
                         padding: const EdgeInsets.only(
                           bottom: 5,
