@@ -171,6 +171,8 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
                             dateFrom: cleanings[i].dateFrom,
                             dateTo: cleanings[i].dateTo,
                             isAdmin: currentUserData.isAdmin(),
+                            isAuthor: cleanings[i].authorId ==
+                                currentUserData.getId(),
                           ),
                         ),
                       ),

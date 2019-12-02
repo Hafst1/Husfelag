@@ -32,6 +32,7 @@ class CleaningProvider with ChangeNotifier {
               cleaningItem.data['dateFrom']),
           dateTo:
               DateTime.fromMillisecondsSinceEpoch(cleaningItem.data['dateTo']),
+          authorId: cleaningItem.data['authorId'],
         ));
       });
       _cleaningItems = loadedCleaningItems;
@@ -66,11 +67,13 @@ class CleaningProvider with ChangeNotifier {
         'apartment': cleaningItem.apartment,
         'dateFrom': cleaningItem.dateFrom.millisecondsSinceEpoch,
         'dateTo': cleaningItem.dateTo.millisecondsSinceEpoch,
+        'authorId': cleaningItem.authorId,
       });
       final newCleaningItem = Cleaning(
         apartment: cleaningItem.apartment,
         dateFrom: cleaningItem.dateFrom,
         dateTo: cleaningItem.dateTo,
+        authorId: cleaningItem.authorId,
         id: response.documentID,
       );
       _cleaningItems.add(newCleaningItem);
@@ -119,6 +122,7 @@ class CleaningProvider with ChangeNotifier {
         'apartment': editedCleaning.apartment,
         'dateFrom': editedCleaning.dateFrom.millisecondsSinceEpoch,
         'dateTo': editedCleaning.dateTo.millisecondsSinceEpoch,
+        'authorId': editedCleaning.authorId,
       });
       final cleaningIndex = _cleaningItems
           .indexWhere((cleaning) => cleaning.id == editedCleaning.id);
