@@ -13,6 +13,7 @@ class MeetingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Fundir"),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),

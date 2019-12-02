@@ -41,6 +41,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Húsfélagið'),
+        centerTitle: true,
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: choiceAction,

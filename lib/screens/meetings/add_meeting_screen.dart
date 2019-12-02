@@ -7,6 +7,7 @@ import '../../providers/meetings_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/save_button.dart';
+import '../../shared/loading_spinner.dart';
 
 class AddMeetingScreen extends StatefulWidget {
   static const routeName = '/add-meeting';
@@ -208,6 +209,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
+        centerTitle: true,
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.add),
@@ -218,12 +220,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         ],
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Form(

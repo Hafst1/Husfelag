@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/providers/meetings_provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/constructions_provider.dart';
 import '../providers/current_user_provider.dart';
+import '../providers/meetings_provider.dart';
+import '../shared/loading_spinner.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -90,13 +91,10 @@ class _CalendarScreenState extends State<CalendarScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text("Dagatal"),
+        centerTitle: true,
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-            ))
+          ? LoadingSpinner()
           : Container(
               color: Colors.black12,
               child: Column(

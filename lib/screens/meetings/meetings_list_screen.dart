@@ -5,6 +5,7 @@ import '../../providers/meetings_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../widgets/meetings_list_item.dart';
 import '../../widgets/tab_filter_button.dart';
+import '../../shared/loading_spinner.dart';
 
 class MeetingsListScreen extends StatefulWidget {
   static const routeName = '/meetings-list';
@@ -77,6 +78,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
       title: Text("Yfirlit funda"),
+      centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
         mediaQuery.padding.top -
@@ -91,12 +93,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
     return Scaffold(
       appBar: appBar,
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-            )
+          ? LoadingSpinner()
           : GestureDetector(
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());

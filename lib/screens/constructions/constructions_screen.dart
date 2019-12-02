@@ -13,6 +13,7 @@ class ConstructionsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Framkvæmdir"),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
