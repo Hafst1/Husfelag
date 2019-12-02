@@ -7,6 +7,7 @@ import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/choice_tab_button.dart';
 import '../../models/apartment.dart';
 import '../../models/resident_association.dart';
+import '../../widgets/save_button.dart';
 
 class JoinAssociationScreen extends StatefulWidget {
   @override
@@ -110,7 +111,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
     });
   }
 
-  // function which validates the form when a user tries to add an apartment to 
+  // function which validates the form when a user tries to add an apartment to
   // a given resident association. If succesful the user proceeds to app main page.
   void _validateForm() async {
     var isValid = _form.currentState.validate();
@@ -122,7 +123,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       _isLoading = true;
     });
     try {
-      await Provider.of<CurrentUserProvider>(context)
+      await Provider.of<CurrentUserProvider>(context, listen: false)
           .addApartment(_tempAssociationNumber, _newApartment);
       await _printConfirmationDialog(
           'Þú hefur bætt við íbúð og gengið til liðs við húsfélagið!');
@@ -141,7 +142,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       _isLoading = true;
     });
     try {
-      await Provider.of<CurrentUserProvider>(context)
+      await Provider.of<CurrentUserProvider>(context, listen: false)
           .joinApartment(_tempAssociationNumber, id);
       await _printConfirmationDialog(
           'Þér hefur verið bætt við tiltekna íbúð í húsfélaginu!');
@@ -326,17 +327,9 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
             SizedBox(
               height: 20,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                FlatButton(
-                  onPressed: _validateForm,
-                  child: Text('BÆTA VIÐ'),
-                  color: Colors.green[200],
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                ),
-              ],
+            SaveButton(
+              text: 'BÆTA VIÐ',
+              saveFunc: _validateForm,
             ),
           ],
         ),
@@ -373,7 +366,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
   }
 
   // function which builds the association section of the screen, where the user
-  // can search for resident association and join one, if he can provide the 
+  // can search for resident association and join one, if he can provide the
   // correct access code.
   Widget _buildAssociationSection(List<ResidentAssociation> associations) {
     return Column(

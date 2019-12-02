@@ -58,7 +58,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       _isLoading = true;
     });
     try {
-      final response = await Provider.of<CurrentUserProvider>(context)
+      final response = await Provider.of<CurrentUserProvider>(context, listen: false)
           .createAssociation(_newAssociation, _newApartment);
       await _printConfirmationDialog(response);
     } catch (error) {

@@ -97,8 +97,7 @@ class _AssociationListItemState extends State<AssociationListItem> {
                                 if (value.isEmpty) {
                                   return "Ekki var sleginn inn aðgangskóði!";
                                 }
-                                if (value !=
-                                    widget.accessCode) {
+                                if (value != widget.accessCode) {
                                   return "Þú hefur slegið inn rangan aðgangskóða!";
                                 }
                                 return null;
@@ -110,7 +109,12 @@ class _AssociationListItemState extends State<AssociationListItem> {
                           ),
                           FlatButton(
                             onPressed: _validateForm,
-                            child: Text(widget.buttonText),
+                            child: Text(
+                              widget.buttonText,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             color: Colors.blue[300],
                           ),
                           SizedBox(
