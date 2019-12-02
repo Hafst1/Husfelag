@@ -14,12 +14,14 @@ class CleaningListItem extends StatelessWidget {
   final String apartment;
   final DateTime dateFrom;
   final DateTime dateTo;
+  final bool isAdmin;
 
   CleaningListItem({
     @required this.id,
     @required this.apartment,
     @required this.dateFrom,
     @required this.dateTo,
+    @required this.isAdmin,
   });
 
   void _showActionDialog(BuildContext context) {
@@ -121,11 +123,16 @@ class CleaningListItem extends StatelessWidget {
             ],
           ),
         ),
-        trailing: IconButton(
-          icon: Icon(CustomIcons.dot_3),
-          color: Colors.grey,
-          onPressed: () => _showActionDialog(context),
-        ),
+        trailing: isAdmin
+            ? IconButton(
+                icon: Icon(CustomIcons.dot_3),
+                color: Colors.grey,
+                onPressed: () => _showActionDialog(context),
+              )
+            : Icon(
+                Icons.question_answer,
+                color: Colors.white,
+              ),
       ),
     );
   }

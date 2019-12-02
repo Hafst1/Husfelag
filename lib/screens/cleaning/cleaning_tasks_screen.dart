@@ -40,6 +40,8 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final cleaningTaskData = Provider.of<CleaningProvider>(context);
     final cleaningTasks = cleaningTaskData.getAllTasks();
     return Scaffold(
@@ -64,21 +66,26 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
                     padding: EdgeInsets.all(20.0),
                     child: Text("Bæta við verkefni"),
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => AddCleaningTaskScreen(),
-                      ));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => AddCleaningTaskScreen(),
+                        ),
+                      );
                     },
                   ),
                 ),
                 Expanded(
-                    child: ListView.builder(
-                        itemCount: cleaningTasks.length,
-                        itemBuilder: (ctx, i) => CleaningTaskItem(
-                              id: cleaningTasks[i].id,
-                              title: cleaningTasks[i].title,
-                              description: cleaningTasks[i].description,
-                              taskDone: cleaningTasks[i].taskDone,
-                            ))),
+                  child: ListView.builder(
+                    itemCount: cleaningTasks.length,
+                    itemBuilder: (ctx, i) => CleaningTaskItem(
+                      id: cleaningTasks[i].id,
+                      title: cleaningTasks[i].title,
+                      description: cleaningTasks[i].description,
+                      taskDone: cleaningTasks[i].taskDone,
+                      isAdmin: currentUserData.isAdmin(),
+                    ),
+                  ),
+                ),
               ],
             ),
     );

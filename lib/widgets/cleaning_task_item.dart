@@ -14,12 +14,14 @@ class CleaningTaskItem extends StatefulWidget {
   final String title;
   final String description;
   final bool taskDone;
+  final bool isAdmin;
 
   CleaningTaskItem({
     @required this.id,
     @required this.title,
     @required this.description,
     @required this.taskDone,
+    @required this.isAdmin,
   });
 
   @override
@@ -27,7 +29,6 @@ class CleaningTaskItem extends StatefulWidget {
 }
 
 class _CleaningTaskItemState extends State<CleaningTaskItem> {
- 
   _changeTaskStatus(bool value) async {
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
@@ -94,40 +95,46 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-        margin: EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 5,
+      margin: const EdgeInsets.symmetric(
+        vertical: 8,
+        horizontal: 5,
+      ),
+      elevation: 5,
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(10),
+        leading: CircularCheckBox(
+          value: widget.taskDone,
+          materialTapTargetSize: MaterialTapTargetSize.padded,
+          onChanged: (value) => _changeTaskStatus(value),
         ),
-        elevation: 5,
-        child: ListTile(
-          contentPadding: EdgeInsets.all(10),
-          leading: CircularCheckBox(
-            value: widget.taskDone,
-            materialTapTargetSize: MaterialTapTargetSize.padded,
-            onChanged: (value) => _changeTaskStatus(value),
-          ),
-          title: Text(
-            widget.title,
-            style: Theme.of(context).textTheme.title,
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    widget.description,
-                    style: TextStyle(fontSize: 15),
-                  ),
+        title: Text(
+          widget.title,
+          style: Theme.of(context).textTheme.title,
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  widget.description,
+                  style: TextStyle(fontSize: 15),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          trailing: IconButton(
-            icon: Icon(CustomIcons.dot_3),
-            color: Colors.grey,
-            onPressed: () => _showActionDialog(context),
-          ),
-        ));
+        ),
+        trailing: widget.isAdmin
+            ? IconButton(
+                icon: Icon(CustomIcons.dot_3),
+                color: Colors.grey,
+                onPressed: () => _showActionDialog(context),
+              )
+            : Icon(
+                Icons.question_answer,
+                color: Colors.white,
+              ),
+      ),
+    );
   }
 }
