@@ -121,7 +121,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     });
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     if (_cleaningItem.id != null) {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)

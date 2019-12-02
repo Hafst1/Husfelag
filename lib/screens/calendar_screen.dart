@@ -42,7 +42,7 @@ class _CalendarScreenState extends State<CalendarScreen>
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<MeetingsProvider>(context)
           .fetchMeetings(residentAssociationId, context)
           .then((_) {

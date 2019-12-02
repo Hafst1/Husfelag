@@ -29,7 +29,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<MeetingsProvider>(context)
           .fetchMeetings(residentAssociationId, context)
           .then((_) {
@@ -86,7 +86,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
         kBottomNavigationBarHeight;
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     final meetingData = Provider.of<MeetingsProvider>(context);
     final meetings =
         meetingData.filteredItems(_searchQuery, _selectedFilterIndex);

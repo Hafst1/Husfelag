@@ -30,7 +30,7 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<ConstructionsProvider>(context)
           .fetchConstructions(residentAssociationId, context)
           .then((_) {
@@ -88,7 +88,7 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
         kBottomNavigationBarHeight;
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     final constructionData = Provider.of<ConstructionsProvider>(context);
     final constructions = constructionData.filteredItems(
       _searchQuery,

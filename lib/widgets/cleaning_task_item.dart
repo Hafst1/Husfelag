@@ -31,7 +31,7 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
   _changeTaskStatus(bool value) async {
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     try {
       await Provider.of<CleaningProvider>(context).updateCleaningTaskItem(
         residentAssociationId,
@@ -73,7 +73,7 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
           deleteFunc: () {
             final residentAssociationId =
                 Provider.of<CurrentUserProvider>(context, listen: false)
-                    .getResidentAssociationNumber();
+                    .getResidentAssociationId();
             Provider.of<CleaningProvider>(context, listen: false)
                 .deleteCleaningTaskItem(residentAssociationId, widget.id);
           },

@@ -30,7 +30,7 @@ class ConstructionsListItem extends StatelessWidget {
           deleteFunc: () {
             final residentAssociationId =
                 Provider.of<CurrentUserProvider>(context, listen: false)
-                    .getResidentAssociationNumber();
+                    .getResidentAssociationId();
             Provider.of<ConstructionsProvider>(context, listen: false)
                 .deleteConstruction(residentAssociationId, id);
           },

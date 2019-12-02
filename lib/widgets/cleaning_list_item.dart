@@ -30,7 +30,7 @@ class CleaningListItem extends StatelessWidget {
           deleteFunc: () {
             final residentAssociationId =
                 Provider.of<CurrentUserProvider>(context, listen: false)
-                    .getResidentAssociationNumber();
+                    .getResidentAssociationId();
             Provider.of<CleaningProvider>(context, listen: false)
                 .deleteCleaningItem(residentAssociationId, id);
           },

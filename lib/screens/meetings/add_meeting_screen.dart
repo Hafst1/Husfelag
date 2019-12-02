@@ -165,7 +165,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     });
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     if (_meeting.id != null) {
       try {
         await Provider.of<MeetingsProvider>(context, listen: false)

@@ -65,7 +65,7 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
     });
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     if (_cleaningTaskItem.id != null) {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)

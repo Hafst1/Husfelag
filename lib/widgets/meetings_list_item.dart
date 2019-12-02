@@ -30,7 +30,7 @@ class MeetingsListItem extends StatelessWidget {
           deleteFunc: () {
             final residentAssociationId =
                 Provider.of<CurrentUserProvider>(context, listen: false)
-                    .getResidentAssociationNumber();
+                    .getResidentAssociationId();
             Provider.of<MeetingsProvider>(context, listen: false)
                 .deleteMeeting(residentAssociationId, id);
           },

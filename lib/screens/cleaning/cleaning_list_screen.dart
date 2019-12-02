@@ -29,7 +29,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<CleaningProvider>(context)
           .fetchCleaningItems(residentAssociationId, context)
           .then((_) {
@@ -86,7 +86,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
         kBottomNavigationBarHeight;
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     final cleaningData = Provider.of<CleaningProvider>(context);
     final cleanings = cleaningData.filteredItems(
       _searchQuery,

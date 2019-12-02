@@ -110,7 +110,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     });
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     if (_construction.id != null) {
       try {
         await Provider.of<ConstructionsProvider>(context, listen: false)
