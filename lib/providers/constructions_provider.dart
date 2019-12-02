@@ -30,6 +30,7 @@ class ConstructionsProvider with ChangeNotifier {
           dateTo:
               DateTime.fromMillisecondsSinceEpoch(construction.data['dateTo']),
           description: construction.data['description'],
+          authorId: construction.data['authorId'],
         ));
       });
       _constructions = loadedConstructions;
@@ -64,13 +65,15 @@ class ConstructionsProvider with ChangeNotifier {
         'title': construction.title,
         'dateFrom': construction.dateFrom.millisecondsSinceEpoch,
         'dateTo': construction.dateTo.millisecondsSinceEpoch,
-        'description': construction.description
+        'description': construction.description,
+        'authorId': construction.authorId,
       });
       final newConstruction = Construction(
         title: construction.title,
         dateFrom: construction.dateFrom,
         dateTo: construction.dateTo,
         description: construction.description,
+        authorId: construction.authorId,
         id: response.documentID,
       );
       _constructions.add(newConstruction);
@@ -120,6 +123,7 @@ class ConstructionsProvider with ChangeNotifier {
         'dateFrom': editedConstruction.dateFrom.millisecondsSinceEpoch,
         'dateTo': editedConstruction.dateTo.millisecondsSinceEpoch,
         'description': editedConstruction.description,
+        'authorId': editedConstruction.authorId,
       });
       final constructionIndex = _constructions.indexWhere(
           (construction) => construction.id == editedConstruction.id);

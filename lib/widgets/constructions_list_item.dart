@@ -15,6 +15,7 @@ class ConstructionsListItem extends StatelessWidget {
   final DateTime dateFrom;
   final DateTime dateTo;
   final bool isAdmin;
+  final bool isAuthor;
 
   ConstructionsListItem({
     @required this.id,
@@ -22,6 +23,7 @@ class ConstructionsListItem extends StatelessWidget {
     @required this.dateFrom,
     @required this.dateTo,
     @required this.isAdmin,
+    @required this.isAuthor,
   });
 
   void _showActionDialog(BuildContext context) {
@@ -104,12 +106,7 @@ class ConstructionsListItem extends StatelessWidget {
             ],
           ),
         ),
-        // trailing: IconButton(
-        //   icon: Icon(Icons.comment),
-        //   color: Colors.grey,
-        //   onPressed: () => {},
-        // ),
-        trailing: isAdmin
+        trailing: (isAdmin || isAuthor)
             ? IconButton(
                 icon: Icon(CustomIcons.dot_3),
                 color: Colors.grey,

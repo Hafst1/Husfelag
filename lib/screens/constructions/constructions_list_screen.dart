@@ -173,6 +173,8 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                             dateFrom: constructions[i].dateFrom,
                             dateTo: constructions[i].dateTo,
                             isAdmin: currentUserData.isAdmin(),
+                            isAuthor: constructions[i].authorId ==
+                                currentUserData.getId(),
                           ),
                         ),
                       ),
