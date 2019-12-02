@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/services/auth.dart';
-import 'package:husfelagid/shared/loading.dart';
+
+import '../../services/auth.dart';
+import '../../shared/loading_spinner.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggleView;
@@ -23,7 +24,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loading()
+        ? LoadingSpinner()
         : Scaffold(
             body: SafeArea(
               child: Column(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/auth.dart';
 import '../../services/database.dart';
-import '../../shared/loading.dart';
+import '../../shared/loading_spinner.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -27,7 +27,7 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loading()
+        ? LoadingSpinner()
         : Scaffold(
             body: SafeArea(
               child: Column(
