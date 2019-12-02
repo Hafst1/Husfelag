@@ -29,6 +29,7 @@ class MeetingsProvider with ChangeNotifier {
           duration: parseDuration(meeting.data['duration']),
           location: meeting.data['location'],
           description: meeting.data['description'],
+          authorId: meeting.data['authorId'],
         ));
       });
       _meetings = loadedMeetings;
@@ -64,6 +65,7 @@ class MeetingsProvider with ChangeNotifier {
         'duration': meeting.duration.toString(),
         'location': meeting.location,
         'description': meeting.description,
+        'authorId': meeting.authorId,
       });
       final newMeeting = Meeting(
         title: meeting.title,
@@ -71,6 +73,7 @@ class MeetingsProvider with ChangeNotifier {
         duration: meeting.duration,
         location: meeting.location,
         description: meeting.description,
+        authorId: meeting.authorId,
         id: response.documentID,
       );
       _meetings.add(newMeeting);
@@ -120,6 +123,7 @@ class MeetingsProvider with ChangeNotifier {
         'duration': editedMeeting.duration.toString(),
         'location': editedMeeting.location,
         'description': editedMeeting.description,
+        'authorId': editedMeeting.authorId,
       });
       final meetingIndex =
           _meetings.indexWhere((meeting) => meeting.id == editedMeeting.id);

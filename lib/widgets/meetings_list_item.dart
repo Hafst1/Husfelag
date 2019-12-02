@@ -15,6 +15,7 @@ class MeetingsListItem extends StatelessWidget {
   final DateTime date;
   final String location;
   final bool isAdmin;
+  final bool isAuthor;
 
   MeetingsListItem({
     @required this.id,
@@ -22,6 +23,7 @@ class MeetingsListItem extends StatelessWidget {
     @required this.date,
     @required this.location,
     @required this.isAdmin,
+    @required this.isAuthor,
   });
 
   void _showActionDialog(BuildContext context) {
@@ -135,7 +137,7 @@ class MeetingsListItem extends StatelessWidget {
             ],
           ),
         ),
-        trailing: isAdmin
+        trailing: (isAdmin || isAuthor)
             ? IconButton(
                 icon: Icon(CustomIcons.dot_3),
                 color: Colors.grey,

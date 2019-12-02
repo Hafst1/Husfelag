@@ -161,6 +161,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                             date: meetings[i].date,
                             location: meetings[i].location,
                             isAdmin: currentUserData.isAdmin(),
+                            isAuthor: meetings[i].authorId == currentUserData.getId(),
                           ),
                         ),
                       ),
