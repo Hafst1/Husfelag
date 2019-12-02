@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:husfelagid/services/auth.dart';
 import '../models/user.dart';
 import '../services/database.dart';
-import '../shared/loading.dart';
+import '../shared/loading_spinner.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -524,7 +524,7 @@ class MapScreenState extends State<ProfilePage>
                   ),
                 ));
           } else {
-            return Loading();
+            return LoadingSpinner();
           }
         });
   }
