@@ -14,10 +14,8 @@ class ProfilePage extends StatefulWidget {
 
 class MapScreenState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  bool _status = true;
   bool _nameStatus = true;
   bool _emailStatus = true;
-  bool _homeStatus = true;
   //final FocusNode myFocusNode = FocusNode();
 
   final AuthService _auth = AuthService();
@@ -25,8 +23,6 @@ class MapScreenState extends State<ProfilePage>
 
   String _currentName;
   String _currentEmail;
-  String _currentHome;
-  String _currentPassword;
 
   @override
   void initState() {
@@ -43,7 +39,7 @@ class MapScreenState extends State<ProfilePage>
           if (snapshot.hasData) {
             UserData userData = snapshot.data;
 
-            return new Scaffold(
+            return Scaffold(
                 appBar: AppBar(
                   title: Text('Mín síða',
                       style: TextStyle(
@@ -52,88 +48,51 @@ class MapScreenState extends State<ProfilePage>
                           fontFamily: 'sans-serif-light',
                           color: Colors.white)),
                 ),
-                body: new Container(
+                body: Container(
                   color: Colors.white,
-                  child: new ListView(
+                  child: ListView(
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          new Container(
+                          Container(
                             height: 50.0,
                             color: Colors.white,
-                            child: new Column(
+                            child: Column(
                               children: <Widget>[
                                 Padding(
                                     padding:
                                         EdgeInsets.only(left: 20.0, top: 20.0),
-                                    child: new Row(
+                                    child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                     )),
-                                /*Padding(
-                          padding: EdgeInsets.only(top: 20.0),
-                          child: new Stack(fit: StackFit.loose, children: <Widget>[
-                            new Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                new Container(
-                                    width: 140.0,
-                                    height: 140.0,
-                                    decoration: new BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: new DecorationImage(
-                                        image: new ExactAssetImage(
-                                            'assets/images/as.png'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Padding(
-                                padding: EdgeInsets.only(top: 90.0, right: 100.0),
-                                child: new Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    new CircleAvatar(
-                                      backgroundColor: Colors.blue,
-                                      radius: 25.0,
-                                      child: new Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          ]),
-                        )*/
                               ],
                             ),
                           ),
-                          new Container(
+                          Container(
                             color: Color(0xffFFFFFF),
                             child: Padding(
                               padding: EdgeInsets.only(bottom: 25.0),
                               child: Form(
                                 key: _formKey,
-                                child: new Column(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 0.0),
-                                        child: new Row(
+                                        child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
-                                            new Column(
+                                            Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
-                                                new Text(
+                                                Text(
                                                   'Mínar upplýsingar ',
                                                   style: TextStyle(
                                                       fontSize: 18.0,
@@ -142,30 +101,20 @@ class MapScreenState extends State<ProfilePage>
                                                 ),
                                               ],
                                             ),
-                                            // new Column(
-                                            //   mainAxisAlignment:
-                                            //       MainAxisAlignment.end,
-                                            //   mainAxisSize: MainAxisSize.min,
-                                            //   children: <Widget>[
-                                            //     _status
-                                            //         ? _getEditIcon()
-                                            //         : new Container(),
-                                            //   ],
-                                            // )
                                           ],
                                         )),
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 25.0),
-                                        child: new Row(
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
-                                            new Column(
+                                            Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
-                                                new Text(
+                                                Text(
                                                   'Nafn',
                                                   style: TextStyle(
                                                       fontSize: 16.0,
@@ -179,11 +128,11 @@ class MapScreenState extends State<ProfilePage>
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 2.0),
-                                        child: new Row(
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
-                                            new Flexible(
-                                              child: new TextFormField(
+                                            Flexible(
+                                              child: TextFormField(
                                                 initialValue: userData.name,
                                                 decoration: const InputDecoration(
                                                   hintText: "Skráðu nafnið þitt",
@@ -197,14 +146,14 @@ class MapScreenState extends State<ProfilePage>
                                                 autofocus: !_nameStatus,
                                               ),
                                             ),
-                                            new Column(
+                                            Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
                                                 _nameStatus
                                                     ? _getNameEditIcon()
-                                                    : new Container(),
+                                                    : Container(),
                                               ],
                                             )
                                           ],
@@ -213,7 +162,7 @@ class MapScreenState extends State<ProfilePage>
                                           Padding(
                                           padding: EdgeInsets.only(
                                               left: 25.0, right: 25.0, top: 45.0),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
@@ -223,31 +172,27 @@ class MapScreenState extends State<ProfilePage>
                                                   padding:
                                                       EdgeInsets.only(right: 10.0),
                                                   child: Container(
-                                                      child: new RaisedButton(
-                                                    child: new Text("Vista"),
+                                                      child: RaisedButton(
+                                                    child: Text("Vista"),
                                                     textColor: Colors.white,
                                                     color: Colors.green,
                                                     onPressed: () async {
                                                     if (_formKey.currentState.validate()) {
-                                                        await DatabaseService(uid: user.uid).updateUserData(
+                                                        await DatabaseService(uid: user.uid).updateUserName(
                                                                 _currentName ?? userData.name,
-                                                                _currentEmail ?? userData.email,
-                                                                _currentHome ?? userData.home,
-                                                                userData.resId,
-                                                                userData.apartId
                                                             );
                                                       }
                                                       setState(() {
                                                         _nameStatus = true;
                                                         FocusScope.of(context)
                                                             .requestFocus(
-                                                                new FocusNode());
+                                                                FocusNode());
                                                       });
                                                     },
                                                     shape:
-                                                        new RoundedRectangleBorder(
+                                                        RoundedRectangleBorder(
                                                             borderRadius:
-                                                                new BorderRadius
+                                                                BorderRadius
                                                                         .circular(
                                                                     20.0)),
                                                   )),
@@ -259,8 +204,8 @@ class MapScreenState extends State<ProfilePage>
                                                   padding:
                                                       EdgeInsets.only(left: 10.0),
                                                   child: Container(
-                                                      child: new RaisedButton(
-                                                    child: new Text("Hætta við"),
+                                                      child: RaisedButton(
+                                                    child: Text("Hætta við"),
                                                     textColor: Colors.white,
                                                     color: Colors.red,
                                                     onPressed: () {
@@ -268,13 +213,13 @@ class MapScreenState extends State<ProfilePage>
                                                         _nameStatus = true;
                                                         FocusScope.of(context)
                                                             .requestFocus(
-                                                                new FocusNode());
+                                                                FocusNode());
                                                       });
                                                     },
                                                     shape:
-                                                        new RoundedRectangleBorder(
+                                                        RoundedRectangleBorder(
                                                             borderRadius:
-                                                                new BorderRadius
+                                                                BorderRadius
                                                                         .circular(
                                                                     20.0)),
                                                   )),
@@ -287,15 +232,15 @@ class MapScreenState extends State<ProfilePage>
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 25.0),
-                                        child: new Row(
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
-                                            new Column(
+                                            Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
-                                                new Text(
+                                                Text(
                                                   'Netfang',
                                                   style: TextStyle(
                                                       fontSize: 16.0,
@@ -309,11 +254,11 @@ class MapScreenState extends State<ProfilePage>
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 2.0),
-                                        child: new Row(
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
-                                            new Flexible(
-                                              child: new TextFormField(
+                                            Flexible(
+                                              child: TextFormField(
                                                 initialValue: userData.email,
                                                 decoration: const InputDecoration(
                                                     hintText:
@@ -326,14 +271,14 @@ class MapScreenState extends State<ProfilePage>
                                                 enabled: !_emailStatus,
                                               ),
                                             ),
-                                            new Column(
+                                            Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
                                                 _emailStatus
                                                     ? _getEmailEditIcon()
-                                                    : new Container(),
+                                                    : Container(),
                                               ],
                                             )
                                           ],
@@ -342,7 +287,7 @@ class MapScreenState extends State<ProfilePage>
                                           Padding(
                                           padding: EdgeInsets.only(
                                               left: 25.0, right: 25.0, top: 45.0),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
@@ -352,8 +297,8 @@ class MapScreenState extends State<ProfilePage>
                                                   padding:
                                                       EdgeInsets.only(right: 10.0),
                                                   child: Container(
-                                                      child: new RaisedButton(
-                                                    child: new Text("Vista"),
+                                                      child: RaisedButton(
+                                                    child: Text("Vista"),
                                                     textColor: Colors.white,
                                                     color: Colors.green,
                                                     onPressed: () async {
@@ -363,25 +308,21 @@ class MapScreenState extends State<ProfilePage>
                                                          await _auth.changeEmail(_currentEmail);
                                                          print('now email is changed');
                                                        }
-                                                        await DatabaseService(uid: user.uid).updateUserData(
-                                                                _currentName ?? userData.name,
+                                                        await DatabaseService(uid: user.uid).updateUserEmail(
                                                                 _currentEmail ?? userData.email,
-                                                                _currentHome ?? userData.home,
-                                                                userData.resId,
-                                                                userData.apartId
                                                             );
                                                       }
                                                       setState(() {
                                                         _emailStatus = true;
                                                         FocusScope.of(context)
                                                             .requestFocus(
-                                                                new FocusNode());
+                                                                FocusNode());
                                                       });
                                                     },
                                                     shape:
-                                                        new RoundedRectangleBorder(
+                                                        RoundedRectangleBorder(
                                                             borderRadius:
-                                                                new BorderRadius
+                                                                BorderRadius
                                                                         .circular(
                                                                     20.0)),
                                                   )),
@@ -393,8 +334,8 @@ class MapScreenState extends State<ProfilePage>
                                                   padding:
                                                       EdgeInsets.only(left: 10.0),
                                                   child: Container(
-                                                      child: new RaisedButton(
-                                                    child: new Text("Hætta við"),
+                                                      child: RaisedButton(
+                                                    child: Text("Hætta við"),
                                                     textColor: Colors.white,
                                                     color: Colors.red,
                                                     onPressed: () {
@@ -402,147 +343,13 @@ class MapScreenState extends State<ProfilePage>
                                                         _emailStatus = true;
                                                         FocusScope.of(context)
                                                             .requestFocus(
-                                                                new FocusNode());
+                                                                FocusNode());
                                                       });
                                                     },
                                                     shape:
-                                                        new RoundedRectangleBorder(
+                                                        RoundedRectangleBorder(
                                                             borderRadius:
-                                                                new BorderRadius
-                                                                        .circular(
-                                                                    20.0)),
-                                                  )),
-                                                ),
-                                                flex: 2,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                    Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 25.0),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            new Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                new Text(
-                                                  'Heimilisfang',
-                                                  style: TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )),
-                                    Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 2.0),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            new Flexible(
-                                              child: new TextFormField(
-                                                initialValue: userData.home,
-                                                decoration: const InputDecoration(
-                                                    hintText:
-                                                        "Skráðu heimilisfangið þitt"),
-                                                validator: (val) => val.isEmpty
-                                                    ? 'Vinsamlegast skráðu heimilisfang'
-                                                    : null,
-                                                onChanged: (val) => setState(
-                                                    () => _currentHome = val),
-                                                enabled: !_homeStatus,
-                                              ),
-                                            ),
-                                            new Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                _homeStatus
-                                                    ? _getHomeEditIcon()
-                                                    : new Container(),
-                                              ],
-                                            )
-                                          ],
-                                        )),
-                                        if(!_homeStatus) 
-                                          Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 25.0, right: 25.0, top: 45.0),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(right: 10.0),
-                                                  child: Container(
-                                                      child: new RaisedButton(
-                                                    child: new Text("Vista"),
-                                                    textColor: Colors.white,
-                                                    color: Colors.green,
-                                                    onPressed: () async {
-                                                    if (_formKey.currentState.validate()) {
-                                                      if (_currentEmail != userData.email) {
-                                                         print('now changing email');
-                                                         await _auth.changeEmail(_currentEmail);
-                                                         print('now email is changed');
-                                                       }
-                                                        await DatabaseService(uid: user.uid).updateUserData(
-                                                                _currentName ?? userData.name,
-                                                                _currentEmail ?? userData.email,
-                                                                _currentHome ?? userData.home,
-                                                                userData.resId,
-                                                                userData.apartId
-                                                            );
-                                                      }
-                                                      setState(() {
-                                                        _homeStatus = true;
-                                                        FocusScope.of(context)
-                                                            .requestFocus(
-                                                                new FocusNode());
-                                                      });
-                                                    },
-                                                    shape:
-                                                        new RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                new BorderRadius
-                                                                        .circular(
-                                                                    20.0)),
-                                                  )),
-                                                ),
-                                                flex: 2,
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(left: 10.0),
-                                                  child: Container(
-                                                      child: new RaisedButton(
-                                                    child: new Text("Hætta við"),
-                                                    textColor: Colors.white,
-                                                    color: Colors.red,
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        _homeStatus = true;
-                                                        FocusScope.of(context)
-                                                            .requestFocus(
-                                                                new FocusNode());
-                                                      });
-                                                    },
-                                                    shape:
-                                                        new RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                new BorderRadius
+                                                                BorderRadius
                                                                         .circular(
                                                                     20.0)),
                                                   )),
@@ -555,13 +362,13 @@ class MapScreenState extends State<ProfilePage>
                                     /*Padding(
                                 padding: EdgeInsets.only(
                                     left: 25.0, right: 25.0, top: 25.0),
-                                child: new Row(
+                                child: Row(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Expanded(
                                       child: Container(
-                                        child: new Text(
+                                        child: Text(
                                           'Breyta um lykilorð',
                                           style: TextStyle(
                                               fontSize: 16.0,
@@ -572,7 +379,7 @@ class MapScreenState extends State<ProfilePage>
                                     ),
                                     /*Expanded(
                                       child: Container(
-                                        child: new Text(
+                                        child: Text(
                                           'Nýja lykilorðið',
                                           style: TextStyle(
                                               fontSize: 16.0,
@@ -586,14 +393,14 @@ class MapScreenState extends State<ProfilePage>
                                     /*Padding(
                                 padding: EdgeInsets.only(
                                     left: 25.0, right: 25.0, top: 2.0),
-                                child: new Row(
+                                child: Row(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Flexible(
                                       child: Padding(
                                         padding: EdgeInsets.only(right: 10.0),
-                                        child: new TextFormField(
+                                        child: TextFormField(
                                           decoration: const InputDecoration(
                                               hintText: "Gamla lykilorðið"),
                                           obscureText: true,
@@ -606,7 +413,7 @@ class MapScreenState extends State<ProfilePage>
                                       flex: 2,
                                     ),
                                     Flexible(
-                                      child: new TextFormField(
+                                      child: TextFormField(
                                         decoration: const InputDecoration(
                                             hintText: "Nýja lykilorðið"),
                                         obscureText: true,
@@ -621,12 +428,12 @@ class MapScreenState extends State<ProfilePage>
                                     ),
                                   ],
                                 )),*/
-                                    //!_status ? _getActionButtons() : new Container(),
+                                    //!_status ? _getActionButtons() : Container(),
                                     // if (!_status)
                                       // Padding(
                                       //   padding: EdgeInsets.only(
                                       //       left: 25.0, right: 25.0, top: 45.0),
-                                      //   child: new Row(
+                                      //   child: Row(
                                       //     mainAxisSize: MainAxisSize.max,
                                       //     mainAxisAlignment:
                                       //         MainAxisAlignment.start,
@@ -636,8 +443,8 @@ class MapScreenState extends State<ProfilePage>
                                       //           padding:
                                       //               EdgeInsets.only(right: 10.0),
                                       //           child: Container(
-                                      //               child: new RaisedButton(
-                                      //             child: new Text("Vista"),
+                                      //               child: RaisedButton(
+                                      //             child: Text("Vista"),
                                       //             textColor: Colors.white,
                                       //             color: Colors.green,
                                       //             onPressed: () async {
@@ -663,13 +470,13 @@ class MapScreenState extends State<ProfilePage>
                                       //                 _status = true;
                                       //                 FocusScope.of(context)
                                       //                     .requestFocus(
-                                      //                         new FocusNode());
+                                      //                         FocusNode());
                                       //               });
                                       //             },
                                       //             shape:
-                                      //                 new RoundedRectangleBorder(
+                                      //                 RoundedRectangleBorder(
                                       //                     borderRadius:
-                                      //                         new BorderRadius
+                                      //                         BorderRadius
                                       //                                 .circular(
                                       //                             20.0)),
                                       //           )),
@@ -681,8 +488,8 @@ class MapScreenState extends State<ProfilePage>
                                       //           padding:
                                       //               EdgeInsets.only(left: 10.0),
                                       //           child: Container(
-                                      //               child: new RaisedButton(
-                                      //             child: new Text("Hætta við"),
+                                      //               child: RaisedButton(
+                                      //             child: Text("Hætta við"),
                                       //             textColor: Colors.white,
                                       //             color: Colors.red,
                                       //             onPressed: () {
@@ -690,13 +497,13 @@ class MapScreenState extends State<ProfilePage>
                                       //                 _status = true;
                                       //                 FocusScope.of(context)
                                       //                     .requestFocus(
-                                      //                         new FocusNode());
+                                      //                         FocusNode());
                                       //               });
                                       //             },
                                       //             shape:
-                                      //                 new RoundedRectangleBorder(
+                                      //                 RoundedRectangleBorder(
                                       //                     borderRadius:
-                                      //                         new BorderRadius
+                                      //                         BorderRadius
                                       //                                 .circular(
                                       //                             20.0)),
                                       //           )),
@@ -723,11 +530,11 @@ class MapScreenState extends State<ProfilePage>
   }
 
   Widget _getNameEditIcon() {
-    return new GestureDetector(
-      child: new CircleAvatar(
+    return GestureDetector(
+      child: CircleAvatar(
         backgroundColor: Colors.blue,
         radius: 14.0,
-        child: new Icon(
+        child: Icon(
           Icons.edit,
           color: Colors.white,
           size: 16.0,
@@ -741,11 +548,11 @@ class MapScreenState extends State<ProfilePage>
     );
   }
   Widget _getEmailEditIcon() {
-    return new GestureDetector(
-      child: new CircleAvatar(
+    return GestureDetector(
+      child: CircleAvatar(
         backgroundColor: Colors.blue,
         radius: 14.0,
-        child: new Icon(
+        child: Icon(
           Icons.edit,
           color: Colors.white,
           size: 16.0,
@@ -754,24 +561,6 @@ class MapScreenState extends State<ProfilePage>
       onTap: () {
         setState(() {
           _emailStatus = false;
-        });
-      },
-    );
-  }
-  Widget _getHomeEditIcon() {
-    return new GestureDetector(
-      child: new CircleAvatar(
-        backgroundColor: Colors.blue,
-        radius: 14.0,
-        child: new Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      onTap: () {
-        setState(() {
-          _homeStatus = false;
         });
       },
     );
