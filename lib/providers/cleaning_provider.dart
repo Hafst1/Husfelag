@@ -1,84 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:husfelagid/models/cleaning_task.dart';
-import '../models/apartment.dart';
+
+import '../models/cleaning_task.dart';
 import '../models/cleaning.dart';
 
 enum CleaningStatus { current, ahead, old }
 
 class CleaningProvider with ChangeNotifier {
   List<Cleaning> _cleaningItems = [];
-  List<CleaningTask> _cleaningTask = [];
+  List<CleaningTask> _cleaningTasks = [];
 
-  DocumentReference cleaningRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
-  
- 
-  List<Apartment> _dummyData2 = [
-    Apartment(
-      apartmentNumber: "Íbúð 101",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 102",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 103",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 104",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 201",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 202",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 203",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 204",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 301",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 302",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 303",
-      residents: ["Siggi", "Baddi"],
-    ),
-    Apartment(
-      apartmentNumber: "Íbúð 304",
-      residents: ["Siggi", "Baddi"],
-    ),
-  ];
+  // collection reference to resident associations.
+  CollectionReference _associationsRef =
+      Firestore.instance.collection('ResidentAssociation');
 
-  List<Apartment> get apartmentItems {
-    return [..._dummyData2];
-  }
-  
-  List<CleaningTask> getAllTasks() {
-    return [..._cleaningTask];
-  }
-
-  Future<void> fetchCleaningItems(BuildContext context) async {
-  
+  // function which fetches cleaning items of a resident association
+  // and stores them in the _cleaningItems list.
+  Future<void> fetchCleaningItems(
+      String residentAssociationId, BuildContext context) async {
     try {
-      final response =
-          await cleaningRef.collection('CleaningItems').getDocuments();
+      final response = await _associationsRef
+          .document(residentAssociationId)
+          .collection('CleaningItems')
+          .getDocuments();
       final List<Cleaning> loadedCleaningItems = [];
       response.documents.forEach((cleaningItem) {
         loadedCleaningItems.add(Cleaning(
@@ -111,10 +55,14 @@ class CleaningProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addCleaningItem(Cleaning cleaningItem) async {
-  
+  // function which adds a cleaning item to a resident association.
+  Future<void> addCleaningItem(
+      String residentAssociationId, Cleaning cleaningItem) async {
     try {
-      final response = await cleaningRef.collection("CleaningItems").add({
+      final response = await _associationsRef
+          .document(residentAssociationId)
+          .collection("CleaningItems")
+          .add({
         'apartment': cleaningItem.apartment,
         'dateFrom': cleaningItem.dateFrom.millisecondsSinceEpoch,
         'dateTo': cleaningItem.dateTo.millisecondsSinceEpoch,
@@ -132,15 +80,20 @@ class CleaningProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteCleaningItem(String id) async {
-
-    final deleteIndex =
-        _cleaningItems.indexWhere((cleaningItem) => cleaningItem.id == id);
+  // function which deletes a cleaning item in a resident association.
+  Future<void> deleteCleaningItem(
+      String residentAssociationId, String cleaningId) async {
+    final deleteIndex = _cleaningItems
+        .indexWhere((cleaningItem) => cleaningItem.id == cleaningId);
     var deletedCleaningItem = _cleaningItems[deleteIndex];
     _cleaningItems.removeAt(deleteIndex);
     notifyListeners();
     try {
-      await cleaningRef.collection('CleaningItems').document(id).delete();
+      await _associationsRef
+          .document(residentAssociationId)
+          .collection('CleaningItems')
+          .document(cleaningId)
+          .delete();
       deletedCleaningItem = null;
     } catch (error) {
       _cleaningItems.insert(deleteIndex, deletedCleaningItem);
@@ -148,20 +101,27 @@ class CleaningProvider with ChangeNotifier {
     }
   }
 
+  // function which returns the cleaning item which has the id taken in as
+  // parameter, if found.
   Cleaning findById(String id) {
     return _cleaningItems.firstWhere((cleaning) => cleaning.id == id);
   }
 
-  Future<void> updateCleaningItem(String id, Cleaning editedCleaning) async {
-
+  // functions which updates a cleaning item in a resident association.
+  Future<void> updateCleaningItem(
+      String residentAssociationId, Cleaning editedCleaning) async {
     try {
-      await cleaningRef.collection('CleaningItems').document(id).updateData({
+      await _associationsRef
+          .document(residentAssociationId)
+          .collection('CleaningItems')
+          .document(editedCleaning.id)
+          .updateData({
         'apartment': editedCleaning.apartment,
         'dateFrom': editedCleaning.dateFrom.millisecondsSinceEpoch,
         'dateTo': editedCleaning.dateTo.millisecondsSinceEpoch,
       });
-      final cleaningIndex =
-          _cleaningItems.indexWhere((cleaning) => cleaning.id == id);
+      final cleaningIndex = _cleaningItems
+          .indexWhere((cleaning) => cleaning.id == editedCleaning.id);
       if (cleaningIndex >= 0) {
         _cleaningItems[cleaningIndex] = editedCleaning;
       }
@@ -171,6 +131,8 @@ class CleaningProvider with ChangeNotifier {
     }
   }
 
+  // functions which filters whether a cleaning item is ahead, old or currently
+  // taking place.
   bool _cleaningStatusFilter(
       int filterIndex, DateTime dateFrom, DateTime dateTo) {
     CleaningStatus status = CleaningStatus.values[filterIndex];
@@ -193,6 +155,8 @@ class CleaningProvider with ChangeNotifier {
     }
   }
 
+  // function which returns a list of cleaning items which contain the the search
+  // query and match a given status filter (ahead, old or current).
   List<Cleaning> filteredItems(String query, int filterIndex) {
     List<Cleaning> constructions = [..._cleaningItems];
     String searchQuery = query.toLowerCase();
@@ -222,21 +186,25 @@ class CleaningProvider with ChangeNotifier {
     return displayList;
   }
 
-  Future<void> fetchCleaningTasks(BuildContext context) async {
-   
+  // function which fetches cleaning task items of a resident association and
+  // stores them in the _cleaningTasks list.
+  Future<void> fetchCleaningTasks(
+      String residentAssociationId, BuildContext context) async {
     try {
-      final response =
-          await cleaningRef.collection('CleaningTasks').getDocuments();
+      final response = await _associationsRef
+          .document(residentAssociationId)
+          .collection('CleaningTasks')
+          .getDocuments();
       final List<CleaningTask> loadedCleaningTask = [];
       response.documents.forEach((cleaningTask) {
         loadedCleaningTask.add(CleaningTask(
           id: cleaningTask.documentID,
           title: cleaningTask.data['title'],
           description: cleaningTask.data['description'],
-          taskDone: cleaningTask.data['done'],
+          taskDone: cleaningTask.data['taskDone'],
         ));
       });
-      _cleaningTask = loadedCleaningTask;
+      _cleaningTasks = loadedCleaningTask;
       notifyListeners();
     } catch (error) {
       showDialog(
@@ -256,25 +224,85 @@ class CleaningProvider with ChangeNotifier {
       );
     }
   }
-  void updateCleaningTask(String id, CleaningTask editedCleaningTask) async {
-    final cleaningTaskIndex = _cleaningTask.indexWhere((cleaningTask) => cleaningTask.id == id);
-     if (cleaningTaskIndex >= 0) {
-      _cleaningTask[cleaningTaskIndex] = editedCleaningTask;
-     }
+
+  // function which adds a cleaning task to a resident association.
+  Future<void> addCleaningTaskItem(
+      String residentAssociationId, CleaningTask cleaningTaskItem) async {
     try {
-
-      await cleaningRef.collection('CleaningTasks').document(id).updateData({
-        'done': editedCleaningTask.taskDone,
+      final response = await _associationsRef
+          .document(residentAssociationId)
+          .collection("CleaningTasks")
+          .add({
+        'title': cleaningTaskItem.title,
+        'description': cleaningTaskItem.description,
+        'taskDone': cleaningTaskItem.taskDone,
       });
-
+      final newCleaningTaskItem = CleaningTask(
+        title: cleaningTaskItem.title,
+        description: cleaningTaskItem.description,
+        taskDone: cleaningTaskItem.taskDone,
+        id: response.documentID,
+      );
+      _cleaningTasks.add(newCleaningTaskItem);
       notifyListeners();
     } catch (error) {
       throw (error);
     }
-
   }
 
-   CleaningTask findCleaningTaskById(String id) {
-    return _cleaningTask.firstWhere((cleaningTask) => cleaningTask.id == id);
-  } 
+  // function which updates a cleaning task item in a resident association.
+  Future<void> updateCleaningTaskItem(
+      String residentAssociationId, CleaningTask editedCleaningTask) async {
+    final cleaningTaskIndex = _cleaningTasks
+        .indexWhere((cleaningTask) => cleaningTask.id == editedCleaningTask.id);
+    if (cleaningTaskIndex >= 0) {
+      _cleaningTasks[cleaningTaskIndex] = editedCleaningTask;
+    }
+    try {
+      await _associationsRef
+          .document(residentAssociationId)
+          .collection('CleaningTasks')
+          .document(editedCleaningTask.id)
+          .updateData({
+        'title': editedCleaningTask.title,
+        'taskDone': editedCleaningTask.taskDone,
+        'description': editedCleaningTask.description,
+      });
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  // functions which returns a cleaning task which has the id taken in as
+  // parameter, if found.
+  CleaningTask findCleaningTaskById(String id) {
+    return _cleaningTasks.firstWhere((cleaningTask) => cleaningTask.id == id);
+  }
+
+  // function which deletes a cleaning task item of a resident association.
+  Future<void> deleteCleaningTaskItem(
+      String residentAssociationId, String cleaningTaskId) async {
+    final deleteIndex = _cleaningTasks
+        .indexWhere((cleaningTask) => cleaningTask.id == cleaningTaskId);
+    var deletedCleaningItem = _cleaningTasks[deleteIndex];
+    _cleaningTasks.removeAt(deleteIndex);
+    notifyListeners();
+    try {
+      await _associationsRef
+          .document(residentAssociationId)
+          .collection('CleaningTasks')
+          .document(cleaningTaskId)
+          .delete();
+      deletedCleaningItem = null;
+    } catch (error) {
+      _cleaningTasks.insert(deleteIndex, deletedCleaningItem);
+      notifyListeners();
+    }
+  }
+
+  // function which returns all cleaning tasks of a given resident assocation.
+  List<CleaningTask> getAllTasks() {
+    return [..._cleaningTasks];
+  }
 }

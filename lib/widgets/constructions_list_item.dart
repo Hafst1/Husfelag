@@ -6,6 +6,7 @@ import './custom_icons_icons.dart';
 import '../screens/constructions/construction_detail_screen.dart';
 import '../screens/constructions/add_construction_screen.dart';
 import '../providers/constructions_provider.dart';
+import '../providers/current_user_provider.dart';
 import '../widgets/action_dialog.dart';
 
 class ConstructionsListItem extends StatelessWidget {
@@ -27,8 +28,11 @@ class ConstructionsListItem extends StatelessWidget {
       builder: (BuildContext ctx) {
         return ActionDialog(
           deleteFunc: () {
+            final residentAssociationId =
+                Provider.of<CurrentUserProvider>(context, listen: false)
+                    .getResidentAssociationNumber();
             Provider.of<ConstructionsProvider>(context, listen: false)
-                .deleteConstruction(id);
+                .deleteConstruction(residentAssociationId, id);
           },
           editFunc: () {
             Navigator.of(ctx).pop();

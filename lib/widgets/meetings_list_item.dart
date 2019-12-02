@@ -6,6 +6,7 @@ import './custom_icons_icons.dart';
 import '../screens/meetings/meeting_detail_screen.dart';
 import '../screens/meetings/add_meeting_screen.dart';
 import '../providers/meetings_provider.dart';
+import '../providers/current_user_provider.dart';
 import '../widgets/action_dialog.dart';
 
 class MeetingsListItem extends StatelessWidget {
@@ -27,8 +28,11 @@ class MeetingsListItem extends StatelessWidget {
       builder: (BuildContext ctx) {
         return ActionDialog(
           deleteFunc: () {
+            final residentAssociationId =
+                Provider.of<CurrentUserProvider>(context, listen: false)
+                    .getResidentAssociationNumber();
             Provider.of<MeetingsProvider>(context, listen: false)
-                .deleteMeeting(id);
+                .deleteMeeting(residentAssociationId, id);
           },
           editFunc: () {
             Navigator.of(ctx).pop();
