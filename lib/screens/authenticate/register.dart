@@ -183,10 +183,10 @@ class _RegisterState extends State<Register> {
         if (_formKey.currentState.validate()) {
           setState(() => loading = true);
           dynamic result =
-              await _auth.registerWithEmailAndPassword(email, password)
-              .then((currentUser) async {
-                await DatabaseService(uid: currentUser.uid).updateUserData(name, email, home, '', '');
-              });
+              await _auth.registerWithEmailAndPassword(email, password);
+              if(result != null){
+                await DatabaseService(uid: result.uid).updateUserData(name, email, home, '', '');
+              }
           if (this.mounted){
             if (result == null) {
               setState(() {
