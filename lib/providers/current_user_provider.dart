@@ -207,6 +207,19 @@ class CurrentUserProvider with ChangeNotifier {
     return [..._apartments];
   }
 
+  String getApartmentNumber() {
+    if (_apartments.isEmpty) {
+      return '';
+    }
+    var retVal = '';
+    final apartmentIndex = _apartments
+        .indexWhere((apartment) => apartment.id == _currentUser.apartmentId);
+    if (apartmentIndex >= 0) {
+      retVal = _apartments[apartmentIndex].apartmentNumber;
+    }
+    return retVal;
+  }
+
   // function which checks whether an apartment number is available or not.
   bool apartmentIsAvailable(String query) {
     String searchQuery = query.toLowerCase();

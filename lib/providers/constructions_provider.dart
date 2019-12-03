@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/construction.dart';
 
 enum ConstructionStatus { current, ahead, old }
@@ -198,6 +199,8 @@ class ConstructionsProvider with ChangeNotifier {
     return displayList;
   }
 
+  // function which sorts the constructions list by the dateFrom property, if 
+  // equal the items are sorted by the dateTo property.
   void sortConstructions() {
     _constructions.sort(
       (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0

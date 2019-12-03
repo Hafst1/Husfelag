@@ -23,15 +23,39 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
       setState(() {
         _isLoading = true;
       });
-      final residentAssociationId =
-          Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationId();
-      Provider.of<CleaningProvider>(context)
+      final currentUserData =
+          Provider.of<CurrentUserProvider>(context, listen: false);
+      final cleaningTaskData = Provider.of<CleaningProvider>(context);
+      final residentAssociationId = currentUserData.getResidentAssociationId();
+      cleaningTaskData
           .fetchCleaningTasks(residentAssociationId, context)
           .then((_) {
-        setState(() {
-          _isLoading = false;
+        currentUserData.fetchApartments(residentAssociationId).then((_) {
+          cleaningTaskData
+              .fetchCleaningItems(residentAssociationId, context)
+              .then((_) {
+            setState(() {
+              _isLoading = false;
+            });
+          });
         });
+      }).catchError((error) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Villa kom upp'),
+            content: Text('Eitthvað fór úrskeiðis!'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Halda áfram'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+        );
       });
     }
     _isInit = false;
@@ -85,6 +109,9 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
                       description: cleaningTasks[i].description,
                       taskDone: cleaningTasks[i].taskDone,
                       isAdmin: currentUserData.isAdmin(),
+                      canCheck: cleaningTaskData.isUsersTurnToClean(
+                        currentUserData.getApartmentNumber(),
+                      ),
                     ),
                   ),
                 ),

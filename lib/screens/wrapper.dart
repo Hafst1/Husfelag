@@ -33,12 +33,6 @@ class Wrapper extends StatelessWidget {
                 body: LoadingSpinner(),
               );
             case ConnectionState.done:
-            // currentUser.setResidentAssociationId('Tokyo');
-              print(currentUser.getResidentAssociationId());
-              // currentUser.setResidentAssociationId('');
-              print(currentUser.getName());
-              print(currentUser.getEmail());
-              print(currentUser.isAdmin());
               // send user to home page if he contains a resident association number
               return currentUser.containsRAN()
                   ? MultiProvider(

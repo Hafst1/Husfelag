@@ -198,6 +198,37 @@ class CleaningProvider with ChangeNotifier {
     return displayList;
   }
 
+  // functions which checks whether it is the user's turn to clean. If 
+  // the function returns true he will be able to check the boxes of
+  // the cleaning task list.
+  bool isUsersTurnToClean(String apartment) {
+    if (_cleaningItems.isEmpty) {
+      return false;
+    }
+    DateTime exactDate = DateTime.now();
+    DateTime startOfCurrentDate =
+        DateTime(exactDate.year, exactDate.month, exactDate.day, 0, 0, 0, 0);
+    DateTime endOfCurrentDate = DateTime(
+        exactDate.year, exactDate.month, exactDate.day, 23, 59, 59, 999);
+    var retVal = false;
+    for (final cleaningItem in _cleaningItems) {
+      if (cleaningItem.dateFrom.isAfter(endOfCurrentDate)) {
+        print(cleaningItem);
+        break;
+      }
+      if (cleaningItem.apartment != apartment) {
+        continue;
+      }
+      if (cleaningItem.dateFrom.isBefore(endOfCurrentDate) &&
+          (cleaningItem.dateTo.compareTo(startOfCurrentDate) == 0 ||
+              cleaningItem.dateTo.isAfter(startOfCurrentDate))) {
+        retVal = true;
+        break;
+      }
+    }
+    return retVal;
+  }
+
   // functions which sorts the cleaning item list by the dateFrom property,
   // if equal it is ordered by the dateTo property.
   void sortCleaningItems() {

@@ -15,6 +15,7 @@ class CleaningTaskItem extends StatefulWidget {
   final String description;
   final bool taskDone;
   final bool isAdmin;
+  final bool canCheck;
 
   CleaningTaskItem({
     @required this.id,
@@ -22,6 +23,7 @@ class CleaningTaskItem extends StatefulWidget {
     @required this.description,
     @required this.taskDone,
     @required this.isAdmin,
+    @required this.canCheck,
   });
 
   @override
@@ -102,11 +104,13 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
       elevation: 5,
       child: ListTile(
         contentPadding: const EdgeInsets.all(10),
-        leading: CircularCheckBox(
-          value: widget.taskDone,
-          materialTapTargetSize: MaterialTapTargetSize.padded,
-          onChanged: (value) => _changeTaskStatus(value),
-        ),
+        leading: widget.canCheck
+            ? CircularCheckBox(
+                value: widget.taskDone,
+                materialTapTargetSize: MaterialTapTargetSize.padded,
+                onChanged: (value) => _changeTaskStatus(value),
+              )
+            : Icon(Icons.question_answer),
         title: Text(
           widget.title,
           style: Theme.of(context).textTheme.title,
