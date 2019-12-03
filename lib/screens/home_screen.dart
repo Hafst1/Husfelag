@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/widgets/category_option.dart';
+import 'package:flutter/services.dart';
 
 import '../services/auth.dart';
-//import 'package:husfelagid/screens/settings_form.dart';
 import '../screens/profile_page.dart';
-import '../widgets/home_option.dart';
+
 import '../screens/constructions/constructions_screen.dart';
 import '../screens/meetings/meetings_screen.dart';
 import '../screens/documents/documents_screen.dart';
@@ -16,18 +17,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // void _showSettingsPanel() {
-    //   showModalBottomSheet(context: context, builder: (context) {
-    //     return Container(
-    //       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal:60.0),
-    //       child: SettingsForm(),
-    //     );
-    //   });
-    // }
-
     void choiceAction(String choice) {
     if (choice == Constants.MyPage){
-      //_showSettingsPanel();
       Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ProfilePage(),
@@ -54,62 +45,77 @@ class HomeScreen extends StatelessWidget {
               }).toList();
             }
           ),
-          /*FlatButton.icon(
-            icon: Icon(Icons.person, color: Colors.white),
-            label: Text(
-              'Skrá út',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
-            onPressed: () async {
-              await _auth.signOut();
-            }),
-          FlatButton.icon(
-            icon: Icon(Icons.settings, color: Colors.white),
-            label: Text(
-              'Settings',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
-            onPressed: () => _showSettingsPanel(),
-          )*/
         ],
       ),
-      body: GridView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
-        children: <Widget>[
-          HomeOption(
-            optionIcon: CustomIcons.tools,
-            optionText: "Framkvæmdir",
-            optionRoute: ConstructionsScreen.routeName,
-          ),
-          HomeOption(
-            optionIcon: CustomIcons.group,
-            optionText: "Fundir",
-            optionRoute: MeetingsScreen.routeName,
-          ),
-          HomeOption(
-            optionIcon: CustomIcons.doc_text,
-            optionText: "Skjöl",
-            optionRoute: DocumentsScreen.routeName,
-          ),
-          HomeOption(
-            optionIcon: CustomIcons.trash,
-            optionText: "Þrif",
-            optionRoute: CleaningScreen.routeName,
-          ),
-        ],
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 300,
-          childAspectRatio: 2 / 2,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 30,
+        child: Column(
+          children: <Widget>[
+            CategoryOption(
+              optionIcon: CustomIcons.tools,
+              optionText: "Framkvæmdir",
+              optionRoute: ConstructionsScreen.routeName,
+              optionColor: Color(0xFFB17CF3),
+            ),
+            SizedBox(height: 15),
+            CategoryOption(
+              optionIcon: CustomIcons.group,
+              optionText: "Fundir",
+              optionRoute: MeetingsScreen.routeName,
+              optionColor: Color(0xFFF0A45E),
+            ),
+            SizedBox(height: 15),
+            CategoryOption(
+              optionIcon: CustomIcons.doc_text,
+              optionText: "Skjöl",
+              optionRoute: DocumentsScreen.routeName,
+              optionColor: Color(0xFF69E5C6),
+            ),
+            SizedBox(height: 15),
+            CategoryOption(
+              optionIcon: CustomIcons.trash,
+              optionText: "Þrif",
+              optionRoute: CleaningScreen.routeName,
+              optionColor: Color(0xFFEC6086),
+            )
+          ],
         ),
       ),
-    );
+      // body: GridView(
+      //   padding: const EdgeInsets.all(25),
+      //   children: <Widget>[
+      //     HomeOption(
+      //       optionIcon: CustomIcons.tools,
+      //       optionText: "Framkvæmdir",
+      //       optionRoute: ConstructionsScreen.routeName,
+      //       optionColor: Color(0xFFB17CF3),
+      //     ),
+      //     HomeOption(
+      //       optionIcon: CustomIcons.group,
+      //       optionText: "Fundir",
+      //       optionRoute: MeetingsScreen.routeName,
+      //       optionColor: Color(0xFFF0A45E),
+      //     ),
+      //     HomeOption(
+      //       optionIcon: CustomIcons.doc_text,
+      //       optionText: "Skjöl",
+      //       optionRoute: DocumentsScreen.routeName,
+      //       optionColor: Color(0xFF500000),
+      //     ),
+      //     HomeOption(
+      //       optionIcon: CustomIcons.trash,
+      //       optionText: "Þrif",
+      //       optionRoute: CleaningScreen.routeName,
+      //       optionColor: Color(0xFFEC6086),
+      //     ),
+      //   ],
+        // gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        //   maxCrossAxisExtent: 300,
+        //   childAspectRatio: 2 / 2,
+        //   crossAxisSpacing: 20,
+        //   mainAxisSpacing: 30,
+        // ),
+      );
+    // );
   }
 }

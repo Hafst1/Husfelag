@@ -4,11 +4,13 @@ class HomeOption extends StatelessWidget {
   final IconData optionIcon;
   final String optionText;
   final String optionRoute;
+  final Color optionColor;
 
   HomeOption(
       {@required this.optionIcon,
       @required this.optionText,
-      @required this.optionRoute});
+      @required this.optionRoute,
+      @required this.optionColor});
 
   void selectOption(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
@@ -35,7 +37,7 @@ class HomeOption extends StatelessWidget {
             )
           ],
           //color: Color(0xffED638D),
-          color: Colors.white,
+          color: optionColor,
           borderRadius: BorderRadius.circular(15),
         ),
         child: LayoutBuilder(
@@ -46,7 +48,7 @@ class HomeOption extends StatelessWidget {
                   height: constraints.maxHeight * 0.75,
                   child: Icon(
                     optionIcon,
-                    color: Colors.black,
+                    color: Colors.white,
                     size: constraints.maxHeight * 0.4,
                   ),
                 ),
@@ -61,7 +63,7 @@ class HomeOption extends StatelessWidget {
                   child: FittedBox(
                     child: Text(
                       optionText,
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
                 ),

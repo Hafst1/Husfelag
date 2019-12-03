@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
           title: 'Húsfélagið',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primaryColor: Colors.blue[800],
             accentColor: Colors.pink[400],
           ),
           home: Wrapper(),

@@ -24,18 +24,21 @@ class CleaningScreen extends StatelessWidget {
               optionIcon: Icons.add,
               optionText: "Bæta við þrif",
               optionRoute: AddCleaningScreen.routeName,
+              optionColor: Color(0xFFEC6086),
             ),
             SizedBox(height: 15),
             CategoryOption(
               optionIcon: Icons.find_in_page,
               optionText: "Yfirlit þrifa",
               optionRoute: CleaningListScreen.routeName,
+              optionColor: Color(0xFFEC6086)
             ),
             SizedBox(height: 15),
             CategoryOption(
               optionIcon: CustomIcons.check,
               optionText: "Verkefnalisti",
               optionRoute: CleaningTasksScreen.routeName,
+              optionColor: Color(0xFFEC6086)
             ),
           ],
         ),

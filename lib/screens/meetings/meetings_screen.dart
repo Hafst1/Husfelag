@@ -23,12 +23,14 @@ class MeetingsScreen extends StatelessWidget {
               optionIcon: Icons.group_add,
               optionText: "Bóka fund",
               optionRoute: AddMeetingScreen.routeName,
+              optionColor: Color(0xFFF0A45E)
             ),
             SizedBox(height: 15),
             CategoryOption(
               optionIcon: CustomIcons.find_in_page,
               optionText: "Yfirlit funda",
               optionRoute: MeetingsListScreen.routeName,
+              optionColor: Color(0xFFF0A45E)
             ),
           ],
         ),
