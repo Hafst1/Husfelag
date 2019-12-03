@@ -22,6 +22,7 @@ class AuthService {
       try {
         AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
         FirebaseUser user = result.user;
+        user.email;
         return _userFromFirebaseUser(user);
       } catch(e){
         print(e.toString());
@@ -63,6 +64,15 @@ class AuthService {
       print("Password can't be changed" + error.toString());
       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
     });
+  }
+
+  Future getEmail() async {
+    try {
+       FirebaseUser result = await FirebaseAuth.instance.currentUser();
+        return result.email;
+    }catch (e) {
+
+    }
   }
 
   // sign out
