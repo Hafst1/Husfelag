@@ -314,11 +314,7 @@ class MapScreenState extends State<ProfilePage>
                                                         .validate()) {
                                                       print(_currentEmail);
                                                       if (_currentEmail != userData.email) {
-                                                        print('now changing email');
-                                                        await _auth.changeEmail(_currentEmail).then((_) {
-                                                          print('now email is changed');
-                                                        });
-                                                        // print('now email is changed');
+                                                        await _auth.changeEmail(_currentEmail);
                                                       }
                                                       await DatabaseService(uid: user.uid).updateUserData(
                                                         userData.name,
