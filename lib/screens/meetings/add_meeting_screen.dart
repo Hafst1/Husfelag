@@ -79,9 +79,12 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     DateTime exactDate = DateTime.now();
     DateTime startOfCurrentDate =
         DateTime(exactDate.year, exactDate.month, exactDate.day);
+    final convertedDate = _convertToDate(controller.text) ?? exactDate;
     showDatePicker(
       context: context,
-      initialDate: _convertToDate(controller.text) ?? startOfCurrentDate,
+      initialDate: convertedDate.isBefore(startOfCurrentDate)
+          ? startOfCurrentDate
+          : convertedDate,
       firstDate: startOfCurrentDate,
       lastDate: startOfCurrentDate.add(
         Duration(days: 1825),

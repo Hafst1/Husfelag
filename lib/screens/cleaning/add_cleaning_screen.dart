@@ -83,12 +83,15 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
 
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
+    final convertedDate = convertToDate(controller.text) ?? exactDate;
+    final firstDate = exactDate.subtract(
+      Duration(days: 30),
+    );
     showDatePicker(
       context: context,
-      initialDate: convertToDate(controller.text) ?? exactDate,
-      firstDate: exactDate.subtract(
-        Duration(days: 30),
-      ),
+      initialDate:
+          convertedDate.isBefore(firstDate) ? firstDate : convertedDate,
+      firstDate: firstDate,
       lastDate: exactDate.add(
         Duration(days: 1825),
       ),

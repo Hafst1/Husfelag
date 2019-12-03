@@ -35,6 +35,11 @@ class CleaningProvider with ChangeNotifier {
           authorId: cleaningItem.data['authorId'],
         ));
       });
+      loadedCleaningItems.sort(
+        (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
+            ? a.dateTo.compareTo(b.dateTo)
+            : a.dateFrom.compareTo(b.dateFrom),
+      );
       _cleaningItems = loadedCleaningItems;
       notifyListeners();
     } catch (error) {

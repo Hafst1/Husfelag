@@ -33,6 +33,11 @@ class ConstructionsProvider with ChangeNotifier {
           authorId: construction.data['authorId'],
         ));
       });
+      loadedConstructions.sort(
+        (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
+            ? a.dateTo.compareTo(b.dateTo)
+            : a.dateFrom.compareTo(b.dateFrom),
+      );
       _constructions = loadedConstructions;
       notifyListeners();
     } catch (error) {
@@ -40,7 +45,7 @@ class ConstructionsProvider with ChangeNotifier {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp fundum!'),
+          content: Text('Ekki tókst að hlaða upp framkvæmdum!'),
           actions: <Widget>[
             FlatButton(
               child: Text('Halda áfram'),

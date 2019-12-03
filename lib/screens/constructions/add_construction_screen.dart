@@ -72,12 +72,15 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
 
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
+    final firstDate = exactDate.subtract(
+      Duration(days: 3650),
+    );
+    final convertedDate = convertToDate(controller.text) ?? exactDate;
     showDatePicker(
       context: context,
-      initialDate: convertToDate(controller.text) ?? DateTime.now(),
-      firstDate: exactDate.subtract(
-        Duration(days: 3650),
-      ),
+      initialDate:
+          convertedDate.isBefore(firstDate) ? firstDate : convertedDate,
+      firstDate: firstDate,
       lastDate: exactDate.add(
         Duration(days: 3650),
       ),

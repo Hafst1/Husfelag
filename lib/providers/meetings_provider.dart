@@ -32,6 +32,7 @@ class MeetingsProvider with ChangeNotifier {
           authorId: meeting.data['authorId'],
         ));
       });
+      loadedMeetings.sort((a,b) => a.date.compareTo(b.date));
       _meetings = loadedMeetings;
       notifyListeners();
     } catch (error) {
