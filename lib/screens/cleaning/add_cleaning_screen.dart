@@ -197,11 +197,14 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                         child: TextFormField(
                           controller: _apartmentController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Íbúð...",
                             prefixIcon: Icon(Icons.home),
                             prefixText:
                                 _apartmentController.text != "" ? "Íbúð: " : "",
-                            border: OutlineInputBorder(),
+                          //  border: OutlineInputBorder(),
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
@@ -232,11 +235,14 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                         child: TextFormField(
                           controller: _dateFromController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Frá...",
                             prefixText:
                                 _dateFromController.text != "" ? "Frá: " : "",
                             prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
+                         //   border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           textInputAction: TextInputAction.next,
@@ -273,11 +279,14 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                         child: TextFormField(
                           controller: _dateToController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Til...",
                             prefixText:
                                 _dateToController.text != "" ? "Til: " : "",
                             prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
+                         //   border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           validator: (value) {

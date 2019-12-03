@@ -184,9 +184,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                     TextFormField(
                       initialValue: _initValues['title'],
                       decoration: InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Titill...",
-                        prefixIcon: Icon(CustomIcons.pencil),
-                        border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
@@ -219,11 +220,13 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                         child: TextFormField(
                           controller: _dateFromController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Frá...",
                             prefixText:
                                 _dateFromController.text != "" ? "Frá: " : "",
                             prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           textInputAction: TextInputAction.next,
@@ -261,11 +264,13 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                         child: TextFormField(
                           controller: _dateToController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Til...",
                             prefixText:
                                 _dateToController.text != "" ? "Til: " : "",
                             prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           validator: (value) {
@@ -300,8 +305,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                       initialValue: _initValues['description'],
                       maxLines: 10,
                       decoration: InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Nánari lýsing (valfrjálst)...",
-                        border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.text,
                       onSaved: (value) {
