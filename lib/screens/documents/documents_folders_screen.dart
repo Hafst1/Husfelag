@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../providers/current_user_provider.dart';
 import 'package:provider/provider.dart';
 import '../../providers/documents_provider.dart';
 import '../../screens/documents/add_document_screen.dart';
@@ -22,8 +23,11 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       setState(() {
         _isLoading = true;
       });
+      final residentAssociationId =
+          Provider.of<CurrentUserProvider>(context, listen: false)
+              .getResidentAssociationNumber();
       Provider.of<DocumentsProvider>(context)
-          .fetchFolders(context)
+          .fetchFolders(residentAssociationId, context)
           .then((_) {
         setState(() {
           _isLoading = false;
@@ -56,12 +60,18 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         FlatButton.icon(
           onPressed: (){
             if(_addFolderController.text != "") {
-              final folderData = Provider.of<DocumentsProvider>(context);
-              folderData.addFolder(_addFolderController.text);
-              Navigator.of(context, rootNavigator: true).pop();
-              _addFolderController.clear();
-            }
-          }, 
+                final residentAssociationId = Provider.of<CurrentUserProvider>(context, listen: false)
+              .getResidentAssociationNumber();
+                try {
+                final folderData = Provider.of<DocumentsProvider>(context);
+                folderData.addFolder(residentAssociationId, _addFolderController.text);
+                Navigator.of(context, rootNavigator: true).pop();
+                _addFolderController.clear();
+              } catch (e) {
+
+              }
+            } 
+          },
           icon: Icon(Icons.add), 
           label: Text("BÆTA"),
           textColor: Colors.blue

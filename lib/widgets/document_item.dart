@@ -33,7 +33,7 @@ class Document extends StatelessWidget {
       ),
       elevation: 5,
       child: ListTile(
-        leading: Icon(Icons.library_books),
+        leading: Icon(Icons.file_download),
         onTap: () {
           _launchURL();
         },

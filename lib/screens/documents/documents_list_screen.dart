@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../providers/constructions_provider.dart';
+import '../../providers/current_user_provider.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/document_item.dart';
 import '../../providers/documents_provider.dart';
@@ -26,8 +28,11 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<DocumentsProvider>(context)
-          .fetchDocuments(context)
+      final residentAssociationId =
+          Provider.of<CurrentUserProvider>(context, listen: false)
+              .getResidentAssociationNumber();
+      Provider.of<ConstructionsProvider>(context)
+          .fetchConstructions(residentAssociationId, context)
           .then((_) {
         setState(() {
           _isLoading = false;

@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import '../../providers/current_user_provider.dart';
 import '../../screens/documents/documents_list_screen.dart';
 import 'package:provider/provider.dart';
 import '../../models/document.dart';
@@ -48,6 +47,9 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     setState(() {
      _isLoading = true; 
     });
+    final residentAssociationId =
+        Provider.of<CurrentUserProvider>(context, listen: false)
+            .getResidentAssociationNumber();
     try {
     await Provider.of<DocumentsProvider>(context, listen: false)
         .addDocumentItem(_path).then((_) {
@@ -55,7 +57,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
           _isLoading = false;
         });});
     Provider.of<DocumentsProvider>(context, listen: false)
-        .addDocument(_newDocument);
+        .addDocument(residentAssociationId, _newDocument);
     Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => DocumentsFolderScreen(id: _newDocument.folderId),
@@ -66,7 +68,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
       print('Gat ekki sett inn skjal');
     }
   }
-
+ 
   void openFileExplorer() async {
     try {
       _path = null;
