@@ -17,7 +17,26 @@ class DocumentsFolderScreen extends StatefulWidget {
 class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
   final _textFieldController = TextEditingController();
   String _searchQuery = "";
+    var _isInit = true;
+    var _isLoading = false;
 
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<DocumentsProvider>(context)
+          .fetchDocuments(context)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
   _changeSearchQuery(String query) {
     setState(() {
       _searchQuery = query;
@@ -40,7 +59,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final folder = Provider.of<DocumentsFolderProvider>(context, listen: false).findNameById(widget.id);
+    final folder = Provider.of<DocumentsProvider>(context, listen: false).findFolderNameById(widget.id);
     final folderName = folder.title;
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
@@ -50,14 +69,21 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final documentData = Provider.of<DocumentsProvider>(context);//.findById(widget.id);
+    final documentData = Provider.of<DocumentsProvider>(context);
     final documents = documentData.filteredItems(
       _searchQuery,
       widget.id,
     );
     return Scaffold(
       appBar: appBar,
-      body: GestureDetector(
+      body: _isLoading
+        ? Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor),
+            ),
+          )
+        : GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
@@ -111,6 +137,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
                       folderId: documents[i].folderId,
                       title: documents[i].title,
                       description: documents[i].description,
+                      documentItem: documents[i].documentItem,
                     ),
                   )
                 ),

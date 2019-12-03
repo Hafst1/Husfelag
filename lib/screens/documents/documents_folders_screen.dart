@@ -12,11 +12,30 @@ class DocumentsScreen extends StatefulWidget {
 }
 
 class _DocumentsScreenState extends State<DocumentsScreen> {
-  TextEditingController _textFieldController = TextEditingController();
   TextEditingController _addFolderController = TextEditingController(); 
+  var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<DocumentsProvider>(context)
+          .fetchFolders(context)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   void dispose() {
-    _textFieldController.dispose();
+    _addFolderController.dispose();
     super.dispose();
   }
 
@@ -36,10 +55,11 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       actions: <Widget>[
         FlatButton.icon(
           onPressed: (){
-            if(_addFolderController.text != null) { ///virkar ekki?
-              final folderData = Provider.of<DocumentsFolderProvider>(context);
+            if(_addFolderController.text != "") {
+              final folderData = Provider.of<DocumentsProvider>(context);
               folderData.addFolder(_addFolderController.text);
               Navigator.of(context, rootNavigator: true).pop();
+              _addFolderController.clear();
             }
           }, 
           icon: Icon(Icons.add), 
@@ -49,6 +69,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         FlatButton.icon(
           onPressed: (){
               Navigator.of(context, rootNavigator: true).pop();
+              _addFolderController.clear();
           }, 
           icon: Icon(Icons.close), 
           label: Text("HÆTTA VIÐ"), 
@@ -100,51 +121,58 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final folderData = Provider.of<DocumentsFolderProvider>(context);
+    final folderData = Provider.of<DocumentsProvider>(context);
     final folders = folderData.getAllFolders(); 
     return Scaffold(
       appBar: appBar,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Container(
-         padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                    bottom: 5,
-          ),
-          height: heightOfBody,
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(20),
-                  itemCount: folders.length,
-                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 2 / 2,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemBuilder: (ctx, i) =>DocumentFolder(
-                    id: folders[i].id,
-                    title: folders[i].title,
-                  ),
-                )
+      body: _isLoading
+        ? Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor),
+            ),
+          )
+        : GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Container(
+            padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        bottom: 5,
               ),
-            ],
+              height: heightOfBody,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: GridView.builder(
+                      padding: const EdgeInsets.all(20),
+                      itemCount: folders.length,
+                      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 2 / 2,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemBuilder: (ctx, i) =>DocumentFolder(
+                        id: folders[i].id,
+                        title: folders[i].title,
+                      ),
+                    )
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.blue,
-        icon: Icon(Icons.add),
-        label: Text("Bæta við"),
-        onPressed: (){
-          _addFileOrFolderOptions();
-        },
-      ),
-    );
+          floatingActionButton: FloatingActionButton.extended(
+            backgroundColor: Colors.blue,
+            icon: Icon(Icons.add),
+            label: Text("Bæta við"),
+            onPressed: (){
+              _addFileOrFolderOptions();
+            },
+          ),
+      );
   }
 }
