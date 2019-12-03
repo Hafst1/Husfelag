@@ -19,6 +19,7 @@ class MeetingsProvider with ChangeNotifier {
       final response = await _associationRef
           .document(residentAssociationId)
           .collection('MeetingItems')
+          .orderBy('date')
           .getDocuments();
       final List<Meeting> loadedMeetings = [];
       response.documents.forEach((meeting) {
@@ -32,7 +33,6 @@ class MeetingsProvider with ChangeNotifier {
           authorId: meeting.data['authorId'],
         ));
       });
-      loadedMeetings.sort((a,b) => a.date.compareTo(b.date));
       _meetings = loadedMeetings;
       notifyListeners();
     } catch (error) {
@@ -129,7 +129,13 @@ class MeetingsProvider with ChangeNotifier {
       final meetingIndex =
           _meetings.indexWhere((meeting) => meeting.id == editedMeeting.id);
       if (meetingIndex >= 0) {
+        final dateOfOldObject = _meetings[meetingIndex].date;
         _meetings[meetingIndex] = editedMeeting;
+
+        // if date has changed the meetings list has to be sorted again.
+        if (dateOfOldObject != editedMeeting.date) {
+          _meetings.sort((a, b) => a.date.compareTo(b.date));
+        }
       }
       notifyListeners();
     } catch (error) {

@@ -55,25 +55,27 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Card(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 5,
-                  ),
-                  child: MaterialButton(
-                    color: Colors.white,
-                    textColor: Colors.lightBlueAccent,
-                    padding: EdgeInsets.all(20.0),
-                    child: Text("Bæta við verkefni"),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AddCleaningTaskScreen(),
+                currentUserData.isAdmin()
+                    ? Card(
+                        margin: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 5,
                         ),
-                      );
-                    },
-                  ),
-                ),
+                        child: MaterialButton(
+                          color: Colors.white,
+                          textColor: Colors.lightBlueAccent,
+                          padding: EdgeInsets.all(20.0),
+                          child: Text("Bæta við verkefni"),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AddCleaningTaskScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : Container(),
                 Expanded(
                   child: ListView.builder(
                     itemCount: cleaningTasks.length,

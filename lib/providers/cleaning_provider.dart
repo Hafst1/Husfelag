@@ -35,12 +35,8 @@ class CleaningProvider with ChangeNotifier {
           authorId: cleaningItem.data['authorId'],
         ));
       });
-      loadedCleaningItems.sort(
-        (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
-            ? a.dateTo.compareTo(b.dateTo)
-            : a.dateFrom.compareTo(b.dateFrom),
-      );
       _cleaningItems = loadedCleaningItems;
+      sortCleaningItems();
       notifyListeners();
     } catch (error) {
       showDialog(
@@ -132,7 +128,14 @@ class CleaningProvider with ChangeNotifier {
       final cleaningIndex = _cleaningItems
           .indexWhere((cleaning) => cleaning.id == editedCleaning.id);
       if (cleaningIndex >= 0) {
+        final oldCleaningItem = _cleaningItems[cleaningIndex];
         _cleaningItems[cleaningIndex] = editedCleaning;
+
+        // if dates have changed we have to sort the list of cleaning items again.
+        if (oldCleaningItem.dateFrom != editedCleaning.dateFrom ||
+            oldCleaningItem.dateTo != editedCleaning.dateTo) {
+          sortCleaningItems();
+        }
       }
       notifyListeners();
     } catch (error) {
@@ -193,6 +196,16 @@ class CleaningProvider with ChangeNotifier {
       });
     }
     return displayList;
+  }
+
+  // functions which sorts the cleaning item list by the dateFrom property,
+  // if equal it is ordered by the dateTo property.
+  void sortCleaningItems() {
+    _cleaningItems.sort(
+      (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
+          ? a.dateTo.compareTo(b.dateTo)
+          : a.dateFrom.compareTo(b.dateFrom),
+    );
   }
 
   // function which fetches cleaning task items of a resident association and

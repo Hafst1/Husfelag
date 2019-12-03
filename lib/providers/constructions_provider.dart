@@ -33,12 +33,8 @@ class ConstructionsProvider with ChangeNotifier {
           authorId: construction.data['authorId'],
         ));
       });
-      loadedConstructions.sort(
-        (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
-            ? a.dateTo.compareTo(b.dateTo)
-            : a.dateFrom.compareTo(b.dateFrom),
-      );
       _constructions = loadedConstructions;
+      sortConstructions();
       notifyListeners();
     } catch (error) {
       showDialog(
@@ -133,7 +129,14 @@ class ConstructionsProvider with ChangeNotifier {
       final constructionIndex = _constructions.indexWhere(
           (construction) => construction.id == editedConstruction.id);
       if (constructionIndex >= 0) {
+        final oldConstruction = _constructions[constructionIndex];
         _constructions[constructionIndex] = editedConstruction;
+
+        // if the either of the dates have changed we have to sort the list again.
+        if (oldConstruction.dateFrom != editedConstruction.dateFrom ||
+            oldConstruction.dateTo != editedConstruction.dateTo) {
+          sortConstructions();
+        }
       }
       notifyListeners();
     } catch (error) {
@@ -193,6 +196,14 @@ class ConstructionsProvider with ChangeNotifier {
       });
     }
     return displayList;
+  }
+
+  void sortConstructions() {
+    _constructions.sort(
+      (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
+          ? a.dateTo.compareTo(b.dateTo)
+          : a.dateFrom.compareTo(b.dateFrom),
+    );
   }
 
   Map<DateTime, List> filterForCalendar() {
