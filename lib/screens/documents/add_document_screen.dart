@@ -49,7 +49,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     });
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     try {
     await Provider.of<DocumentsProvider>(context, listen: false)
         .addDocumentItem(_path).then((_) {

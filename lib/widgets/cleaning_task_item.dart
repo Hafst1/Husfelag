@@ -110,7 +110,21 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
                 materialTapTargetSize: MaterialTapTargetSize.padded,
                 onChanged: (value) => _changeTaskStatus(value),
               )
-            : Icon(Icons.question_answer),
+            : Padding(
+                padding: const EdgeInsets.only(
+                  left: 8,
+                  right: 8,
+                  bottom: 5,
+                  top: 13,
+                ),
+                child: FittedBox(
+                  child: Icon(
+                    CustomIcons.circle,
+                    color: Colors.grey,
+                    size: 18,
+                  ),
+                ),
+              ),
         title: Text(
           widget.title,
           style: Theme.of(context).textTheme.title,

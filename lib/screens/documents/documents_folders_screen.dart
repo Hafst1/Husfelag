@@ -25,7 +25,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<DocumentsProvider>(context)
           .fetchFolders(residentAssociationId, context)
           .then((_) {
@@ -61,7 +61,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
           onPressed: (){
             if(_addFolderController.text != "") {
                 final residentAssociationId = Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
                 try {
                 final folderData = Provider.of<DocumentsProvider>(context);
                 folderData.addFolder(residentAssociationId, _addFolderController.text);

@@ -198,7 +198,7 @@ class CleaningProvider with ChangeNotifier {
     return displayList;
   }
 
-  // functions which checks whether it is the user's turn to clean. If 
+  // functions which checks whether it is the user's turn to clean. If
   // the function returns true he will be able to check the boxes of
   // the cleaning task list.
   bool isUsersTurnToClean(String apartment) {
@@ -213,7 +213,6 @@ class CleaningProvider with ChangeNotifier {
     var retVal = false;
     for (final cleaningItem in _cleaningItems) {
       if (cleaningItem.dateFrom.isAfter(endOfCurrentDate)) {
-        print(cleaningItem);
         break;
       }
       if (cleaningItem.apartment != apartment) {
