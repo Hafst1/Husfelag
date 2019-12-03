@@ -7,12 +7,11 @@ import '../models/document.dart';
 import '../models/document_folder.dart';
 
 class DocumentsProvider with ChangeNotifier {
-  DocumentReference documentRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
-  DocumentReference folderRef = Firestore.instance
-        .collection('ResidentAssociation')
-        .document('09fnlNxhgYk70dMpaRJB');
+
+  // collection reference to the resident associations.
+  CollectionReference _associationRef =
+      Firestore.instance.collection('ResidentAssociation');
+
   List<Document> _documents = [];
   List<DocumentFolder> _folders = [];
   
@@ -32,10 +31,13 @@ class DocumentsProvider with ChangeNotifier {
     print("downloadUrl: " + downloadUrl);
   }
 
-  void addDocument(Document document) async{
+  void addDocument(String residentAssociationId, Document document) async{
     try {
       if(downloadUrl != "") {
-        final response = await documentRef.collection('DocumentItems').add({
+        final response = await _associationRef
+          .document(residentAssociationId)
+          .collection('DocumentItems')
+          .add({
           'title': document.title,
           'description': document.description,
           'documentItem': downloadUrl,
@@ -56,10 +58,13 @@ class DocumentsProvider with ChangeNotifier {
       }
   }
 
-  Future<void> fetchDocuments(BuildContext context) async {
+  Future<void> fetchDocuments(String residentAssociationId, BuildContext context) async {
     try {
       final response =
-          await documentRef.collection('DocumentItems').getDocuments();
+          await _associationRef
+          .document(residentAssociationId)
+          .collection('DocumentItems')
+          .getDocuments();
       final List<Document> loadedDocuments = [];
       response.documents.forEach((document) {
         loadedDocuments.add(Document(
@@ -113,9 +118,12 @@ class DocumentsProvider with ChangeNotifier {
     return displayList;
   }
 
-    void addFolder(String folderTitle) async{
+    void addFolder(String residentAssociationId, String folderTitle) async{
     try {
-      final response = await folderRef.collection('Folders').add({
+      final response = await _associationRef
+          .document(residentAssociationId)
+          .collection('Folders')
+          .add({
         'title': folderTitle,
       });
       final newFolder = DocumentFolder(
@@ -129,10 +137,13 @@ class DocumentsProvider with ChangeNotifier {
       }
   }
 
-  Future<void> fetchFolders(BuildContext context) async {
+  Future<void> fetchFolders(String residentAssociationId, BuildContext context) async {
     try {
       final response =
-          await folderRef.collection('Folders').getDocuments();
+          await _associationRef
+          .document(residentAssociationId)
+          .collection('Folders')
+          .getDocuments();
       final List<DocumentFolder> loadedFolders = [];
       response.documents.forEach((document) {
         loadedFolders.add(DocumentFolder(
