@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/documents/documents_folder_screen.dart';
+import '../screens/documents/documents_list_screen.dart';
 
 class DocumentFolder extends StatelessWidget {
   final String title;

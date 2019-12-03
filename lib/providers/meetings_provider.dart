@@ -211,18 +211,14 @@ class MeetingsProvider with ChangeNotifier {
       meetings.forEach((item) {
         stringDate = item.date.toString().substring(0, 11) + hoursMinutesSecond;
         DateTime newDate = DateTime.parse(stringDate);
-        print(item.date);
-        newTimeForMeetings =
-            "Klukkan: " + item.date.toString().substring(12, 16);
-        if (constructions.containsKey(newDate)) {
-          constructions[newDate].add(
-            ["Fundur:    ", item.title, item.description, newTimeForMeetings],
-          );
-        } else {
-          constructions[newDate] = [
-            ["Fundur:    ", item.title, item.description, newTimeForMeetings],
-          ];
-        }
+        newTimeForMeetings = "Klukkan: " + item.date.toString().substring(12,16);
+        if(constructions.containsKey(newDate)) { 
+          constructions[newDate].add(["Fundur" , item.title, item.description, 
+           newTimeForMeetings],);
+        }else {
+          constructions[newDate] = [["Fundur" , item.title, item.description, 
+           newTimeForMeetings],];
+         }
         return constructions;
       });
       return constructions;
