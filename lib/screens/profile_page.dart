@@ -59,17 +59,17 @@ class MapScreenState extends State<ProfilePage>
                           Container(
                             height: 50.0,
                             color: Colors.white,
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 20.0, top: 20.0),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                    )),
-                              ],
-                            ),
+                            // child: Column(
+                            //   children: <Widget>[
+                            //     Padding(
+                            //         padding:
+                            //             EdgeInsets.only(left: 20.0, top: 20.0),
+                            //         child: Row(
+                            //           crossAxisAlignment:
+                            //               CrossAxisAlignment.start,
+                            //         )),
+                            //   ],
+                            // ),
                           ),
                           Container(
                             child: Padding(
@@ -163,7 +163,7 @@ class MapScreenState extends State<ProfilePage>
                                     if (!_nameStatus)
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 45.0),
+                                            left: 25.0, right: 25.0, top: 20.0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
@@ -292,7 +292,7 @@ class MapScreenState extends State<ProfilePage>
                                     if (!_emailStatus)
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 45.0),
+                                            left: 25.0, right: 25.0, top: 20.0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
@@ -419,7 +419,7 @@ class MapScreenState extends State<ProfilePage>
                                                   MainAxisAlignment.end,
                                               mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
-                                                _emailStatus
+                                                _passwordStatus
                                                     ? _getPasswordEditIcon()
                                                     : Container(),
                                               ],
@@ -429,7 +429,7 @@ class MapScreenState extends State<ProfilePage>
                                     if (!_passwordStatus)
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 45.0),
+                                            left: 25.0, right: 25.0, top: 20.0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
