@@ -45,7 +45,7 @@ class CurrentUserProvider with ChangeNotifier {
   Future<void> fetchAssociations(BuildContext context) async {
     List<ResidentAssociation> loadedAssociations = [];
     try {
-      final response = await _associationRef.getDocuments();
+      final response = await _associationRef.orderBy('address').getDocuments();
       response.documents.forEach((association) {
         loadedAssociations.add(ResidentAssociation(
           id: association.documentID,
@@ -132,6 +132,7 @@ class CurrentUserProvider with ChangeNotifier {
       final response = await _associationRef
           .document(residentAssociationId)
           .collection('Apartments')
+          .orderBy('apartmentNumber')
           .getDocuments();
       response.documents.forEach((apartment) {
         loadedApartments.add(Apartment(
