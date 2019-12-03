@@ -234,9 +234,10 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     TextFormField(
                       initialValue: _initValues['title'],
                       decoration: InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Titill...",
-                        prefixIcon: Icon(CustomIcons.pencil),
-                        border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
@@ -267,9 +268,10 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                         child: TextFormField(
                           controller: _dateController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Dagsetning...",
-                            prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           validator: (value) {
@@ -314,12 +316,14 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                               child: TextFormField(
                                 controller: _timeFromController,
                                 decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  filled: true,
+                                  fillColor: Colors.white,
                                   hintText: "Frá...",
                                   prefixText: _timeFromController.text != ""
                                       ? "Frá: "
                                       : "",
                                   prefixIcon: Icon(Icons.access_time),
-                                  border: OutlineInputBorder(),
                                 ),
                                 validator: (value) {
                                   if (value.isEmpty) {
@@ -349,12 +353,14 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                               child: TextFormField(
                                 controller: _timeToController,
                                 decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  filled: true,
+                                  fillColor: Colors.white,
                                   hintText: "Til...",
                                   prefixText: _timeToController.text != ""
                                       ? "Til: "
                                       : "",
                                   prefixIcon: Icon(Icons.access_time),
-                                  border: OutlineInputBorder(),
                                 ),
                                 validator: (value) {
                                   if (value.isEmpty) {
@@ -393,9 +399,11 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     TextFormField(
                       initialValue: _initValues['location'],
                       decoration: InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Staðsetning...",
                         prefixIcon: Icon(Icons.location_on),
-                        border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
@@ -424,8 +432,10 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                       initialValue: _initValues['description'],
                       maxLines: 10,
                       decoration: InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Nánari lýsing (valfrjálst)...",
-                        border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.text,
                       onSaved: (value) {
