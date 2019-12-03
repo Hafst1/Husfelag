@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/screens/profile_page.dart';
-//import 'package:husfelagid/screens/settings_form.dart';
-import 'package:husfelagid/services/auth.dart';
 
+import '../services/auth.dart';
+//import 'package:husfelagid/screens/settings_form.dart';
+import '../screens/profile_page.dart';
 import '../widgets/home_option.dart';
 import '../screens/constructions/constructions_screen.dart';
 import '../screens/meetings/meetings_screen.dart';
@@ -41,6 +41,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Húsfélagið'),
+        centerTitle: true,
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: choiceAction,

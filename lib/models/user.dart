@@ -14,7 +14,8 @@ class UserData {
   final String home;
   final String resId;
   final String apartId;
+  final String password;
 
 
-  UserData({ this.uid, this.name, this.email, this.home, this.resId, this.apartId });
+  UserData({ this.uid, this.name, this.email, this.home, this.resId, this.apartId, this.password });
 }

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/meetings_provider.dart';
-import '../../constants/constants.dart' as Constants;
+import '../../shared/constants.dart';
 
 class MeetingDetailScreen extends StatelessWidget {
   @override
@@ -87,8 +87,8 @@ class MeetingDetailScreen extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.only(
-                left: 35,
-                right: 35,
+                left: 30,
+                right: 30,
                 top: 25,
                 bottom: 25,
               ),

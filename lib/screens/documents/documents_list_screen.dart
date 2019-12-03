@@ -76,7 +76,14 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
     );
     return Scaffold(
       appBar: appBar,
-      body: GestureDetector(
+      body: _isLoading
+        ? Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor),
+            ),
+          )
+        : GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
