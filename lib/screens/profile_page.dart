@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import 'package:husfelagid/services/auth.dart';
+import '../services/auth.dart';
 import '../models/user.dart';
 import '../services/database.dart';
 import '../shared/loading_spinner.dart';
@@ -16,6 +16,7 @@ class MapScreenState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   bool _nameStatus = true;
   bool _emailStatus = true;
+  bool _passwordStatus = true;
   //final FocusNode myFocusNode = FocusNode();
 
   final AuthService _auth = AuthService();
@@ -23,11 +24,14 @@ class MapScreenState extends State<ProfilePage>
 
   String _currentName;
   String _currentEmail;
+  String _currentPassword;
 
   @override
   void initState() {
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +74,6 @@ class MapScreenState extends State<ProfilePage>
                             ),
                           ),
                           Container(
-                            color: Color(0xffFFFFFF),
                             child: Padding(
                               padding: EdgeInsets.only(bottom: 25.0),
                               child: Form(
@@ -134,8 +137,10 @@ class MapScreenState extends State<ProfilePage>
                                             Flexible(
                                               child: TextFormField(
                                                 initialValue: userData.name,
-                                                decoration: const InputDecoration(
-                                                  hintText: "Skráðu nafnið þitt",
+                                                decoration:
+                                                    InputDecoration(
+                                                  hintText:
+                                                      "Skráðu nafnið þitt",
                                                 ),
                                                 validator: (val) => val.isEmpty
                                                     ? 'Vinsamlegast skráðu nafn'
@@ -158,77 +163,80 @@ class MapScreenState extends State<ProfilePage>
                                             )
                                           ],
                                         )),
-                                        if(!_nameStatus) 
-                                          Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 25.0, right: 25.0, top: 45.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(right: 10.0),
-                                                  child: Container(
-                                                      child: RaisedButton(
-                                                    child: Text("Vista"),
-                                                    textColor: Colors.white,
-                                                    color: Colors.green,
-                                                    onPressed: () async {
-                                                    if (_formKey.currentState.validate()) {
-                                                        await DatabaseService(uid: user.uid).updateUserName(
-                                                                _currentName ?? userData.name,
-                                                            );
-                                                      }
-                                                      setState(() {
-                                                        _nameStatus = true;
-                                                        FocusScope.of(context)
-                                                            .requestFocus(
-                                                                FocusNode());
-                                                      });
-                                                    },
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                        .circular(
-                                                                    20.0)),
-                                                  )),
-                                                ),
-                                                flex: 2,
+                                    if (!_nameStatus)
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 25.0, right: 25.0, top: 45.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: 10.0),
+                                                child: Container(
+                                                    child: RaisedButton(
+                                                  child: Text("Vista"),
+                                                  textColor: Colors.white,
+                                                  color: Colors.green,
+                                                  onPressed: () async {
+                                                    if (_formKey.currentState
+                                                        .validate()) {
+                                                      await DatabaseService(
+                                                              uid: user.uid)
+                                                          .updateUserData(
+                                                        _currentName ?? userData.name,
+                                                        userData.email,
+                                                        userData.home,
+                                                        userData.resId,
+                                                        userData.apartId,
+                                                      );
+                                                    }
+                                                    setState(() {
+                                                      _nameStatus = true;
+                                                      FocusScope.of(context)
+                                                          .requestFocus(
+                                                              FocusNode());
+                                                    });
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0)),
+                                                )),
                                               ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(left: 10.0),
-                                                  child: Container(
-                                                      child: RaisedButton(
-                                                    child: Text("Hætta við"),
-                                                    textColor: Colors.white,
-                                                    color: Colors.red,
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        _nameStatus = true;
-                                                        FocusScope.of(context)
-                                                            .requestFocus(
-                                                                FocusNode());
-                                                      });
-                                                    },
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                        .circular(
-                                                                    20.0)),
-                                                  )),
-                                                ),
-                                                flex: 2,
+                                              flex: 2,
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 10.0),
+                                                child: Container(
+                                                    child: RaisedButton(
+                                                  child: Text("Hætta við"),
+                                                  textColor: Colors.white,
+                                                  color: Colors.red,
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _nameStatus = true;
+                                                      FocusScope.of(context)
+                                                          .requestFocus(
+                                                              FocusNode());
+                                                    });
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0)),
+                                                )),
                                               ),
-                                            ],
-                                          ),
+                                              flex: 2,
+                                            ),
+                                          ],
                                         ),
+                                      ),
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 25.0),
@@ -260,12 +268,12 @@ class MapScreenState extends State<ProfilePage>
                                             Flexible(
                                               child: TextFormField(
                                                 initialValue: userData.email,
-                                                decoration: const InputDecoration(
+                                                decoration: InputDecoration(
                                                     hintText:
                                                         "Skráðu netfangið þitt"),
-                                                validator: (val) =>
-                                                  val.isEmpty ? 'Sláðu inn netfang' 
-                                                  : null,
+                                                validator: (val) => val.isEmpty
+                                                    ? 'Sláðu inn netfang'
+                                                    : null,
                                                 onChanged: (val) => setState(
                                                     () => _currentEmail = val),
                                                 enabled: !_emailStatus,
@@ -283,236 +291,206 @@ class MapScreenState extends State<ProfilePage>
                                             )
                                           ],
                                         )),
-                                        if(!_emailStatus) 
-                                          Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 25.0, right: 25.0, top: 45.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(right: 10.0),
-                                                  child: Container(
-                                                      child: RaisedButton(
-                                                    child: Text("Vista"),
-                                                    textColor: Colors.white,
-                                                    color: Colors.green,
-                                                    onPressed: () async {
-                                                    if (_formKey.currentState.validate()) {
+                                    if (!_emailStatus)
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 25.0, right: 25.0, top: 45.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: 10.0),
+                                                child: Container(
+                                                    child: RaisedButton(
+                                                  child: Text("Vista"),
+                                                  textColor: Colors.white,
+                                                  color: Colors.green,
+                                                  onPressed: () async {
+                                                    if (_formKey.currentState
+                                                        .validate()) {
+                                                      print(_currentEmail);
                                                       if (_currentEmail != userData.email) {
-                                                         print('now changing email');
-                                                         await _auth.changeEmail(_currentEmail);
-                                                         print('now email is changed');
-                                                       }
-                                                        await DatabaseService(uid: user.uid).updateUserEmail(
-                                                                _currentEmail ?? userData.email,
-                                                            );
+                                                        print('now changing email');
+                                                        await _auth.changeEmail(_currentEmail).then((_) {
+                                                          print('now email is changed');
+                                                        });
+                                                        // print('now email is changed');
                                                       }
-                                                      setState(() {
-                                                        _emailStatus = true;
-                                                        FocusScope.of(context)
-                                                            .requestFocus(
-                                                                FocusNode());
-                                                      });
-                                                    },
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                        .circular(
-                                                                    20.0)),
-                                                  )),
-                                                ),
-                                                flex: 2,
+                                                      await DatabaseService(uid: user.uid).updateUserData(
+                                                        userData.name,
+                                                        _currentEmail ?? userData.email,
+                                                        userData.home,
+                                                        userData.apartId,
+                                                        userData.resId,
+                                                    );
+                                                    }
+                                                    setState(() {
+                                                      _emailStatus = true;
+                                                      FocusScope.of(context)
+                                                          .requestFocus(
+                                                              FocusNode());
+                                                    });
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0)),
+                                                )),
                                               ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(left: 10.0),
-                                                  child: Container(
-                                                      child: RaisedButton(
-                                                    child: Text("Hætta við"),
-                                                    textColor: Colors.white,
-                                                    color: Colors.red,
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        _emailStatus = true;
-                                                        FocusScope.of(context)
-                                                            .requestFocus(
-                                                                FocusNode());
-                                                      });
-                                                    },
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                        .circular(
-                                                                    20.0)),
-                                                  )),
-                                                ),
-                                                flex: 2,
+                                              flex: 2,
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 10.0),
+                                                child: Container(
+                                                    child: RaisedButton(
+                                                  child: Text("Hætta við"),
+                                                  textColor: Colors.white,
+                                                  color: Colors.red,
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _emailStatus = true;
+                                                      FocusScope.of(context)
+                                                          .requestFocus(
+                                                              FocusNode());
+                                                    });
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0)),
+                                                )),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                    /*Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 25.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          'Breyta um lykilorð',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold),
+                                              flex: 2,
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      flex: 2,
-                                    ),
-                                    /*Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          'Nýja lykilorðið',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      flex: 2,
-                                    ),*/
-                                  ],
-                                )),*/
-                                    /*Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 2.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(right: 10.0),
-                                        child: TextFormField(
-                                          decoration: const InputDecoration(
-                                              hintText: "Gamla lykilorðið"),
-                                          obscureText: true,
-                                          validator: (val) => val != userData.password
-                                            ? 'Ekki rétt lykilorð'
-                                            : null,
-                                          enabled: !_status,
-                                        ),
-                                      ),
-                                      flex: 2,
-                                    ),
-                                    Flexible(
-                                      child: TextFormField(
-                                        decoration: const InputDecoration(
-                                            hintText: "Nýja lykilorðið"),
-                                        obscureText: true,
-                                        validator: (val) => val.length < 6
-                                          ? 'Lykilorð þarf að innihalda 6+ stafi'
-                                          : null,
-                                        onChanged: (val) => setState(
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 25.0, right: 25.0, top: 25.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Nýtt lykilorð',
+                                                  style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )),
+                                    Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 25.0, right: 25.0, top: 2.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            Flexible(
+                                              child: TextFormField(
+                                                obscureText: true,
+                                                decoration: InputDecoration(
+                                                    hintText:
+                                                        "Skráðu nýtt lykilorð"),
+                                                validator: (val) => val.length < 6
+                                                    ? 'Lykilorð þarf að innihalda 6+ stafi'
+                                                    : null,
+                                                onChanged: (val) => setState(
                                                     () => _currentPassword = val),
-                                        enabled: !_status,
+                                                enabled: !_passwordStatus,
+                                              ),
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                _emailStatus
+                                                    ? _getPasswordEditIcon()
+                                                    : Container(),
+                                              ],
+                                            )
+                                          ],
+                                        )),
+                                    if (!_passwordStatus)
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 25.0, right: 25.0, top: 45.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: 10.0),
+                                                child: Container(
+                                                    child: RaisedButton(
+                                                  child: Text("Vista"),
+                                                  textColor: Colors.white,
+                                                  color: Colors.green,
+                                                  onPressed: () async {
+                                                    if (_formKey.currentState
+                                                        .validate()) {
+                                                          await _auth.changePassword(_currentPassword);
+                                                    }
+                                                    setState(() {
+                                                      _passwordStatus = true;
+                                                      FocusScope.of(context)
+                                                          .requestFocus(
+                                                              FocusNode());
+                                                    });
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0)),
+                                                )),
+                                              ),
+                                              flex: 2,
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 10.0),
+                                                child: Container(
+                                                    child: RaisedButton(
+                                                  child: Text("Hætta við"),
+                                                  textColor: Colors.white,
+                                                  color: Colors.red,
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _passwordStatus = true;
+                                                      FocusScope.of(context)
+                                                          .requestFocus(
+                                                              FocusNode());
+                                                    });
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0)),
+                                                )),
+                                              ),
+                                              flex: 2,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      flex: 2,
-                                    ),
-                                  ],
-                                )),*/
-                                    //!_status ? _getActionButtons() : Container(),
-                                    // if (!_status)
-                                      // Padding(
-                                      //   padding: EdgeInsets.only(
-                                      //       left: 25.0, right: 25.0, top: 45.0),
-                                      //   child: Row(
-                                      //     mainAxisSize: MainAxisSize.max,
-                                      //     mainAxisAlignment:
-                                      //         MainAxisAlignment.start,
-                                      //     children: <Widget>[
-                                      //       Expanded(
-                                      //         child: Padding(
-                                      //           padding:
-                                      //               EdgeInsets.only(right: 10.0),
-                                      //           child: Container(
-                                      //               child: RaisedButton(
-                                      //             child: Text("Vista"),
-                                      //             textColor: Colors.white,
-                                      //             color: Colors.green,
-                                      //             onPressed: () async {
-                                      //              if (_formKey.currentState.validate()) {
-                                      //                 if (_currentEmail != userData.email) {
-                                      //                   print('now changing email');
-                                      //                   await _auth.changeEmail(_currentEmail);
-                                      //                   print('now email is changed');
-                                      //                 }
-                                      //                 if (_currentPassword != userData.password){
-                                      //                   print('now inside password, not supposed to be here');
-                                      //                   await _auth.changePassword(_currentPassword);
-                                      //                 }
-                                      //                 await DatabaseService(uid: user.uid).updateUserData(
-                                      //                         _currentName ?? userData.name,
-                                      //                         _currentEmail ?? userData.email,
-                                      //                         _currentHome ?? userData.home,
-                                      //                         userData.resId,
-                                      //                         userData.apartId
-                                      //                     );
-                                      //               }
-                                      //               setState(() {
-                                      //                 _status = true;
-                                      //                 FocusScope.of(context)
-                                      //                     .requestFocus(
-                                      //                         FocusNode());
-                                      //               });
-                                      //             },
-                                      //             shape:
-                                      //                 RoundedRectangleBorder(
-                                      //                     borderRadius:
-                                      //                         BorderRadius
-                                      //                                 .circular(
-                                      //                             20.0)),
-                                      //           )),
-                                      //         ),
-                                      //         flex: 2,
-                                      //       ),
-                                      //       Expanded(
-                                      //         child: Padding(
-                                      //           padding:
-                                      //               EdgeInsets.only(left: 10.0),
-                                      //           child: Container(
-                                      //               child: RaisedButton(
-                                      //             child: Text("Hætta við"),
-                                      //             textColor: Colors.white,
-                                      //             color: Colors.red,
-                                      //             onPressed: () {
-                                      //               setState(() {
-                                      //                 _status = true;
-                                      //                 FocusScope.of(context)
-                                      //                     .requestFocus(
-                                      //                         FocusNode());
-                                      //               });
-                                      //             },
-                                      //             shape:
-                                      //                 RoundedRectangleBorder(
-                                      //                     borderRadius:
-                                      //                         BorderRadius
-                                      //                                 .circular(
-                                      //                             20.0)),
-                                      //           )),
-                                      //         ),
-                                      //         flex: 2,
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
                                   ],
                                 ),
                               ),
@@ -547,6 +525,7 @@ class MapScreenState extends State<ProfilePage>
       },
     );
   }
+
   Widget _getEmailEditIcon() {
     return GestureDetector(
       child: CircleAvatar(
@@ -561,6 +540,25 @@ class MapScreenState extends State<ProfilePage>
       onTap: () {
         setState(() {
           _emailStatus = false;
+        });
+      },
+    );
+  }
+
+  Widget _getPasswordEditIcon() {
+    return GestureDetector(
+      child: CircleAvatar(
+        backgroundColor: Colors.blue,
+        radius: 14.0,
+        child: Icon(
+          Icons.edit,
+          color: Colors.white,
+          size: 16.0,
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          _passwordStatus = false;
         });
       },
     );
