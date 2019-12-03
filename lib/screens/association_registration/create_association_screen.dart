@@ -38,7 +38,9 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<CurrentUserProvider>(context).fetchAssociations(context).then((_) {
+      Provider.of<CurrentUserProvider>(context)
+          .fetchAssociations(context)
+          .then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -60,8 +62,9 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       _isLoading = true;
     });
     try {
-      final response = await Provider.of<CurrentUserProvider>(context, listen: false)
-          .createAssociation(_newAssociation, _newApartment);
+      final response =
+          await Provider.of<CurrentUserProvider>(context, listen: false)
+              .createAssociation(_newAssociation, _newApartment);
       await _printConfirmationDialog(response);
     } catch (error) {
       await _printErrorDialog('Ekki tókst að stofna húsfélag!');
@@ -151,7 +154,8 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                         if (value.length > 40) {
                           return "Heimilisfang getur ekki verið meira en 40 stafir á lengd!";
                         }
-                        if (!currentUserData.associationAddressIsAvailable(value)) {
+                        if (!currentUserData
+                            .associationAddressIsAvailable(value)) {
                           return "Viðkomandi heimilisfang er nú þegar frátekið!";
                         }
                         return null;
@@ -159,7 +163,8 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                       onSaved: (value) {
                         _newAssociation = ResidentAssociation(
                           id: _newAssociation.id,
-                          address: value,
+                          address:
+                              '${value[0].toUpperCase()}${value.substring(1)}',
                           description: _newAssociation.description,
                           accessCode: _newAssociation.accessCode,
                         );
@@ -208,7 +213,6 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                           apartmentNumber: value,
                           accessCode: _newApartment.accessCode,
                           residents: [currentUserData.getId()],
-
                         );
                       },
                     ),
@@ -235,17 +239,18 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                           apartmentNumber: _newApartment.apartmentNumber,
                           accessCode: value,
                           residents: [currentUserData.getId()],
-
                         );
                       },
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    Platform.isAndroid ? SaveButton(
-                      text: 'STOFNA',
-                      saveFunc: _saveForm,
-                    ) : Container(),
+                    Platform.isAndroid
+                        ? SaveButton(
+                            text: 'STOFNA',
+                            saveFunc: _saveForm,
+                          )
+                        : Container(),
                   ],
                 ),
               ),
