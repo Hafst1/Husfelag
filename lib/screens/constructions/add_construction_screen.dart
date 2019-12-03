@@ -23,10 +23,11 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
   final _form = GlobalKey<FormState>();
   var _construction = Construction(
     id: null,
-    title: "",
+    title: '',
     dateFrom: DateTime.now(),
     dateTo: DateTime.now(),
-    description: "",
+    description: '',
+    authorId: '',
   );
   var _initValues = {
     'appbar-title': 'Bæta við framkvæmd',
@@ -71,12 +72,15 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
 
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
+    final firstDate = exactDate.subtract(
+      Duration(days: 3650),
+    );
+    final convertedDate = convertToDate(controller.text) ?? exactDate;
     showDatePicker(
       context: context,
-      initialDate: convertToDate(controller.text) ?? DateTime.now(),
-      firstDate: exactDate.subtract(
-        Duration(days: 3650),
-      ),
+      initialDate:
+          convertedDate.isBefore(firstDate) ? firstDate : convertedDate,
+      firstDate: firstDate,
       lastDate: exactDate.add(
         Duration(days: 3650),
       ),
@@ -99,7 +103,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     }
   }
 
-  void _saveForm() async {
+  void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -108,9 +112,6 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     setState(() {
       _isLoading = true;
     });
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
     if (_construction.id != null) {
       try {
         await Provider.of<ConstructionsProvider>(context, listen: false)
@@ -152,6 +153,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
+    final residentAssociationId = currentUserData.getResidentAssociationId();
+    final userId = currentUserData.getId();
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
@@ -162,7 +167,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm();
+                    _saveForm(residentAssociationId);
                   },
                 )
               : Container(),
@@ -200,6 +205,9 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                           dateFrom: _construction.dateFrom,
                           dateTo: _construction.dateTo,
                           description: _construction.description,
+                          authorId: _construction.authorId != ''
+                              ? _construction.authorId
+                              : userId,
                         );
                       },
                     ),
@@ -241,6 +249,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                               dateFrom: convertToDate(value),
                               dateTo: _construction.dateTo,
                               description: _construction.description,
+                              authorId: _construction.authorId,
                             );
                           },
                         ),
@@ -283,6 +292,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                               dateFrom: _construction.dateFrom,
                               dateTo: convertToDate(value),
                               description: _construction.description,
+                              authorId: _construction.authorId,
                             );
                           },
                         ),
@@ -308,6 +318,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                           dateFrom: _construction.dateFrom,
                           dateTo: _construction.dateTo,
                           description: value,
+                          authorId: _construction.authorId,
                         );
                       },
                     ),
@@ -317,7 +328,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                     Platform.isAndroid
                         ? SaveButton(
                             text: _initValues['save-text'],
-                            saveFunc: _saveForm,
+                            saveFunc: () => _saveForm(residentAssociationId),
                           )
                         : Container(),
                   ],

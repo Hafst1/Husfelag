@@ -27,6 +27,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     apartment: '',
     dateFrom: DateTime.now(),
     dateTo: DateTime.now(),
+    authorId: '',
   );
 
   var _initValues = {
@@ -82,12 +83,15 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
 
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
+    final convertedDate = convertToDate(controller.text) ?? exactDate;
+    final firstDate = exactDate.subtract(
+      Duration(days: 30),
+    );
     showDatePicker(
       context: context,
-      initialDate: convertToDate(controller.text) ?? exactDate,
-      firstDate: exactDate.subtract(
-        Duration(days: 30),
-      ),
+      initialDate:
+          convertedDate.isBefore(firstDate) ? firstDate : convertedDate,
+      firstDate: firstDate,
       lastDate: exactDate.add(
         Duration(days: 1825),
       ),
@@ -110,7 +114,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     }
   }
 
-  void _saveForm() async {
+  void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -119,9 +123,6 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     setState(() {
       _isLoading = true;
     });
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
     if (_cleaningItem.id != null) {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
@@ -163,6 +164,10 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
+    final residentAssociationId = currentUserData.getResidentAssociationId();
+    final userId = currentUserData.getId();
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
@@ -173,7 +178,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm();
+                    _saveForm(residentAssociationId);
                   })
               : Container(),
         ],
@@ -213,6 +218,9 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                               apartment: value,
                               dateFrom: _cleaningItem.dateFrom,
                               dateTo: _cleaningItem.dateTo,
+                              authorId: _cleaningItem.authorId != ''
+                                  ? _cleaningItem.authorId
+                                  : userId,
                             );
                           },
                         ),
@@ -256,6 +264,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                               apartment: _cleaningItem.apartment,
                               dateFrom: convertToDate(value),
                               dateTo: _cleaningItem.dateTo,
+                              authorId: _cleaningItem.authorId,
                             );
                           },
                         ),
@@ -298,6 +307,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                               apartment: _cleaningItem.apartment,
                               dateFrom: _cleaningItem.dateFrom,
                               dateTo: convertToDate(value),
+                              authorId: _cleaningItem.authorId,
                             );
                           },
                         ),
@@ -309,7 +319,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                     Platform.isAndroid
                         ? SaveButton(
                             text: _initValues['save-text'],
-                            saveFunc: _saveForm,
+                            saveFunc: () => _saveForm(residentAssociationId),
                           )
                         : Container(),
                   ],

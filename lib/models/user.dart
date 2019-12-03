@@ -1,21 +1,26 @@
-class User {
+import 'package:flutter/material.dart';
 
+class User {
   final String uid;
 
-  User({ this.uid });
-
+  User({@required this.uid});
 }
 
 class UserData {
-
-  final String uid;
+  final String id;
   final String name;
   final String email;
-  final String home;
-  final String resId;
-  final String apartId;
-  final String password;
+  final String residentAssociationId;
+  final String apartmentId;
 
+  final bool isAdmin;
 
-  UserData({ this.uid, this.name, this.email, this.home, this.resId, this.apartId, this.password });
+  UserData({
+    @required this.id,
+    @required this.name,
+    @required this.email,
+    @required this.residentAssociationId,
+    @required this.apartmentId,
+    @required this.isAdmin,
+  });
 }

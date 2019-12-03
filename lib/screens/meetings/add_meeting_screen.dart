@@ -29,6 +29,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     duration: Duration(),
     location: '',
     description: '',
+    authorId: '',
   );
   var _initValues = {
     'appbar-title': 'Bóka fund',
@@ -78,9 +79,12 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     DateTime exactDate = DateTime.now();
     DateTime startOfCurrentDate =
         DateTime(exactDate.year, exactDate.month, exactDate.day);
+    final convertedDate = _convertToDate(controller.text) ?? exactDate;
     showDatePicker(
       context: context,
-      initialDate: _convertToDate(controller.text) ?? startOfCurrentDate,
+      initialDate: convertedDate.isBefore(startOfCurrentDate)
+          ? startOfCurrentDate
+          : convertedDate,
       firstDate: startOfCurrentDate,
       lastDate: startOfCurrentDate.add(
         Duration(days: 1825),
@@ -154,7 +158,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
-  Future<void> _saveForm() async {
+  Future<void> _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -163,9 +167,6 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     setState(() {
       _isLoading = true;
     });
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
     if (_meeting.id != null) {
       try {
         await Provider.of<MeetingsProvider>(context, listen: false)
@@ -207,6 +208,10 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
+    final residentAssociationId = currentUserData.getResidentAssociationId();
+    final userId = currentUserData.getId();
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
@@ -217,7 +222,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm();
+                    _saveForm(residentAssociationId);
                   },
                 )
               : Container(),
@@ -256,6 +261,9 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           duration: _meeting.duration,
                           location: _meeting.location,
                           description: _meeting.description,
+                          authorId: _meeting.authorId != ''
+                              ? _meeting.authorId
+                              : userId,
                         );
                       },
                     ),
@@ -297,6 +305,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                               duration: _meeting.duration,
                               location: _meeting.location,
                               description: _meeting.description,
+                              authorId: _meeting.authorId,
                             );
                           },
                         ),
@@ -385,6 +394,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                         _timeFromController.text, value),
                                     location: _meeting.location,
                                     description: _meeting.description,
+                                    authorId: _meeting.authorId,
                                   );
                                 },
                               ),
@@ -422,6 +432,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           duration: _meeting.duration,
                           location: value,
                           description: _meeting.description,
+                          authorId: _meeting.authorId,
                         );
                       },
                     ),
@@ -446,6 +457,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           duration: _meeting.duration,
                           location: _meeting.location,
                           description: value,
+                          authorId: _meeting.authorId,
                         );
                       },
                     ),
@@ -455,7 +467,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     Platform.isAndroid
                         ? SaveButton(
                             text: _initValues['save-text'],
-                            saveFunc: _saveForm,
+                            saveFunc: () => _saveForm(residentAssociationId),
                           )
                         : Container()
                   ],

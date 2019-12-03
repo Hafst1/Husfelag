@@ -32,9 +32,11 @@ class CleaningProvider with ChangeNotifier {
               cleaningItem.data['dateFrom']),
           dateTo:
               DateTime.fromMillisecondsSinceEpoch(cleaningItem.data['dateTo']),
+          authorId: cleaningItem.data['authorId'],
         ));
       });
       _cleaningItems = loadedCleaningItems;
+      sortCleaningItems();
       notifyListeners();
     } catch (error) {
       showDialog(
@@ -66,11 +68,13 @@ class CleaningProvider with ChangeNotifier {
         'apartment': cleaningItem.apartment,
         'dateFrom': cleaningItem.dateFrom.millisecondsSinceEpoch,
         'dateTo': cleaningItem.dateTo.millisecondsSinceEpoch,
+        'authorId': cleaningItem.authorId,
       });
       final newCleaningItem = Cleaning(
         apartment: cleaningItem.apartment,
         dateFrom: cleaningItem.dateFrom,
         dateTo: cleaningItem.dateTo,
+        authorId: cleaningItem.authorId,
         id: response.documentID,
       );
       _cleaningItems.add(newCleaningItem);
@@ -119,11 +123,19 @@ class CleaningProvider with ChangeNotifier {
         'apartment': editedCleaning.apartment,
         'dateFrom': editedCleaning.dateFrom.millisecondsSinceEpoch,
         'dateTo': editedCleaning.dateTo.millisecondsSinceEpoch,
+        'authorId': editedCleaning.authorId,
       });
       final cleaningIndex = _cleaningItems
           .indexWhere((cleaning) => cleaning.id == editedCleaning.id);
       if (cleaningIndex >= 0) {
+        final oldCleaningItem = _cleaningItems[cleaningIndex];
         _cleaningItems[cleaningIndex] = editedCleaning;
+
+        // if dates have changed we have to sort the list of cleaning items again.
+        if (oldCleaningItem.dateFrom != editedCleaning.dateFrom ||
+            oldCleaningItem.dateTo != editedCleaning.dateTo) {
+          sortCleaningItems();
+        }
       }
       notifyListeners();
     } catch (error) {
@@ -184,6 +196,46 @@ class CleaningProvider with ChangeNotifier {
       });
     }
     return displayList;
+  }
+
+  // functions which checks whether it is the user's turn to clean. If
+  // the function returns true he will be able to check the boxes of
+  // the cleaning task list.
+  bool isUsersTurnToClean(String apartment) {
+    if (_cleaningItems.isEmpty) {
+      return false;
+    }
+    DateTime exactDate = DateTime.now();
+    DateTime startOfCurrentDate =
+        DateTime(exactDate.year, exactDate.month, exactDate.day, 0, 0, 0, 0);
+    DateTime endOfCurrentDate = DateTime(
+        exactDate.year, exactDate.month, exactDate.day, 23, 59, 59, 999);
+    var retVal = false;
+    for (final cleaningItem in _cleaningItems) {
+      if (cleaningItem.dateFrom.isAfter(endOfCurrentDate)) {
+        break;
+      }
+      if (cleaningItem.apartment != apartment) {
+        continue;
+      }
+      if (cleaningItem.dateFrom.isBefore(endOfCurrentDate) &&
+          (cleaningItem.dateTo.compareTo(startOfCurrentDate) == 0 ||
+              cleaningItem.dateTo.isAfter(startOfCurrentDate))) {
+        retVal = true;
+        break;
+      }
+    }
+    return retVal;
+  }
+
+  // functions which sorts the cleaning item list by the dateFrom property,
+  // if equal it is ordered by the dateTo property.
+  void sortCleaningItems() {
+    _cleaningItems.sort(
+      (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
+          ? a.dateTo.compareTo(b.dateTo)
+          : a.dateFrom.compareTo(b.dateFrom),
+    );
   }
 
   // function which fetches cleaning task items of a resident association and

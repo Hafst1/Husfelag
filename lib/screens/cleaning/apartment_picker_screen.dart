@@ -22,7 +22,7 @@ class _ApartMentPickerScreenState extends State<ApartMentPickerScreen> {
       });
       final currentUserData = Provider.of<CurrentUserProvider>(context);
       currentUserData
-          .fetchApartments(currentUserData.getResidentAssociationNumber())
+          .fetchApartments(currentUserData.getResidentAssociationId())
           .then((_) {
         setState(() {
           _isLoading = false;

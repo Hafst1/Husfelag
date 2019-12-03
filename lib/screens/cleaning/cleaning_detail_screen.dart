@@ -25,7 +25,7 @@ class _CleaningDetailScreenState extends State<CleaningDetailScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<CleaningProvider>(context)
           .fetchCleaningTasks(residentAssociationId, context)
           .then((_) {

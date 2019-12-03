@@ -30,7 +30,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<ConstructionsProvider>(context)
           .fetchConstructions(residentAssociationId, context)
           .then((_) {

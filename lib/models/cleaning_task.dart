@@ -6,7 +6,6 @@ class CleaningTask{
     final String description; 
     final bool taskDone;
 
-
   CleaningTask({
     @required this.id,
     @required this.title,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/construction.dart';
 
 enum ConstructionStatus { current, ahead, old }
@@ -30,16 +31,18 @@ class ConstructionsProvider with ChangeNotifier {
           dateTo:
               DateTime.fromMillisecondsSinceEpoch(construction.data['dateTo']),
           description: construction.data['description'],
+          authorId: construction.data['authorId'],
         ));
       });
       _constructions = loadedConstructions;
+      sortConstructions();
       notifyListeners();
     } catch (error) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp fundum!'),
+          content: Text('Ekki tókst að hlaða upp framkvæmdum!'),
           actions: <Widget>[
             FlatButton(
               child: Text('Halda áfram'),
@@ -64,13 +67,15 @@ class ConstructionsProvider with ChangeNotifier {
         'title': construction.title,
         'dateFrom': construction.dateFrom.millisecondsSinceEpoch,
         'dateTo': construction.dateTo.millisecondsSinceEpoch,
-        'description': construction.description
+        'description': construction.description,
+        'authorId': construction.authorId,
       });
       final newConstruction = Construction(
         title: construction.title,
         dateFrom: construction.dateFrom,
         dateTo: construction.dateTo,
         description: construction.description,
+        authorId: construction.authorId,
         id: response.documentID,
       );
       _constructions.add(newConstruction);
@@ -120,11 +125,19 @@ class ConstructionsProvider with ChangeNotifier {
         'dateFrom': editedConstruction.dateFrom.millisecondsSinceEpoch,
         'dateTo': editedConstruction.dateTo.millisecondsSinceEpoch,
         'description': editedConstruction.description,
+        'authorId': editedConstruction.authorId,
       });
       final constructionIndex = _constructions.indexWhere(
           (construction) => construction.id == editedConstruction.id);
       if (constructionIndex >= 0) {
+        final oldConstruction = _constructions[constructionIndex];
         _constructions[constructionIndex] = editedConstruction;
+
+        // if the either of the dates have changed we have to sort the list again.
+        if (oldConstruction.dateFrom != editedConstruction.dateFrom ||
+            oldConstruction.dateTo != editedConstruction.dateTo) {
+          sortConstructions();
+        }
       }
       notifyListeners();
     } catch (error) {
@@ -184,6 +197,16 @@ class ConstructionsProvider with ChangeNotifier {
       });
     }
     return displayList;
+  }
+
+  // function which sorts the constructions list by the dateFrom property, if 
+  // equal the items are sorted by the dateTo property.
+  void sortConstructions() {
+    _constructions.sort(
+      (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
+          ? a.dateTo.compareTo(b.dateTo)
+          : a.dateFrom.compareTo(b.dateFrom),
+    );
   }
 
   Map<DateTime, List> filterForCalendar() {

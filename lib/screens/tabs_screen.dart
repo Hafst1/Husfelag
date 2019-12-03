@@ -18,12 +18,6 @@ class _TabsScreenState extends State<TabsScreen> {
     2: GlobalKey<NavigatorState>(),
   };
 
-  @override
-  void initState() {
-    // ...
-    super.initState();
-  }
-
   void _selectPage(int index) {
     if (_selectedPageIndex == index) {
       navigatorKeys[index].currentState.popUntil((key) => key.isFirst);
