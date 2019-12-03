@@ -234,6 +234,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     TextFormField(
                       initialValue: _initValues['title'],
                       decoration: InputDecoration(
+                        border: InputBorder.none,
                         filled: true,
                         fillColor: Colors.white,
                         hintText: "Titill...",
@@ -267,6 +268,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                         child: TextFormField(
                           controller: _dateController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
                             filled: true,
                             fillColor: Colors.white,
                             hintText: "Dagsetning...",
@@ -314,6 +316,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                               child: TextFormField(
                                 controller: _timeFromController,
                                 decoration: InputDecoration(
+                                  border: InputBorder.none,
                                   filled: true,
                                   fillColor: Colors.white,
                                   hintText: "Frá...",
@@ -350,6 +353,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                               child: TextFormField(
                                 controller: _timeToController,
                                 decoration: InputDecoration(
+                                  border: InputBorder.none,
                                   filled: true,
                                   fillColor: Colors.white,
                                   hintText: "Til...",
@@ -395,6 +399,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     TextFormField(
                       initialValue: _initValues['location'],
                       decoration: InputDecoration(
+                        border: InputBorder.none,
                         filled: true,
                         fillColor: Colors.white,
                         hintText: "Staðsetning...",
@@ -427,6 +432,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                       initialValue: _initValues['description'],
                       maxLines: 10,
                       decoration: InputDecoration(
+                        border: InputBorder.none,
                         filled: true,
                         fillColor: Colors.white,
                         hintText: "Nánari lýsing (valfrjálst)...",
