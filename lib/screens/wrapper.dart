@@ -37,9 +37,6 @@ class Wrapper extends StatelessWidget {
           ),
           ChangeNotifierProvider.value(
             value: DocumentsProvider(),
-          ),
-          ChangeNotifierProvider.value(
-            value: DocumentsFolderProvider(),
           )
         ],
         child: TabsScreen(),
