@@ -29,7 +29,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<CleaningProvider>(context)
           .fetchCleaningItems(residentAssociationId, context)
           .then((_) {
@@ -84,9 +84,8 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final cleaningData = Provider.of<CleaningProvider>(context);
     final cleanings = cleaningData.filteredItems(
       _searchQuery,
@@ -156,8 +155,10 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () =>
-                          _refreshCleaningItems(residentAssociationId, context),
+                      onRefresh: () => _refreshCleaningItems(
+                        currentUserData.getResidentAssociationId(),
+                        context,
+                      ),
                       child: Container(
                         padding: const EdgeInsets.only(
                           bottom: 5,
@@ -169,6 +170,9 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
                             apartment: cleanings[i].apartment,
                             dateFrom: cleanings[i].dateFrom,
                             dateTo: cleanings[i].dateTo,
+                            isAdmin: currentUserData.isAdmin(),
+                            isAuthor: cleanings[i].authorId ==
+                                currentUserData.getId(),
                           ),
                         ),
                       ),

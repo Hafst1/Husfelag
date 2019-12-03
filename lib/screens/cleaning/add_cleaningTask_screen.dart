@@ -65,7 +65,7 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
     });
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     if (_cleaningTaskItem.id != null) {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
@@ -123,9 +123,10 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
                     TextFormField(
                       initialValue: _initValues['title'],
                       decoration: InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Titill...",
-                        prefixIcon: Icon(CustomIcons.pencil),
-                        border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
@@ -151,9 +152,11 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
                     TextFormField(
                       initialValue: _initValues['description'],
                       maxLines: 10,
-                      decoration: InputDecoration(
+                      decoration: InputDecoration.collapsed(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Nánari lýsing (valfrjálst)...",
-                        border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.text,
                       onSaved: (value) {

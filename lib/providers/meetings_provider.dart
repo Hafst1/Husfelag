@@ -19,6 +19,7 @@ class MeetingsProvider with ChangeNotifier {
       final response = await _associationRef
           .document(residentAssociationId)
           .collection('MeetingItems')
+          .orderBy('date')
           .getDocuments();
       final List<Meeting> loadedMeetings = [];
       response.documents.forEach((meeting) {
@@ -29,6 +30,7 @@ class MeetingsProvider with ChangeNotifier {
           duration: parseDuration(meeting.data['duration']),
           location: meeting.data['location'],
           description: meeting.data['description'],
+          authorId: meeting.data['authorId'],
         ));
       });
       _meetings = loadedMeetings;
@@ -64,6 +66,7 @@ class MeetingsProvider with ChangeNotifier {
         'duration': meeting.duration.toString(),
         'location': meeting.location,
         'description': meeting.description,
+        'authorId': meeting.authorId,
       });
       final newMeeting = Meeting(
         title: meeting.title,
@@ -71,6 +74,7 @@ class MeetingsProvider with ChangeNotifier {
         duration: meeting.duration,
         location: meeting.location,
         description: meeting.description,
+        authorId: meeting.authorId,
         id: response.documentID,
       );
       _meetings.add(newMeeting);
@@ -120,11 +124,18 @@ class MeetingsProvider with ChangeNotifier {
         'duration': editedMeeting.duration.toString(),
         'location': editedMeeting.location,
         'description': editedMeeting.description,
+        'authorId': editedMeeting.authorId,
       });
       final meetingIndex =
           _meetings.indexWhere((meeting) => meeting.id == editedMeeting.id);
       if (meetingIndex >= 0) {
+        final dateOfOldObject = _meetings[meetingIndex].date;
         _meetings[meetingIndex] = editedMeeting;
+
+        // if date has changed the meetings list has to be sorted again.
+        if (dateOfOldObject != editedMeeting.date) {
+          _meetings.sort((a, b) => a.date.compareTo(b.date));
+        }
       }
       notifyListeners();
     } catch (error) {
@@ -200,18 +211,14 @@ class MeetingsProvider with ChangeNotifier {
       meetings.forEach((item) {
         stringDate = item.date.toString().substring(0, 11) + hoursMinutesSecond;
         DateTime newDate = DateTime.parse(stringDate);
-        print(item.date);
-        newTimeForMeetings =
-            "Klukkan: " + item.date.toString().substring(12, 16);
-        if (constructions.containsKey(newDate)) {
-          constructions[newDate].add(
-            ["Fundur:    ", item.title, item.description, newTimeForMeetings],
-          );
-        } else {
-          constructions[newDate] = [
-            ["Fundur:    ", item.title, item.description, newTimeForMeetings],
-          ];
-        }
+        newTimeForMeetings = "Klukkan: " + item.date.toString().substring(12,16);
+        if(constructions.containsKey(newDate)) { 
+          constructions[newDate].add(["Fundur" , item.title, item.description, 
+           newTimeForMeetings],);
+        }else {
+          constructions[newDate] = [["Fundur" , item.title, item.description, 
+           newTimeForMeetings],];
+         }
         return constructions;
       });
       return constructions;

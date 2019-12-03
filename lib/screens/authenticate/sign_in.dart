@@ -24,7 +24,9 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? LoadingSpinner()
+        ? Scaffold(
+            body: LoadingSpinner(),
+          )
         : Scaffold(
             body: SafeArea(
               child: Column(

@@ -187,9 +187,9 @@ class MapScreenState extends State<ProfilePage>
                                                         _currentName ??
                                                             userData.name,
                                                         userData.email,
-                                                        userData.home,
-                                                        userData.resId,
-                                                        userData.apartId,
+                                                        userData.residentAssociationId,
+                                                        userData.apartmentId,
+                                                        userData.isAdmin,
                                                       );
                                                     }
                                                     setState(() {
@@ -322,9 +322,9 @@ class MapScreenState extends State<ProfilePage>
                                                         userData.name,
                                                         _currentEmail ??
                                                             userData.email,
-                                                        userData.home,
-                                                        userData.apartId,
-                                                        userData.resId,
+                                                        userData.apartmentId,
+                                                        userData.residentAssociationId,
+                                                        userData.isAdmin,
                                                       );
                                                     }
                                                     setState(() {

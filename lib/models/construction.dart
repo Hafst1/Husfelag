@@ -6,6 +6,7 @@ class Construction {
   final DateTime dateFrom;
   final DateTime dateTo;
   final String description;
+  final String authorId;
 
   Construction({
     @required this.id,
@@ -13,5 +14,6 @@ class Construction {
     @required this.dateFrom,
     @required this.dateTo,
     @required this.description,
+    @required this.authorId,
   });
 }
