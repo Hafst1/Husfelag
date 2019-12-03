@@ -260,7 +260,9 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           duration: _meeting.duration,
                           location: _meeting.location,
                           description: _meeting.description,
-                          authorId: userId,
+                          authorId: _meeting.authorId != ''
+                              ? _meeting.authorId
+                              : userId,
                         );
                       },
                     ),

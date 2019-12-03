@@ -204,7 +204,9 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                           dateFrom: _construction.dateFrom,
                           dateTo: _construction.dateTo,
                           description: _construction.description,
-                          authorId: userId,
+                          authorId: _construction.authorId != ''
+                              ? _construction.authorId
+                              : userId,
                         );
                       },
                     ),

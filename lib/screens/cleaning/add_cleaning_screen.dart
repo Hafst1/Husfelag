@@ -215,7 +215,9 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                               apartment: value,
                               dateFrom: _cleaningItem.dateFrom,
                               dateTo: _cleaningItem.dateTo,
-                              authorId: userId,
+                              authorId: _cleaningItem.authorId != ''
+                                  ? _cleaningItem.authorId
+                                  : userId,
                             );
                           },
                         ),
