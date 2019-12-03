@@ -31,8 +31,6 @@ class MapScreenState extends State<ProfilePage>
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
@@ -137,8 +135,7 @@ class MapScreenState extends State<ProfilePage>
                                             Flexible(
                                               child: TextFormField(
                                                 initialValue: userData.name,
-                                                decoration:
-                                                    InputDecoration(
+                                                decoration: InputDecoration(
                                                   hintText:
                                                       "Skráðu nafnið þitt",
                                                 ),
@@ -187,7 +184,8 @@ class MapScreenState extends State<ProfilePage>
                                                       await DatabaseService(
                                                               uid: user.uid)
                                                           .updateUserData(
-                                                        _currentName ?? userData.name,
+                                                        _currentName ??
+                                                            userData.name,
                                                         userData.email,
                                                         userData.home,
                                                         userData.resId,
@@ -313,16 +311,21 @@ class MapScreenState extends State<ProfilePage>
                                                     if (_formKey.currentState
                                                         .validate()) {
                                                       print(_currentEmail);
-                                                      if (_currentEmail != userData.email) {
-                                                        await _auth.changeEmail(_currentEmail);
+                                                      if (_currentEmail !=
+                                                          userData.email) {
+                                                        await _auth.changeEmail(
+                                                            _currentEmail);
                                                       }
-                                                      await DatabaseService(uid: user.uid).updateUserData(
+                                                      await DatabaseService(
+                                                              uid: user.uid)
+                                                          .updateUserData(
                                                         userData.name,
-                                                        _currentEmail ?? userData.email,
+                                                        _currentEmail ??
+                                                            userData.email,
                                                         userData.home,
                                                         userData.apartId,
                                                         userData.resId,
-                                                    );
+                                                      );
                                                     }
                                                     setState(() {
                                                       _emailStatus = true;
@@ -367,7 +370,7 @@ class MapScreenState extends State<ProfilePage>
                                           ],
                                         ),
                                       ),
-                                      Padding(
+                                    Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 25.0),
                                         child: Row(
@@ -401,11 +404,13 @@ class MapScreenState extends State<ProfilePage>
                                                 decoration: InputDecoration(
                                                     hintText:
                                                         "Skráðu nýtt lykilorð"),
-                                                validator: (val) => val.length < 6
+                                                validator: (val) => val.length <
+                                                        6
                                                     ? 'Lykilorð þarf að innihalda 6+ stafi'
                                                     : null,
                                                 onChanged: (val) => setState(
-                                                    () => _currentPassword = val),
+                                                    () =>
+                                                        _currentPassword = val),
                                                 enabled: !_passwordStatus,
                                               ),
                                             ),
@@ -442,7 +447,9 @@ class MapScreenState extends State<ProfilePage>
                                                   onPressed: () async {
                                                     if (_formKey.currentState
                                                         .validate()) {
-                                                          await _auth.changePassword(_currentPassword);
+                                                      await _auth
+                                                          .changePassword(
+                                                              _currentPassword);
                                                     }
                                                     setState(() {
                                                       _passwordStatus = true;
