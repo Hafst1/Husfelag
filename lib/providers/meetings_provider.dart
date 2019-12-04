@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/meeting.dart';
-import '../widgets/meetings_list_item.dart';
+import '../shared/constants.dart' as Constants;
 
 enum MeetingStatus { ahead, old }
 
@@ -11,7 +11,7 @@ class MeetingsProvider with ChangeNotifier {
 
   // collection reference to the resident associations.
   CollectionReference _associationRef =
-      Firestore.instance.collection('ResidentAssociation');
+      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
 
   // function which fetches meetings from a resident association and stores
   // them in the _meetings list.
@@ -20,19 +20,19 @@ class MeetingsProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('MeetingItems')
-          .orderBy('date')
+          .collection(Constants.MEETINGS_COLLECTION)
+          .orderBy(Constants.DATE)
           .getDocuments();
       final List<Meeting> loadedMeetings = [];
       response.documents.forEach((meeting) {
         loadedMeetings.add(Meeting(
           id: meeting.documentID,
-          title: meeting.data['title'],
-          date: DateTime.fromMillisecondsSinceEpoch(meeting.data['date']),
-          duration: parseDuration(meeting.data['duration']),
-          location: meeting.data['location'],
-          description: meeting.data['description'],
-          authorId: meeting.data['authorId'],
+          title: meeting.data[Constants.TITLE],
+          date: DateTime.fromMillisecondsSinceEpoch(meeting.data[Constants.DATE]),
+          duration: parseDuration(meeting.data[Constants.DURATION]),
+          location: meeting.data[Constants.LOCATION],
+          description: meeting.data[Constants.DESCRIPTION],
+          authorId: meeting.data[Constants.AUTHOR_ID],
         ));
       });
       _meetings = loadedMeetings;
@@ -61,14 +61,14 @@ class MeetingsProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('MeetingItems')
+          .collection(Constants.MEETINGS_COLLECTION)
           .add({
-        'title': meeting.title,
-        'date': meeting.date.millisecondsSinceEpoch,
-        'duration': meeting.duration.toString(),
-        'location': meeting.location,
-        'description': meeting.description,
-        'authorId': meeting.authorId,
+        Constants.TITLE: meeting.title,
+        Constants.DATE: meeting.date.millisecondsSinceEpoch,
+        Constants.DURATION: meeting.duration.toString(),
+        Constants.LOCATION: meeting.location,
+        Constants.DESCRIPTION: meeting.description,
+        Constants.AUTHOR_ID: meeting.authorId,
       });
       final newMeeting = Meeting(
         title: meeting.title,
@@ -97,7 +97,7 @@ class MeetingsProvider with ChangeNotifier {
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('MeetingItems')
+          .collection(Constants.MEETINGS_COLLECTION)
           .document(meetingId)
           .delete();
       deletedMeeting = null;
@@ -118,15 +118,15 @@ class MeetingsProvider with ChangeNotifier {
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('MeetingItems')
+          .collection(Constants.MEETINGS_COLLECTION)
           .document(editedMeeting.id)
           .updateData({
-        'title': editedMeeting.title,
-        'date': editedMeeting.date.millisecondsSinceEpoch,
-        'duration': editedMeeting.duration.toString(),
-        'location': editedMeeting.location,
-        'description': editedMeeting.description,
-        'authorId': editedMeeting.authorId,
+        Constants.TITLE: editedMeeting.title,
+        Constants.DATE: editedMeeting.date.millisecondsSinceEpoch,
+        Constants.DURATION: editedMeeting.duration.toString(),
+        Constants.LOCATION: editedMeeting.location,
+        Constants.DESCRIPTION: editedMeeting.description,
+        Constants.AUTHOR_ID: editedMeeting.authorId,
       });
       final meetingIndex =
           _meetings.indexWhere((meeting) => meeting.id == editedMeeting.id);

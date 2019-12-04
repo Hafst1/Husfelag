@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:husfelagid/models/user.dart';
 
+import '../shared/constants.dart' as Constants;
+
 class DatabaseService {
   final String uid;
   DatabaseService({this.uid});
 
   // collection reference
   final CollectionReference residentCollection =
-      Firestore.instance.collection('user');
+      Firestore.instance.collection(Constants.USERS_COLLECTION);
 
   Future<void> updateUserData(
     String name,
@@ -17,11 +19,11 @@ class DatabaseService {
     bool isAdmin,
   ) async {
     return await residentCollection.document(uid).setData({
-      'name': name,
-      'email': email,
-      'residentAssociationId': residentAssociationNumber,
-      'apartmentId': apartmentId,
-      'isAdmin': isAdmin,
+      Constants.NAME: name,
+      Constants.EMAIL: email,
+      Constants.RESIDENT_ASSOCIATION_ID: residentAssociationNumber,
+      Constants.APARTMENT_ID: apartmentId,
+      Constants.IS_ADMIN: isAdmin,
     });
   }
 
@@ -29,11 +31,11 @@ class DatabaseService {
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return UserData(
       id: uid,
-      name: snapshot.data['name'],
-      email: snapshot.data['email'],
-      residentAssociationId: snapshot.data['residentAssociationId'],
-      apartmentId: snapshot.data['apartmentId'],
-      isAdmin: snapshot.data['isAdmin'],
+      name: snapshot.data[Constants.NAME],
+      email: snapshot.data[Constants.EMAIL],
+      residentAssociationId: snapshot.data[Constants.RESIDENT_ASSOCIATION_ID],
+      apartmentId: snapshot.data[Constants.APARTMENT_ID],
+      isAdmin: snapshot.data[Constants.IS_ADMIN],
     );
   }
 

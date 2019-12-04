@@ -5,6 +5,7 @@ import '../models/resident_association.dart';
 import '../models/apartment.dart';
 import '../models/user.dart';
 import '../services/database.dart';
+import '../shared/constants.dart' as Constants;
 
 class CurrentUserProvider with ChangeNotifier {
   var _currentUser = UserData(
@@ -20,8 +21,9 @@ class CurrentUserProvider with ChangeNotifier {
   List<Apartment> _apartments = [];
 
   CollectionReference _associationRef =
-      Firestore.instance.collection('ResidentAssociation');
-  CollectionReference _userRef = Firestore.instance.collection('user');
+      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
+  CollectionReference _userRef =
+      Firestore.instance.collection(Constants.USERS_COLLECTION);
 
   // fetch user when starting application and store in the _currentUser object.
   Future<void> fetchCurrentUser(String id) async {
@@ -29,11 +31,12 @@ class CurrentUserProvider with ChangeNotifier {
       final fetchedUser = await _userRef.document(id).get();
       _currentUser = UserData(
         id: fetchedUser.documentID,
-        email: fetchedUser.data['email'],
-        name: fetchedUser.data['name'],
-        residentAssociationId: fetchedUser.data['residentAssociationId'],
-        apartmentId: fetchedUser['apartmentId'],
-        isAdmin: fetchedUser['isAdmin'],
+        email: fetchedUser.data[Constants.EMAIL],
+        name: fetchedUser.data[Constants.NAME],
+        residentAssociationId:
+            fetchedUser.data[Constants.RESIDENT_ASSOCIATION_ID],
+        apartmentId: fetchedUser[Constants.APARTMENT_ID],
+        isAdmin: fetchedUser[Constants.IS_ADMIN],
       );
     } catch (error) {
       print(error);
@@ -49,9 +52,9 @@ class CurrentUserProvider with ChangeNotifier {
       response.documents.forEach((association) {
         loadedAssociations.add(ResidentAssociation(
           id: association.documentID,
-          address: association.data['address'],
-          description: association.data['description'],
-          accessCode: association.data['accessCode'],
+          address: association.data[Constants.ADDRESS],
+          description: association.data[Constants.DESCRIPTION],
+          accessCode: association.data[Constants.ACCESS_CODE],
         ));
       });
       _residentAssociations = loadedAssociations;
@@ -81,22 +84,22 @@ class CurrentUserProvider with ChangeNotifier {
       ResidentAssociation association, Apartment apartment) async {
     try {
       final response = await _associationRef.add({
-        'address': association.address,
-        'description': association.description,
-        'accessCode': association.accessCode,
+        Constants.ADDRESS: association.address,
+        Constants.DESCRIPTION: association.description,
+        Constants.ACCESS_CODE: association.accessCode,
       });
       await _associationRef.document(response.documentID).updateData({
-        'address': association.address,
-        'description': association.description,
-        'accessCode': response.documentID,
+        Constants.ADDRESS: association.address,
+        Constants.DESCRIPTION: association.description,
+        Constants.ACCESS_CODE: response.documentID,
       });
       final apartmentId = await _associationRef
           .document(response.documentID)
-          .collection('Apartments')
+          .collection(Constants.APARTMENTS_COLLECTION)
           .add({
-        'apartmentNumber': apartment.apartmentNumber,
-        'accessCode': apartment.accessCode,
-        'residents': [_currentUser.id],
+        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
+        Constants.ACCESS_CODE: apartment.accessCode,
+        Constants.RESIDENTS: [_currentUser.id],
       });
       await DatabaseService(uid: _currentUser.id).updateUserData(
         _currentUser.name,
@@ -131,15 +134,15 @@ class CurrentUserProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('Apartments')
-          .orderBy('apartmentNumber')
+          .collection(Constants.APARTMENTS_COLLECTION)
+          .orderBy(Constants.APARTMENT_NUMBER)
           .getDocuments();
       response.documents.forEach((apartment) {
         loadedApartments.add(Apartment(
           id: apartment.documentID,
-          apartmentNumber: apartment.data['apartmentNumber'],
-          accessCode: apartment.data['accessCode'],
-          residents: List.from(apartment.data['residents']),
+          apartmentNumber: apartment.data[Constants.APARTMENT_NUMBER],
+          accessCode: apartment.data[Constants.ACCESS_CODE],
+          residents: List.from(apartment.data[Constants.RESIDENTS]),
         ));
       });
       _apartments = loadedApartments;
@@ -155,11 +158,11 @@ class CurrentUserProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('Apartments')
+          .collection(Constants.APARTMENTS_COLLECTION)
           .add({
-        'apartmentNumber': apartment.apartmentNumber,
-        'accessCode': apartment.accessCode,
-        'residents': apartment.residents,
+        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
+        Constants.ACCESS_CODE: apartment.accessCode,
+        Constants.RESIDENTS: apartment.residents,
       });
       await DatabaseService(uid: _currentUser.id).updateUserData(
         _currentUser.name,
@@ -183,12 +186,12 @@ class CurrentUserProvider with ChangeNotifier {
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('Apartments')
+          .collection(Constants.APARTMENTS_COLLECTION)
           .document(apartmentId)
           .updateData({
-        'apartmentNumber': apartment.apartmentNumber,
-        'accessCode': apartment.accessCode,
-        'residents': apartment.residents,
+        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
+        Constants.ACCESS_CODE: apartment.accessCode,
+        Constants.RESIDENTS: apartment.residents,
       });
       await DatabaseService(uid: _currentUser.id).updateUserData(
         _currentUser.name,
@@ -207,6 +210,7 @@ class CurrentUserProvider with ChangeNotifier {
     return [..._apartments];
   }
 
+  // function which gets the apartment number of the logged in user.
   String getApartmentNumber() {
     if (_apartments.isEmpty) {
       return '';
