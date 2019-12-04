@@ -45,9 +45,7 @@ class MapScreenState extends State<ProfilePage>
                 appBar: AppBar(
                   title: Text('Mín síða',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
                           fontSize: 20.0,
-                          fontFamily: 'sans-serif-light',
                           color: Colors.white)),
                 ),
                 body: Container(
@@ -137,7 +135,7 @@ class MapScreenState extends State<ProfilePage>
                                                 initialValue: userData.name,
                                                 decoration: InputDecoration(
                                                   hintText:
-                                                      "Skráðu nafnið þitt",
+                                                      'Skráðu nafnið þitt',
                                                 ),
                                                 validator: (val) => val.isEmpty
                                                     ? 'Vinsamlegast skráðu nafn'
@@ -181,11 +179,11 @@ class MapScreenState extends State<ProfilePage>
                                                   onPressed: () async {
                                                     if (_formKey.currentState
                                                         .validate()) {
+                                                          print('validating name');
                                                       await DatabaseService(
                                                               uid: user.uid)
                                                           .updateUserData(
-                                                        _currentName ??
-                                                            userData.name,
+                                                        _currentName ?? userData.name,
                                                         userData.email,
                                                         userData.residentAssociationId,
                                                         userData.apartmentId,
@@ -213,7 +211,7 @@ class MapScreenState extends State<ProfilePage>
                                                     EdgeInsets.only(left: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Hætta við"),
+                                                  child: Text('Hætta við'),
                                                   textColor: Colors.white,
                                                   color: Colors.red,
                                                   onPressed: () {
@@ -268,7 +266,7 @@ class MapScreenState extends State<ProfilePage>
                                                 initialValue: userData.email,
                                                 decoration: InputDecoration(
                                                     hintText:
-                                                        "Skráðu netfangið þitt"),
+                                                        'Skráðu netfangið þitt'),
                                                 validator: (val) => val.isEmpty
                                                     ? 'Sláðu inn netfang'
                                                     : null,
@@ -304,18 +302,17 @@ class MapScreenState extends State<ProfilePage>
                                                     right: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Vista"),
+                                                  child: Text('Vista'),
                                                   textColor: Colors.white,
                                                   color: Colors.green,
                                                   onPressed: () async {
                                                     if (_formKey.currentState
                                                         .validate()) {
                                                       print(_currentEmail);
-                                                      if (_currentEmail !=
-                                                          userData.email) {
-                                                        await _auth.changeEmail(
-                                                            _currentEmail);
-                                                      }
+
+                                                      await _auth.changeEmail(
+                                                          _currentEmail);
+
                                                       await DatabaseService(
                                                               uid: user.uid)
                                                           .updateUserData(
@@ -348,7 +345,7 @@ class MapScreenState extends State<ProfilePage>
                                                     EdgeInsets.only(left: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Hætta við"),
+                                                  child: Text('Hætta við'),
                                                   textColor: Colors.white,
                                                   color: Colors.red,
                                                   onPressed: () {
@@ -403,7 +400,7 @@ class MapScreenState extends State<ProfilePage>
                                                 obscureText: true,
                                                 decoration: InputDecoration(
                                                     hintText:
-                                                        "Skráðu nýtt lykilorð"),
+                                                        'Skráðu nýtt lykilorð'),
                                                 validator: (val) => val.length <
                                                         6
                                                     ? 'Lykilorð þarf að innihalda 6+ stafi'
@@ -441,7 +438,7 @@ class MapScreenState extends State<ProfilePage>
                                                     right: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Vista"),
+                                                  child: Text('Vista'),
                                                   textColor: Colors.white,
                                                   color: Colors.green,
                                                   onPressed: () async {
@@ -472,7 +469,7 @@ class MapScreenState extends State<ProfilePage>
                                                     EdgeInsets.only(left: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Hætta við"),
+                                                  child: Text('Hætta við'),
                                                   textColor: Colors.white,
                                                   color: Colors.red,
                                                   onPressed: () {

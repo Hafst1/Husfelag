@@ -44,6 +44,7 @@ class AuthService {
   }
 
   Future changeEmail(String email) async {
+    print('now in changeEmail Func');
     FirebaseUser user = await _auth.currentUser();
     user.updateEmail(email).then((_) {
       print("Succesfull changed email");
@@ -65,16 +66,6 @@ class AuthService {
       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
     });
   }
-
-  Future getEmail() async {
-    try {
-       FirebaseUser result = await FirebaseAuth.instance.currentUser();
-        return result.email;
-    }catch (e) {
-
-    }
-  }
-
   // sign out
   Future signOut() async {
     try {
