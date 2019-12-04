@@ -25,16 +25,23 @@ class AssociationOptionButton extends StatelessWidget {
         height: 150,
         width: 330,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[600]),
-          color: Colors.grey[200],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 28.0, // has the effect of softening the shadow
+              spreadRadius: 0.0, // has the effect of extending the shadow
+              offset: Offset(
+                0.0, // horizontal, move right 10
+                4.0, // vertical, move down 10
+              ),
+            )
+          ],
+          color: Colors.white,
           borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
           children: <Widget>[
-            Container(
-              width: 140,
-              child: icon
-            ),
+            Container(width: 140, child: icon),
             Expanded(
               child: Container(
                 child: Text(
