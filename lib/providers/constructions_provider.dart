@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/construction.dart';
+import '../widgets/constructions_list_item.dart';
 
 enum ConstructionStatus { current, ahead, old }
 
@@ -199,7 +200,7 @@ class ConstructionsProvider with ChangeNotifier {
     return displayList;
   }
 
-  // function which sorts the constructions list by the dateFrom property, if 
+  // function which sorts the constructions list by the dateFrom property, if
   // equal the items are sorted by the dateTo property.
   void sortConstructions() {
     _constructions.sort(
@@ -209,25 +210,8 @@ class ConstructionsProvider with ChangeNotifier {
     );
   }
 
-  Map<DateTime, List> filterForCalendar() {
-    List<Construction> constructions = [..._constructions];
-    Map<DateTime, List> _events = Map();
-    if (constructions == []) {
-      return null;
-    } else {
-      constructions.forEach((item) {
-        if (_events.containsKey(item.dateFrom)) {
-          _events[item.dateFrom].add(
-            ["Framkvæmd:    ", item.title, item.description, "Framkvæmd"],
-          );
-        } else {
-          _events[item.dateFrom] = [
-            ["Framkvæmd:    ", item.title, item.description, "Framkvæmd"],
-          ];
-        }
-        return _events;
-      });
-      return _events;
-    }
+  // function which returns all constructions.
+  List<Construction> getAllConstructions() {
+    return [..._constructions];
   }
 }

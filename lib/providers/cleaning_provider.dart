@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/cleaning_task.dart';
 import '../models/cleaning.dart';
+import '../widgets/cleaning_list_item.dart';
 
 enum CleaningStatus { current, ahead, old }
 
@@ -356,5 +357,10 @@ class CleaningProvider with ChangeNotifier {
   // function which returns all cleaning tasks of a given resident assocation.
   List<CleaningTask> getAllTasks() {
     return [..._cleaningTasks];
+  }
+
+  // function which returns all cleaning items.
+  List<Cleaning> getAllCleaningItems() {
+    return [..._cleaningItems];
   }
 }
