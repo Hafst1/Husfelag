@@ -4,8 +4,15 @@ import 'package:provider/provider.dart';
 
 import '../providers/constructions_provider.dart';
 import '../providers/current_user_provider.dart';
+import '../providers/cleaning_provider.dart';
 import '../providers/meetings_provider.dart';
 import '../shared/loading_spinner.dart';
+import '../models/construction.dart';
+import '../models/meeting.dart';
+import '../models/cleaning.dart';
+import '../widgets/constructions_list_item.dart';
+import '../widgets/meetings_list_item.dart';
+import '../widgets/cleaning_list_item.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -14,11 +21,16 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen>
     with TickerProviderStateMixin {
-  Map<DateTime, List> _events; //Meetings and Constructions
-  Map<DateTime, List> _constructionEvents;
-  List _selectedEvents;
   CalendarController _calendarController;
   AnimationController _animationController;
+  Map<DateTime, List> _events = {};
+  List _selectedEvents = [];
+  static var currentDate = DateTime.now();
+  var _daySelected = DateTime(
+    currentDate.year,
+    currentDate.month,
+    currentDate.day,
+  );
 
   @override
   void initState() {
@@ -35,6 +47,7 @@ class _CalendarScreenState extends State<CalendarScreen>
   var _isLoading = false;
 
   @override
+  // fetch constructions, meetings and cleaning items before widget is built.
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {
@@ -43,32 +56,22 @@ class _CalendarScreenState extends State<CalendarScreen>
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationId();
-      Provider.of<MeetingsProvider>(context)
+      Provider.of<MeetingsProvider>(context, listen: false)
           .fetchMeetings(residentAssociationId, context)
           .then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
-      Provider.of<ConstructionsProvider>(context)
-          .fetchConstructions(residentAssociationId, context)
-          .then((_) {
-        setState(() {
-          _isLoading = false;
+        Provider.of<ConstructionsProvider>(context, listen: false)
+            .fetchConstructions(residentAssociationId, context)
+            .then((_) {
+          Provider.of<CleaningProvider>(context, listen: false)
+              .fetchCleaningItems(residentAssociationId, context)
+              .then((_) {
+            setState(() {
+              _isLoading = false;
+            });
+          });
         });
       });
     }
-
-    setState(() {
-      final constructionEvents = Provider.of<ConstructionsProvider>(context);
-      _constructionEvents = constructionEvents.filterForCalendar();
-
-      final meetingEvents = Provider.of<MeetingsProvider>(context);
-      _events =
-          meetingEvents.mergeMeetingsAndConstructions(_constructionEvents);
-      _selectedEvents = _events[DateTime.now()] ?? [];
-    });
-
     _isInit = false;
     super.didChangeDependencies();
   }
@@ -80,14 +83,113 @@ class _CalendarScreenState extends State<CalendarScreen>
     super.dispose();
   }
 
+  // function which updates the day selected and the list of events to display
+  // beneath the calendar.
   void _onDaySelected(DateTime day, List events) {
     setState(() {
+      _daySelected = DateTime(
+        day.year,
+        day.month,
+        day.day,
+      );
       _selectedEvents = events;
+    });
+  }
+
+  // function which generates the calendar events list.
+  void generateEventsList(
+    List<Construction> constructions,
+    List<Meeting> meetings,
+    List<Cleaning> cleaningItems,
+    bool isAdmin,
+    String userId,
+  ) {
+    meetings.forEach((meeting) {
+      final meetingKey = DateTime(
+        meeting.date.year,
+        meeting.date.month,
+        meeting.date.day,
+      );
+      final meetingValue = MeetingsListItem(
+        id: meeting.id,
+        title: meeting.title,
+        date: meeting.date,
+        location: meeting.location,
+        isAdmin: isAdmin,
+        isAuthor: meeting.authorId == userId,
+      );
+      if (_events.containsKey(meetingKey)) {
+        _events[meetingKey].add(meetingValue);
+      } else {
+        _events[meetingKey] = [meetingValue];
+      }
+    });
+
+    constructions.forEach((construction) {
+      final constructionkey = DateTime(
+        construction.dateFrom.year,
+        construction.dateFrom.month,
+        construction.dateFrom.day,
+      );
+      final constructionValue = ConstructionsListItem(
+        id: construction.id,
+        title: construction.title,
+        dateFrom: construction.dateFrom,
+        dateTo: construction.dateTo,
+        isAdmin: isAdmin,
+        isAuthor: construction.authorId == userId,
+      );
+      if (_events.containsKey(constructionkey)) {
+        _events[constructionkey].add(constructionValue);
+      } else {
+        _events[constructionkey] = [constructionValue];
+      }
+    });
+
+    cleaningItems.forEach((cleaningItem) {
+      final cleaningItemkey = DateTime(
+        cleaningItem.dateFrom.year,
+        cleaningItem.dateFrom.month,
+        cleaningItem.dateFrom.day,
+      );
+      final cleaningItemValue = CleaningListItem(
+        id: cleaningItem.id,
+        apartment: cleaningItem.apartment,
+        dateFrom: cleaningItem.dateFrom,
+        dateTo: cleaningItem.dateTo,
+        isAdmin: isAdmin,
+        isAuthor: cleaningItem.authorId == userId,
+      );
+      if (_events.containsKey(cleaningItemkey)) {
+        _events[cleaningItemkey].add(cleaningItemValue);
+      } else {
+        _events[cleaningItemkey] = [cleaningItemValue];
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
+    final meetings = Provider.of<MeetingsProvider>(context).getAllMeetings();
+    final constructions =
+        Provider.of<ConstructionsProvider>(context).getAllConstructions();
+    final cleaningItems =
+        Provider.of<CleaningProvider>(context).getAllCleaningItems();
+    _events = {};
+    generateEventsList(
+      constructions,
+      meetings,
+      cleaningItems,
+      currentUserData.isAdmin(),
+      currentUserData.getId(),
+    );
+    if (_events.containsKey(_daySelected)) {
+      _selectedEvents = _events[_daySelected];
+    } else {
+      _selectedEvents = [];
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Dagatal"),
@@ -96,7 +198,6 @@ class _CalendarScreenState extends State<CalendarScreen>
       body: _isLoading
           ? LoadingSpinner()
           : Container(
-              color: Colors.black12,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
@@ -116,81 +217,43 @@ class _CalendarScreenState extends State<CalendarScreen>
       events: _events,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
+        selectedColor: Colors.pink[400],
+        todayColor: Colors.pink[200],
+        markersColor: Colors.grey[800],
+        weekendStyle: TextStyle(color: Theme.of(context).accentColor),
         outsideDaysVisible: false,
       ),
       headerStyle: HeaderStyle(
         formatButtonTextStyle:
             TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
         formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
+          color: Colors.pink[400],
           borderRadius: BorderRadius.circular(16.0),
         ),
       ),
       onDaySelected: _onDaySelected,
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekendStyle: TextStyle(
+          color: Theme.of(context).accentColor,
+        ),
+      ),
     );
   }
 
-  Widget _buildEventList() {             
-    return ListView(
-      children: _selectedEvents
-          .map((event) => Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.8),
-                ),
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: Container(
-                  color: Colors.black54,
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(10),
-                    leading: Icon(Icons.alarm,color: Colors.deepOrange[400]),
-                    title: Text(
-                        event[1],/*event.toString().substring(1),*/
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                            color: Colors.white),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                event[0],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                  title: Text(event[2]),
-                                  content: Text(event[
-                                      3] /*.toString().substring(11,16)*/),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text("Loka"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ]);
-                            });
-                      }),
-                ),
-              ))
-          .toList(),
+  Widget _buildEventList() {
+    return Column(
+      children: <Widget>[
+        _selectedEvents.isNotEmpty
+            ? Divider(
+                thickness: 2,
+              )
+            : Container(),
+        Expanded(
+          child: ListView(
+            children: _selectedEvents.map<Widget>((event) => event).toList(),
+          ),
+        ),
+      ],
     );
   }
 }
