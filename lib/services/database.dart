@@ -25,18 +25,6 @@ class DatabaseService {
     });
   }
 
-  Future updateUserName(String name) async {
-    return await residentCollection.document(uid).setData({
-      'name': name,
-    });
-  }
-
-  Future updateUserEmail(String email) async {
-    return await residentCollection.document(uid).setData({
-      'email': email,
-    });
-  }
-
   // user data from snapshot
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return UserData(
