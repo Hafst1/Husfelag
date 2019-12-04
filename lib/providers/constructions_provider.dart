@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/construction.dart';
-import '../widgets/constructions_list_item.dart';
+import '../shared/constants.dart' as Constants;
 
 enum ConstructionStatus { current, ahead, old }
 
@@ -11,7 +11,7 @@ class ConstructionsProvider with ChangeNotifier {
 
   // collection reference to the resident associations.
   CollectionReference _associationRef =
-      Firestore.instance.collection('ResidentAssociation');
+      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
 
   // function which fetches the constructions of a resident association
   // and stores them in the _constructions list.
@@ -20,19 +20,19 @@ class ConstructionsProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('ConstructionItems')
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
           .getDocuments();
       final List<Construction> loadedConstructions = [];
       response.documents.forEach((construction) {
         loadedConstructions.add(Construction(
           id: construction.documentID,
-          title: construction.data['title'],
+          title: construction.data[Constants.TITLE],
           dateFrom: DateTime.fromMillisecondsSinceEpoch(
-              construction.data['dateFrom']),
-          dateTo:
-              DateTime.fromMillisecondsSinceEpoch(construction.data['dateTo']),
-          description: construction.data['description'],
-          authorId: construction.data['authorId'],
+              construction.data[Constants.DATE_FROM]),
+          dateTo: DateTime.fromMillisecondsSinceEpoch(
+              construction.data[Constants.DATE_TO]),
+          description: construction.data[Constants.DESCRIPTION],
+          authorId: construction.data[Constants.AUTHOR_ID],
         ));
       });
       _constructions = loadedConstructions;
@@ -63,13 +63,13 @@ class ConstructionsProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('ConstructionItems')
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
           .add({
-        'title': construction.title,
-        'dateFrom': construction.dateFrom.millisecondsSinceEpoch,
-        'dateTo': construction.dateTo.millisecondsSinceEpoch,
-        'description': construction.description,
-        'authorId': construction.authorId,
+        Constants.TITLE: construction.title,
+        Constants.DATE_FROM: construction.dateFrom.millisecondsSinceEpoch,
+        Constants.DATE_TO: construction.dateTo.millisecondsSinceEpoch,
+        Constants.DESCRIPTION: construction.description,
+        Constants.AUTHOR_ID: construction.authorId,
       });
       final newConstruction = Construction(
         title: construction.title,
@@ -97,7 +97,7 @@ class ConstructionsProvider with ChangeNotifier {
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('ConstructionItems')
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
           .document(constructionId)
           .delete();
       deletedConstruction = null;
@@ -119,14 +119,14 @@ class ConstructionsProvider with ChangeNotifier {
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('ConstructionItems')
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
           .document(editedConstruction.id)
           .updateData({
-        'title': editedConstruction.title,
-        'dateFrom': editedConstruction.dateFrom.millisecondsSinceEpoch,
-        'dateTo': editedConstruction.dateTo.millisecondsSinceEpoch,
-        'description': editedConstruction.description,
-        'authorId': editedConstruction.authorId,
+        Constants.TITLE: editedConstruction.title,
+        Constants.DATE_FROM: editedConstruction.dateFrom.millisecondsSinceEpoch,
+        Constants.DATE_TO: editedConstruction.dateTo.millisecondsSinceEpoch,
+        Constants.DESCRIPTION: editedConstruction.description,
+        Constants.AUTHOR_ID: editedConstruction.authorId,
       });
       final constructionIndex = _constructions.indexWhere(
           (construction) => construction.id == editedConstruction.id);

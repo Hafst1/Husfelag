@@ -9,7 +9,7 @@ import '../screens/meetings/meetings_screen.dart';
 import '../screens/documents/documents_folders_screen.dart';
 import '../screens/cleaning/cleaning_screen.dart';
 import '../widgets/custom_icons_icons.dart';
-import '../shared/constants.dart';
+import '../shared/constants.dart' as Constants;
 
 class HomeScreen extends StatelessWidget {
   final AuthService _auth = AuthService();

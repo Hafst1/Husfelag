@@ -154,7 +154,7 @@ class _CalendarScreenState extends State<CalendarScreen>
       );
       final cleaningItemValue = CleaningListItem(
         id: cleaningItem.id,
-        apartment: cleaningItem.apartment,
+        apartment: cleaningItem.apartmentNumber,
         dateFrom: cleaningItem.dateFrom,
         dateTo: cleaningItem.dateTo,
         isAdmin: isAdmin,

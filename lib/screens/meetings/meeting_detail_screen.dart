@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/meetings_provider.dart';
-import '../../shared/constants.dart';
+import '../../shared/constants.dart' as Constants;
 
 class MeetingDetailScreen extends StatelessWidget {
   @override
