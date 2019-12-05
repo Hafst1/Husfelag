@@ -1,7 +1,5 @@
 library constants;
 
-import 'package:flutter/material.dart';
-
 // constants for user options.
 const MyPage = 'Mín Síða';
 const SignOut = 'Skrá út';
