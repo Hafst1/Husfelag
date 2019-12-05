@@ -7,7 +7,7 @@ import '../../screens/constructions/constructions_list_screen.dart';
 import '../../screens/meetings/meetings_screen.dart';
 import '../../screens/meetings/add_meeting_screen.dart';
 import '../../screens/meetings/meetings_list_screen.dart';
-import '../../screens/documents/documents_folders_screen.dart';
+import '../../screens/documents/documents_screen.dart';
 import '../../screens/cleaning/cleaning_screen.dart';
 import '../../screens/cleaning/add_cleaning_screen.dart';
 import '../../screens/cleaning/cleaning_list_screen.dart';
