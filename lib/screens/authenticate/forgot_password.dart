@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../services/auth.dart';
 
@@ -17,7 +16,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final _formKey = GlobalKey<FormState>();
 
   String _email = '';
-  String _warning = '';
 
   @override
   Widget build(BuildContext context) {
@@ -99,18 +97,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
           _popupDialog(context);
         }
-        // return Alert(
-        //     context: context,
-        //     title: "A password reset link has been sent to $_email",
-        //     buttons: [
-        //       DialogButton(
-        //         child: Text('Loka'),
-        //         onPressed: () {
-        //           Navigator.pop(context);
-        //         }
-        //       )
-        //     ]
-        //   );
       },
       child: Container(
         height: 50,
@@ -146,42 +132,4 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           );
         });
   }
-
-  // Widget showAlert() {
-  //   if (_warning != null) {
-  //     return Container(
-  //       color: Colors.amberAccent,
-  //       width: double.infinity,
-  //       padding: EdgeInsets.all(8.0),
-  //       child: Row(
-  //         children: <Widget>[
-  //           Padding(
-  //             padding: const EdgeInsets.only(right: 8.0),
-  //             child: Icon(Icons.error_outline),
-  //           ),
-  //           Expanded(
-  //             child: AutoSizeText(
-  //               _warning,
-  //               maxLines: 3,
-  //             ),
-  //           ),
-  //           Padding(
-  //             padding: const EdgeInsets.only(left: 8.0),
-  //             child: IconButton(
-  //               icon: Icon(Icons.close),
-  //               onPressed: () {
-  //                 setState(() {
-  //                   _warning = null;
-  //                 });
-  //               },
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     );
-  //   }
-  //   return SizedBox(
-  //     height: 0,
-  //   );
-  // }
 }
