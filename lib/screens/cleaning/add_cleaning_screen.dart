@@ -24,7 +24,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
   final _form = GlobalKey<FormState>();
   var _cleaningItem = Cleaning(
     id: null,
-    apartment: '',
+    apartmentNumber: '',
     dateFrom: DateTime.now(),
     dateTo: DateTime.now(),
     authorId: '',
@@ -48,7 +48,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
           'appbar-title': 'Breyta þrifum',
           'save-text': 'BREYTA',
         };
-        _apartmentController.text = _cleaningItem.apartment;
+        _apartmentController.text = _cleaningItem.apartmentNumber;
         _dateFromController.text =
             DateFormat.yMMMMEEEEd().format(_cleaningItem.dateFrom);
         _dateToController.text =
@@ -215,7 +215,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           onSaved: (value) {
                             _cleaningItem = Cleaning(
                               id: _cleaningItem.id,
-                              apartment: value,
+                              apartmentNumber: value,
                               dateFrom: _cleaningItem.dateFrom,
                               dateTo: _cleaningItem.dateTo,
                               authorId: _cleaningItem.authorId != ''
@@ -261,7 +261,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           onSaved: (value) {
                             _cleaningItem = Cleaning(
                               id: _cleaningItem.id,
-                              apartment: _cleaningItem.apartment,
+                              apartmentNumber: _cleaningItem.apartmentNumber,
                               dateFrom: convertToDate(value),
                               dateTo: _cleaningItem.dateTo,
                               authorId: _cleaningItem.authorId,
@@ -304,7 +304,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           onSaved: (value) {
                             _cleaningItem = Cleaning(
                               id: _cleaningItem.id,
-                              apartment: _cleaningItem.apartment,
+                              apartmentNumber: _cleaningItem.apartmentNumber,
                               dateFrom: _cleaningItem.dateFrom,
                               dateTo: convertToDate(value),
                               authorId: _cleaningItem.authorId,

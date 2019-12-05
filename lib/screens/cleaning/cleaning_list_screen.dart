@@ -167,7 +167,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
                           itemCount: cleanings.length,
                           itemBuilder: (ctx, i) => CleaningListItem(
                             id: cleanings[i].id,
-                            apartment: cleanings[i].apartment,
+                            apartment: cleanings[i].apartmentNumber,
                             dateFrom: cleanings[i].dateFrom,
                             dateTo: cleanings[i].dateTo,
                             isAdmin: currentUserData.isAdmin(),
