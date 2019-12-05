@@ -6,7 +6,6 @@ class ForgotPassword extends StatefulWidget {
   // final Function toggleView;
   // Register({this.toggleView});
 
-
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
 }
@@ -19,30 +18,29 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(
-                  top: 50,
-              ),
-              child: Text(
-                'Týnt lykilorð',
-                style: TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'AlegreyaSansSC',
-                ),
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(
+              top: 50,
+            ),
+            child: Text(
+              'Týnt lykilorð',
+              style: TextStyle(
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'AlegreyaSansSC',
               ),
             ),
-            SizedBox(
-              height: 50,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
                 padding: EdgeInsets.only(
                   left: 30,
                   right: 30,
@@ -52,16 +50,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: Column(
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "Netfang",
-                          prefixIcon: Icon(Icons.email),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
+                          decoration: InputDecoration(
+                            hintText: "Netfang",
+                            prefixIcon: Icon(Icons.email),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
-                        ),
-                        validator: (val) =>
-                            val.isEmpty ? 'Sláðu inn netfang' : null,
-                        onChanged: (val) {
+                          validator: (val) =>
+                              val.isEmpty ? 'Sláðu inn netfang' : null,
+                          onChanged: (val) {
                             setState(() => _email = val);
                           }),
                       SizedBox(
@@ -79,12 +77,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       ),
                     ],
                   ),
-                )
-              ),
-            )
-          ],
-        )
-      ),
+                )),
+          )
+        ],
+      )),
     );
   }
 
@@ -123,7 +119,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('A password reset link has been sent to $_email'),
+            title: Text('Slóð þar sem þú getur endustillt lykilorðið hefur verið sent á $_email'),
             actions: <Widget>[
               FlatButton(
                   onPressed: () => Navigator.of(context).pop(),

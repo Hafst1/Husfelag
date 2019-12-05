@@ -99,12 +99,15 @@ class _SignInState extends State<SignIn> {
                                     "Gleymt lykilorð?",
                                     style: TextStyle(
                                       color: Theme.of(context).primaryColor,
-                                      fontSize: 15,),
+                                      fontSize: 15,
+                                    ),
                                   ),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => ForgotPassword()),
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ForgotPassword()),
                                     );
                                   },
                                 ),
