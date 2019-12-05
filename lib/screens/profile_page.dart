@@ -16,6 +16,7 @@ class MapScreenState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   bool _nameStatus = true;
   bool _emailStatus = true;
+  bool _passwordStatus = true;
   bool _isValid = true;
   //final FocusNode myFocusNode = FocusNode();
 
@@ -24,6 +25,7 @@ class MapScreenState extends State<ProfilePage>
 
   String _currentName;
   String _currentEmail;
+  String _currentPassword;
 
   @override
   void initState() {
@@ -360,8 +362,133 @@ class MapScreenState extends State<ProfilePage>
                                           ],
                                         ),
                                       ),
+                                    // Padding(
+                                    //     padding: EdgeInsets.only(
+                                    //         left: 25.0, right: 25.0, top: 25.0),
+                                    //     child: Row(
+                                    //       mainAxisSize: MainAxisSize.max,
+                                    //       children: <Widget>[
+                                    //         Column(
+                                    //           mainAxisAlignment:
+                                    //               MainAxisAlignment.start,
+                                    //           mainAxisSize: MainAxisSize.min,
+                                    //           children: <Widget>[
+                                    //             Text(
+                                    //               'Nýtt lykilorð',
+                                    //               style: TextStyle(
+                                    //                   fontSize: 16.0,
+                                    //                   fontWeight:
+                                    //                       FontWeight.bold),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ],
+                                    //     )),
+                                    // Padding(
+                                    //     padding: EdgeInsets.only(
+                                    //         left: 25.0, right: 25.0, top: 2.0),
+                                    //     child: Row(
+                                    //       mainAxisSize: MainAxisSize.max,
+                                    //       children: <Widget>[
+                                    //         Flexible(
+                                    //           child: TextFormField(
+                                    //             obscureText: true,
+                                    //             decoration: InputDecoration(
+                                    //                 hintText:
+                                    //                     'Skráðu nýtt lykilorð'),
+                                    //             validator: (val) => val.length <
+                                    //                     6
+                                    //                 ? 'Lykilorð þarf að innihalda 6+ stafi'
+                                    //                 : null,
+                                    //             onChanged: (val) => setState(
+                                    //                 () =>
+                                    //                     _currentPassword = val),
+                                    //             enabled: !_passwordStatus,
+                                    //           ),
+                                    //         ),
+                                    //         Column(
+                                    //           mainAxisAlignment:
+                                    //               MainAxisAlignment.end,
+                                    //           mainAxisSize: MainAxisSize.min,
+                                    //           children: <Widget>[
+                                    //             _passwordStatus
+                                    //                 ? _getPasswordEditIcon()
+                                    //                 : Container(),
+                                    //           ],
+                                    //         )
+                                    //       ],
+                                    //     )),
+                                    // if (!_passwordStatus)
+                                    //   Padding(
+                                    //     padding: EdgeInsets.only(
+                                    //         left: 25.0, right: 25.0, top: 20.0),
+                                    //     child: Row(
+                                    //       mainAxisSize: MainAxisSize.max,
+                                    //       mainAxisAlignment:
+                                    //           MainAxisAlignment.start,
+                                    //       children: <Widget>[
+                                    //         Expanded(
+                                    //           child: Padding(
+                                    //             padding: EdgeInsets.only(
+                                    //                 right: 10.0),
+                                    //             child: Container(
+                                    //                 child: RaisedButton(
+                                    //               child: Text('Vista'),
+                                    //               textColor: Colors.white,
+                                    //               color: Colors.green,
+                                    //               onPressed: () async {
+                                    //                 if (_formKey.currentState
+                                    //                     .validate()) {
+                                    //                   await _auth
+                                    //                       .changePassword(
+                                    //                           _currentPassword);
+                                    //                 }
+                                    //                 setState(() {
+                                    //                   _passwordStatus = true;
+                                    //                   FocusScope.of(context)
+                                    //                       .requestFocus(
+                                    //                           FocusNode());
+                                    //                 });
+                                    //               },
+                                    //               shape: RoundedRectangleBorder(
+                                    //                   borderRadius:
+                                    //                       BorderRadius.circular(
+                                    //                           20.0)),
+                                    //             )),
+                                    //           ),
+                                    //           flex: 2,
+                                    //         ),
+                                    //         Expanded(
+                                    //           child: Padding(
+                                    //             padding:
+                                    //                 EdgeInsets.only(left: 10.0),
+                                    //             child: Container(
+                                    //                 child: RaisedButton(
+                                    //               child: Text('Hætta við'),
+                                    //               textColor: Colors.white,
+                                    //               color: Colors.red,
+                                    //               onPressed: () {
+                                    //                 setState(() {
+                                    //                   _passwordStatus = true;
+                                    //                   FocusScope.of(context)
+                                    //                       .requestFocus(
+                                    //                           FocusNode());
+                                    //                 });
+                                    //               },
+                                    //               shape: RoundedRectangleBorder(
+                                    //                   borderRadius:
+                                    //                       BorderRadius.circular(
+                                    //                           20.0)),
+                                    //             )),
+                                    //           ),
+                                    //           flex: 2,
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //   ),
                                   ],
                                 ),
+                                
                               ),
                             ),
                           ),
@@ -409,6 +536,25 @@ class MapScreenState extends State<ProfilePage>
       onTap: () {
         setState(() {
           _emailStatus = false;
+        });
+      },
+    );
+  }
+
+  Widget _getPasswordEditIcon() {
+    return GestureDetector(
+      child: CircleAvatar(
+        backgroundColor: Colors.blue,
+        radius: 14.0,
+        child: Icon(
+          Icons.edit,
+          color: Colors.white,
+          size: 16.0,
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          _passwordStatus = false;
         });
       },
     );
