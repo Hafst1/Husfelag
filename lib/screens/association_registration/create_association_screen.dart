@@ -151,8 +151,8 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                         if (value.isEmpty) {
                           return "Fylla þarft út heimilisfang!";
                         }
-                        if (value.length > 40) {
-                          return "Heimilisfang getur ekki verið meira en 40 stafir á lengd!";
+                        if (value.length > 30) {
+                          return "Heimilisfang getur ekki verið meira en 30 stafir á lengd!";
                         }
                         if (!currentUserData
                             .associationAddressIsAvailable(value)) {
@@ -164,7 +164,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                         _newAssociation = ResidentAssociation(
                           id: _newAssociation.id,
                           address:
-                              '${value[0].toUpperCase()}${value.substring(1)}',
+                              '${value[0].toUpperCase()}${value.substring(1).toLowerCase()}',
                           description: _newAssociation.description,
                           accessCode: _newAssociation.accessCode,
                         );

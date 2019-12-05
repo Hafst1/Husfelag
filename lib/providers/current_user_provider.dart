@@ -8,6 +8,7 @@ import '../services/database.dart';
 import '../shared/constants.dart' as Constants;
 
 class CurrentUserProvider with ChangeNotifier {
+  // logged in user.
   var _currentUser = UserData(
     id: '',
     email: '',
@@ -16,10 +17,14 @@ class CurrentUserProvider with ChangeNotifier {
     apartmentId: '',
     isAdmin: false,
   );
-
+  // list of all resident associations.
   List<ResidentAssociation> _residentAssociations = [];
+  // list of apartments to pick from when joining an association.
   List<Apartment> _apartments = [];
+  // residents of logged in user's association.
+  List<UserData> _residents = [];
 
+  // reference to resident associations and users collections.
   CollectionReference _associationRef =
       Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
   CollectionReference _userRef =
@@ -44,11 +49,44 @@ class CurrentUserProvider with ChangeNotifier {
     }
   }
 
+  // functions which fetches residents of the logged in user's association.
+  Future<void> fetchResidents(BuildContext context) async {
+    try {
+      final response = await _userRef
+          .where(
+            Constants.RESIDENT_ASSOCIATION_ID,
+            isEqualTo: _currentUser.residentAssociationId,
+          )
+          .getDocuments();
+      List<UserData> loadedResidents = [];
+      response.documents.forEach((resident) {
+        loadedResidents.add(UserData(
+          id: resident.documentID,
+          name: resident.data[Constants.NAME],
+          email: resident.data[Constants.EMAIL],
+          residentAssociationId:
+              resident.data[Constants.RESIDENT_ASSOCIATION_ID],
+          apartmentId: resident.data[Constants.APARTMENT_ID],
+          isAdmin: resident.data[Constants.IS_ADMIN],
+        ));
+      });
+      loadedResidents.sort((a, b) => a.name.compareTo(b.name));
+      _residents = loadedResidents;
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  List<UserData> getResidentsOfAssociation() {
+    return [..._residents];
+  }
+
   // fetch associations from firebase and store in _residentAssociation list.
   Future<void> fetchAssociations(BuildContext context) async {
     List<ResidentAssociation> loadedAssociations = [];
     try {
-      final response = await _associationRef.orderBy('address').getDocuments();
+      final response =
+          await _associationRef.orderBy(Constants.ADDRESS).getDocuments();
       response.documents.forEach((association) {
         loadedAssociations.add(ResidentAssociation(
           id: association.documentID,
@@ -112,6 +150,54 @@ class CurrentUserProvider with ChangeNotifier {
     } catch (error) {
       throw (error);
     }
+  }
+
+  Future<void> fetchAssociation(BuildContext context) async {
+    try {
+      final response = await _associationRef
+          .document(_currentUser.residentAssociationId)
+          .get();
+      var association = ResidentAssociation(
+        id: response.documentID,
+        address: response.data[Constants.ADDRESS],
+        description: response.data[Constants.DESCRIPTION],
+        accessCode: response.data[Constants.ACCESS_CODE],
+      );
+      _residentAssociations = [association];
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  ResidentAssociation getAssociationOfUser() {
+    final associationIndex = _residentAssociations.indexWhere(
+        (association) => association.id == _currentUser.residentAssociationId);
+    if (associationIndex >= 0) {
+      return _residentAssociations[associationIndex];
+    }
+    return ResidentAssociation(
+      id: '',
+      address: '',
+      description: '',
+      accessCode: '',
+    );
+  }
+
+  // function which returns an association list filtered by the search query
+  // taken in as parameter.
+  List<ResidentAssociation> filteredItems(String query) {
+    List<ResidentAssociation> associations = [..._residentAssociations];
+    String searchQuery = query.toLowerCase();
+    List<ResidentAssociation> displayList = [];
+    if (query.isEmpty) {
+      return associations;
+    }
+    associations.forEach((association) {
+      if (association.address.toLowerCase().contains(searchQuery)) {
+        displayList.add(association);
+      }
+    });
+    return displayList;
   }
 
   // function which checks whether an association address is available or not.
@@ -235,23 +321,6 @@ class CurrentUserProvider with ChangeNotifier {
       }
     }
     return retVal;
-  }
-
-  // function which returns an association list filtered by the search query
-  // taken in as parameter.
-  List<ResidentAssociation> filteredItems(String query) {
-    List<ResidentAssociation> associations = [..._residentAssociations];
-    String searchQuery = query.toLowerCase();
-    List<ResidentAssociation> displayList = [];
-    if (query.isEmpty) {
-      return associations;
-    }
-    associations.forEach((association) {
-      if (association.address.toLowerCase().contains(searchQuery)) {
-        displayList.add(association);
-      }
-    });
-    return displayList;
   }
 
   // function which checks whether the user is part of a resident association or not.

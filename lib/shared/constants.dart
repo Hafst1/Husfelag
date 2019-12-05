@@ -3,9 +3,10 @@ library constants;
 import 'package:flutter/material.dart';
 
 // constants for user options.
-const MyPage = 'Mín Síða';
-const SignOut = 'Skrá út';
-const List<String> choices = <String>[MyPage, SignOut];
+const MY_PAGE = 'Mín Síða';
+const MY_ASSOCIATION = 'Mitt húsfélag';
+const SIGN_OUT = 'Skrá út';
+const List<String> choices = <String>[MY_PAGE, MY_ASSOCIATION, SIGN_OUT];
 
 // constants for collection names
 const String RESIDENT_ASSOCIATIONS_COLLECTION = 'ResidentAssociations';

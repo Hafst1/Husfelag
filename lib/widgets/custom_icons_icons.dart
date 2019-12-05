@@ -66,4 +66,6 @@ class CustomIcons {
   static const IconData file_pdf = const IconData(0xf1c1, fontFamily: _kFontFam);
   static const IconData file_word = const IconData(0xf1c2, fontFamily: _kFontFam);
   static const IconData file_excel = const IconData(0xf1c3, fontFamily: _kFontFam);
+  static const IconData user_secret = const IconData(0xf21b, fontFamily: _kFontFam);
+  static const IconData user_times = const IconData(0xf235, fontFamily: _kFontFam);
 }
