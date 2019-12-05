@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:provider/provider.dart';
+
 import '../../providers/current_user_provider.dart';
 import '../../screens/documents/documents_list_screen.dart';
-import 'package:provider/provider.dart';
 import '../../models/document.dart';
 import '../../providers/documents_provider.dart';
 import '../../widgets/custom_icons_icons.dart';

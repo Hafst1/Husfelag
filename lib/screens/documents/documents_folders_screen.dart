@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../providers/current_user_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/current_user_provider.dart';
 import '../../providers/documents_provider.dart';
 import '../../screens/documents/add_document_screen.dart';
 import '../../widgets/documents_folder_item.dart';
