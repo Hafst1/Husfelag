@@ -1,43 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../providers/documents_provider.dart';
+import '../providers/current_user_provider.dart';
+import '../screens/documents/add_document_screen.dart';
+import '../widgets/action_dialog.dart';
+import '../widgets/custom_icons_icons.dart';
+
 class Document extends StatelessWidget {
+  final String id;
   final String title;
   final String description;
-  final String documentItem;
+  final String fileName;
+  final String downloadUrl;
   final String folderId;
 
-  Document(
-      {@required this.title,
-      @required this.description,
-      @required this.documentItem,
-      @required this.folderId});
+  Document({
+    @required this.id,
+    @required this.title,
+    @required this.description,
+    @required this.fileName,
+    @required this.downloadUrl,
+    @required this.folderId
+  });
 
-  _launchURL() async {
-    String url = documentItem;
+  _launchURL(BuildContext context) async {
+    String url = downloadUrl;
     if(await canLaunch(url)) {
       await launch(url);
-      print("url: " + url);
-    }
-    else {
-      throw 'Could not launch $url';
+    } else {
+      return printErrorDialog('Ekki tókst að sækja skjal', context); //athuga, væri gott að hafa alert
     }
   }
+
+   Future<void> printErrorDialog(String errorMessage, BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text(errorMessage),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void _showActionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return ActionDialog(
+          deleteFunc: () async{
+            final residentAssociationId =
+                Provider.of<CurrentUserProvider>(context, listen: false)
+                    .getResidentAssociationNumber();
+            Provider.of<DocumentsProvider>(context, listen: false)
+                .deleteDocument(residentAssociationId, this.id, this.fileName);
+          },
+          //ekki hægt að breyta skjalinu sjálfu, athuga
+          /*editFunc: () {
+            Navigator.of(ctx).pop();
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => AddDocumentScreen(),
+                settings: RouteSettings(arguments: id),
+              ),
+            );
+          },*/
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[200],
+      color: Colors.white,
       margin: EdgeInsets.symmetric(
         vertical: 4,
         horizontal: 3,
       ),
-      elevation: 5,
       child: ListTile(
-        leading: Icon(Icons.file_download),
         onTap: () {
-          _launchURL();
+          _launchURL(context);
         },
-        contentPadding: EdgeInsets.all(10),
+        leading: CircleAvatar(
+          backgroundColor: Color.fromRGBO(125, 185, 244, 0.8),
+          radius: 30,
+          child: Padding(
+            padding: EdgeInsets.all(6),
+            child: FittedBox(
+              child: Icon(
+                Icons.file_download,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
         title: Text(
           title,
           style: TextStyle(
@@ -48,6 +114,11 @@ class Document extends StatelessWidget {
         ),
         subtitle: Text(
           description,
+        ),
+        trailing: IconButton(
+          icon: Icon(CustomIcons.dot_3),
+          color: Colors.grey,
+          onPressed: () => _showActionDialog(context),
         ),
       ),
     );

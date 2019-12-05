@@ -1,29 +1,27 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../widgets/document_item.dart';
-import '../../providers/documents_provider.dart';
+import '../../widgets/add_document_or_folder.dart';
 import '../../providers/current_user_provider.dart';
-import '../../shared/loading_spinner.dart';
+import '../../providers/documents_provider.dart';
+import '../../widgets/documents_folder_item.dart';
 
-class DocumentsFolderScreen extends StatefulWidget {
-  final String id;
-
-  DocumentsFolderScreen({
-    this.id,
-  });
+class DocumentsScreen extends StatefulWidget {
+  static const routeName = '/documents';
 
   @override
-  _DocumentsFolderScreenState createState() =>
-      _DocumentsFolderScreenState();
+  _DocumentsScreenState createState() => 
+      _DocumentsScreenState();
 }
 
-class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
+class _DocumentsScreenState extends State<DocumentsScreen> {
+  final _addFolderController = TextEditingController(); 
   final _textFieldController = TextEditingController();
   String _searchQuery = "";
   var _isInit = true;
   var _isLoading = false;
-
+  
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -34,7 +32,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
           Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationNumber();
       Provider.of<DocumentsProvider>(context)
-          .fetchDocuments(residentAssociationId, context)
+          .fetchFolders(residentAssociationId, context)
           .then((_) {
         setState(() {
           _isLoading = false;
@@ -45,10 +43,10 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
     super.didChangeDependencies();
   }
 
-   Future<void> _refreshDocuments(
+   Future<void> _refreshFolders(
       String residentAssociationId, BuildContext context) async {
     await Provider.of<DocumentsProvider>(context)
-        .fetchDocuments(residentAssociationId, context);
+        .fetchFolders(residentAssociationId, context);
   }
 
   _changeSearchQuery(String query) {
@@ -67,19 +65,17 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
 
   @override
   void dispose() {
+    _addFolderController.dispose();
     _textFieldController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final folder = Provider.of<DocumentsProvider>(context, listen: false)
-        .findFolderById(widget.id);
-    final folderName = folder.title;
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
-      title: Text(folderName),
-      centerTitle: true, 
+      title: Text("Skjöl"),
+      centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
         mediaQuery.padding.top -
@@ -88,24 +84,35 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
             .getResidentAssociationNumber();
-    final documentData = Provider.of<DocumentsProvider>(context);
-    final documents = documentData.filteredItems(
-      _searchQuery,
-      widget.id,
-    );
+    final folderData = Provider.of<DocumentsProvider>(context);
+    final folders = folderData.filteredFolders(_searchQuery);
     return Scaffold(
       appBar: appBar,
       body: _isLoading
-          ? LoadingSpinner()
+          ? Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor),
+              ),
+            )
           : GestureDetector(
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
               child: Container(
+              padding: const EdgeInsets.only(
+                          //left: 10,
+                          //right: 10,
+                          bottom: 5,
+                ),
                 height: heightOfBody,
                 child: Column(
                   children: <Widget>[
-                    Container(
+                    AddOption(
+                      optionIcon: Icons.add,
+                      optionText: "Bæta við",
+                    ),
+                    Container( //her
                       padding: const EdgeInsets.only(
                         left: 5,
                         right: 5,
@@ -129,30 +136,30 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    ), //her
                     Expanded(
                       child: RefreshIndicator(
-                      color: Theme.of(context).primaryColor,
-                      onRefresh: () =>
-                          _refreshDocuments(residentAssociationId, context),
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                            bottom: 5,
-                          ),
-                          child: ListView.builder(
-                            itemCount: documents.length,
-                            itemBuilder: (ctx, i) =>Document(
-                              id: documents[i].id,
-                              title: documents[i].title,
-                              description: documents[i].description,
-                              fileName: documents[i].fileName,
-                              downloadUrl: documents[i].downloadUrl,
-                              folderId: documents[i].folderId,
+                        color: Theme.of(context).primaryColor,
+                        onRefresh: () => _refreshFolders(residentAssociationId, context),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: GridView.builder(
+                                padding: const EdgeInsets.all(20),
+                                itemCount: folders.length,
+                                gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 2 / 2,
+                                  crossAxisSpacing: 20,
+                                  mainAxisSpacing: 10,
+                                ),
+                                itemBuilder: (ctx, i) =>DocumentFolder(
+                                  id: folders[i].id,
+                                  title: folders[i].title,
+                                ),
+                              )
                             ),
-                          )
+                          ],
                         ),
                       ),
                     ),
