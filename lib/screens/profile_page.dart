@@ -17,6 +17,7 @@ class MapScreenState extends State<ProfilePage>
   bool _nameStatus = true;
   bool _emailStatus = true;
   bool _passwordStatus = true;
+  bool _isValid = true;
   //final FocusNode myFocusNode = FocusNode();
 
   final AuthService _auth = AuthService();
@@ -44,11 +45,7 @@ class MapScreenState extends State<ProfilePage>
             return Scaffold(
                 appBar: AppBar(
                   title: Text('Mín síða',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                          fontFamily: 'sans-serif-light',
-                          color: Colors.white)),
+                      style: TextStyle(fontSize: 20.0, color: Colors.white)),
                 ),
                 body: Container(
                   color: Colors.white,
@@ -59,17 +56,6 @@ class MapScreenState extends State<ProfilePage>
                           Container(
                             height: 50.0,
                             color: Colors.white,
-                            // child: Column(
-                            //   children: <Widget>[
-                            //     Padding(
-                            //         padding:
-                            //             EdgeInsets.only(left: 20.0, top: 20.0),
-                            //         child: Row(
-                            //           crossAxisAlignment:
-                            //               CrossAxisAlignment.start,
-                            //         )),
-                            //   ],
-                            // ),
                           ),
                           Container(
                             child: Padding(
@@ -137,7 +123,7 @@ class MapScreenState extends State<ProfilePage>
                                                 initialValue: userData.name,
                                                 decoration: InputDecoration(
                                                   hintText:
-                                                      "Skráðu nafnið þitt",
+                                                      'Skráðu nafnið þitt',
                                                 ),
                                                 validator: (val) => val.isEmpty
                                                     ? 'Vinsamlegast skráðu nafn'
@@ -175,19 +161,21 @@ class MapScreenState extends State<ProfilePage>
                                                     right: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Vista"),
+                                                  child: Text('Vista'),
                                                   textColor: Colors.white,
                                                   color: Colors.green,
                                                   onPressed: () async {
                                                     if (_formKey.currentState
                                                         .validate()) {
+                                                      print('validating name');
                                                       await DatabaseService(
                                                               uid: user.uid)
                                                           .updateUserData(
                                                         _currentName ??
                                                             userData.name,
                                                         userData.email,
-                                                        userData.residentAssociationId,
+                                                        userData
+                                                            .residentAssociationId,
                                                         userData.apartmentId,
                                                         userData.isAdmin,
                                                       );
@@ -213,7 +201,7 @@ class MapScreenState extends State<ProfilePage>
                                                     EdgeInsets.only(left: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Hætta við"),
+                                                  child: Text('Hætta við'),
                                                   textColor: Colors.white,
                                                   color: Colors.red,
                                                   onPressed: () {
@@ -268,7 +256,7 @@ class MapScreenState extends State<ProfilePage>
                                                 initialValue: userData.email,
                                                 decoration: InputDecoration(
                                                     hintText:
-                                                        "Skráðu netfangið þitt"),
+                                                        'Skráðu netfangið þitt'),
                                                 validator: (val) => val.isEmpty
                                                     ? 'Sláðu inn netfang'
                                                     : null,
@@ -304,28 +292,32 @@ class MapScreenState extends State<ProfilePage>
                                                     right: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Vista"),
+                                                  child: Text('Vista'),
                                                   textColor: Colors.white,
                                                   color: Colors.green,
                                                   onPressed: () async {
                                                     if (_formKey.currentState
                                                         .validate()) {
-                                                      print(_currentEmail);
-                                                      if (_currentEmail !=
-                                                          userData.email) {
+                                                      try {
                                                         await _auth.changeEmail(
                                                             _currentEmail);
+                                                      } on Exception catch (error) {
+                                                        print('excpetion got caught');
+                                                        print("email can't be changed" + error.toString());
+                                                        _isValid = false;
                                                       }
-                                                      await DatabaseService(
-                                                              uid: user.uid)
-                                                          .updateUserData(
-                                                        userData.name,
-                                                        _currentEmail ??
-                                                            userData.email,
-                                                        userData.apartmentId,
-                                                        userData.residentAssociationId,
-                                                        userData.isAdmin,
-                                                      );
+                                                      if (_isValid) {
+                                                        await DatabaseService(
+                                                                uid: user.uid)
+                                                            .updateUserData(
+                                                          userData.name,
+                                                          _currentEmail ??
+                                                              userData.email,
+                                                          userData.apartmentId,
+                                                          userData.residentAssociationId,
+                                                          userData.isAdmin,
+                                                        );
+                                                      }
                                                     }
                                                     setState(() {
                                                       _emailStatus = true;
@@ -348,7 +340,7 @@ class MapScreenState extends State<ProfilePage>
                                                     EdgeInsets.only(left: 10.0),
                                                 child: Container(
                                                     child: RaisedButton(
-                                                  child: Text("Hætta við"),
+                                                  child: Text('Hætta við'),
                                                   textColor: Colors.white,
                                                   color: Colors.red,
                                                   onPressed: () {
@@ -370,135 +362,136 @@ class MapScreenState extends State<ProfilePage>
                                           ],
                                         ),
                                       ),
-                                    Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 25.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Text(
-                                                  'Nýtt lykilorð',
-                                                  style: TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )),
-                                    Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 2.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: TextFormField(
-                                                obscureText: true,
-                                                decoration: InputDecoration(
-                                                    hintText:
-                                                        "Skráðu nýtt lykilorð"),
-                                                validator: (val) => val.length <
-                                                        6
-                                                    ? 'Lykilorð þarf að innihalda 6+ stafi'
-                                                    : null,
-                                                onChanged: (val) => setState(
-                                                    () =>
-                                                        _currentPassword = val),
-                                                enabled: !_passwordStatus,
-                                              ),
-                                            ),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                _passwordStatus
-                                                    ? _getPasswordEditIcon()
-                                                    : Container(),
-                                              ],
-                                            )
-                                          ],
-                                        )),
-                                    if (!_passwordStatus)
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 20.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    right: 10.0),
-                                                child: Container(
-                                                    child: RaisedButton(
-                                                  child: Text("Vista"),
-                                                  textColor: Colors.white,
-                                                  color: Colors.green,
-                                                  onPressed: () async {
-                                                    if (_formKey.currentState
-                                                        .validate()) {
-                                                      await _auth
-                                                          .changePassword(
-                                                              _currentPassword);
-                                                    }
-                                                    setState(() {
-                                                      _passwordStatus = true;
-                                                      FocusScope.of(context)
-                                                          .requestFocus(
-                                                              FocusNode());
-                                                    });
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20.0)),
-                                                )),
-                                              ),
-                                              flex: 2,
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 10.0),
-                                                child: Container(
-                                                    child: RaisedButton(
-                                                  child: Text("Hætta við"),
-                                                  textColor: Colors.white,
-                                                  color: Colors.red,
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      _passwordStatus = true;
-                                                      FocusScope.of(context)
-                                                          .requestFocus(
-                                                              FocusNode());
-                                                    });
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20.0)),
-                                                )),
-                                              ),
-                                              flex: 2,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    // Padding(
+                                    //     padding: EdgeInsets.only(
+                                    //         left: 25.0, right: 25.0, top: 25.0),
+                                    //     child: Row(
+                                    //       mainAxisSize: MainAxisSize.max,
+                                    //       children: <Widget>[
+                                    //         Column(
+                                    //           mainAxisAlignment:
+                                    //               MainAxisAlignment.start,
+                                    //           mainAxisSize: MainAxisSize.min,
+                                    //           children: <Widget>[
+                                    //             Text(
+                                    //               'Nýtt lykilorð',
+                                    //               style: TextStyle(
+                                    //                   fontSize: 16.0,
+                                    //                   fontWeight:
+                                    //                       FontWeight.bold),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ],
+                                    //     )),
+                                    // Padding(
+                                    //     padding: EdgeInsets.only(
+                                    //         left: 25.0, right: 25.0, top: 2.0),
+                                    //     child: Row(
+                                    //       mainAxisSize: MainAxisSize.max,
+                                    //       children: <Widget>[
+                                    //         Flexible(
+                                    //           child: TextFormField(
+                                    //             obscureText: true,
+                                    //             decoration: InputDecoration(
+                                    //                 hintText:
+                                    //                     'Skráðu nýtt lykilorð'),
+                                    //             validator: (val) => val.length <
+                                    //                     6
+                                    //                 ? 'Lykilorð þarf að innihalda 6+ stafi'
+                                    //                 : null,
+                                    //             onChanged: (val) => setState(
+                                    //                 () =>
+                                    //                     _currentPassword = val),
+                                    //             enabled: !_passwordStatus,
+                                    //           ),
+                                    //         ),
+                                    //         Column(
+                                    //           mainAxisAlignment:
+                                    //               MainAxisAlignment.end,
+                                    //           mainAxisSize: MainAxisSize.min,
+                                    //           children: <Widget>[
+                                    //             _passwordStatus
+                                    //                 ? _getPasswordEditIcon()
+                                    //                 : Container(),
+                                    //           ],
+                                    //         )
+                                    //       ],
+                                    //     )),
+                                    // if (!_passwordStatus)
+                                    //   Padding(
+                                    //     padding: EdgeInsets.only(
+                                    //         left: 25.0, right: 25.0, top: 20.0),
+                                    //     child: Row(
+                                    //       mainAxisSize: MainAxisSize.max,
+                                    //       mainAxisAlignment:
+                                    //           MainAxisAlignment.start,
+                                    //       children: <Widget>[
+                                    //         Expanded(
+                                    //           child: Padding(
+                                    //             padding: EdgeInsets.only(
+                                    //                 right: 10.0),
+                                    //             child: Container(
+                                    //                 child: RaisedButton(
+                                    //               child: Text('Vista'),
+                                    //               textColor: Colors.white,
+                                    //               color: Colors.green,
+                                    //               onPressed: () async {
+                                    //                 if (_formKey.currentState
+                                    //                     .validate()) {
+                                    //                   await _auth
+                                    //                       .changePassword(
+                                    //                           _currentPassword);
+                                    //                 }
+                                    //                 setState(() {
+                                    //                   _passwordStatus = true;
+                                    //                   FocusScope.of(context)
+                                    //                       .requestFocus(
+                                    //                           FocusNode());
+                                    //                 });
+                                    //               },
+                                    //               shape: RoundedRectangleBorder(
+                                    //                   borderRadius:
+                                    //                       BorderRadius.circular(
+                                    //                           20.0)),
+                                    //             )),
+                                    //           ),
+                                    //           flex: 2,
+                                    //         ),
+                                    //         Expanded(
+                                    //           child: Padding(
+                                    //             padding:
+                                    //                 EdgeInsets.only(left: 10.0),
+                                    //             child: Container(
+                                    //                 child: RaisedButton(
+                                    //               child: Text('Hætta við'),
+                                    //               textColor: Colors.white,
+                                    //               color: Colors.red,
+                                    //               onPressed: () {
+                                    //                 setState(() {
+                                    //                   _passwordStatus = true;
+                                    //                   FocusScope.of(context)
+                                    //                       .requestFocus(
+                                    //                           FocusNode());
+                                    //                 });
+                                    //               },
+                                    //               shape: RoundedRectangleBorder(
+                                    //                   borderRadius:
+                                    //                       BorderRadius.circular(
+                                    //                           20.0)),
+                                    //             )),
+                                    //           ),
+                                    //           flex: 2,
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //   ),
                                   ],
                                 ),
+                                
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ],
