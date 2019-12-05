@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// import '../constants/constants.dart' as Constants;
-import '../shared/constants.dart';
+import '../shared/constants.dart' as Constants;
 
 class DetailDateItem extends StatelessWidget {
   final String text;

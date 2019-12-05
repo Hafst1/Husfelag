@@ -24,9 +24,10 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
   final _form = GlobalKey<FormState>();
   var _cleaningItem = Cleaning(
     id: null,
-    apartment: '',
+    apartmentNumber: '',
     dateFrom: DateTime.now(),
     dateTo: DateTime.now(),
+    authorId: '',
   );
 
   var _initValues = {
@@ -47,7 +48,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
           'appbar-title': 'Breyta þrifum',
           'save-text': 'BREYTA',
         };
-        _apartmentController.text = _cleaningItem.apartment;
+        _apartmentController.text = _cleaningItem.apartmentNumber;
         _dateFromController.text =
             DateFormat.yMMMMEEEEd().format(_cleaningItem.dateFrom);
         _dateToController.text =
@@ -82,12 +83,15 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
 
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
+    final convertedDate = convertToDate(controller.text) ?? exactDate;
+    final firstDate = exactDate.subtract(
+      Duration(days: 30),
+    );
     showDatePicker(
       context: context,
-      initialDate: convertToDate(controller.text) ?? exactDate,
-      firstDate: exactDate.subtract(
-        Duration(days: 30),
-      ),
+      initialDate:
+          convertedDate.isBefore(firstDate) ? firstDate : convertedDate,
+      firstDate: firstDate,
       lastDate: exactDate.add(
         Duration(days: 1825),
       ),
@@ -110,7 +114,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     }
   }
 
-  void _saveForm() async {
+  void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -119,9 +123,6 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     setState(() {
       _isLoading = true;
     });
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
     if (_cleaningItem.id != null) {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
@@ -163,6 +164,10 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
+    final residentAssociationId = currentUserData.getResidentAssociationId();
+    final userId = currentUserData.getId();
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
@@ -173,7 +178,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm();
+                    _saveForm(residentAssociationId);
                   })
               : Container(),
         ],
@@ -192,11 +197,14 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                         child: TextFormField(
                           controller: _apartmentController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Íbúð...",
                             prefixIcon: Icon(Icons.home),
                             prefixText:
                                 _apartmentController.text != "" ? "Íbúð: " : "",
-                            border: OutlineInputBorder(),
+                          //  border: OutlineInputBorder(),
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
@@ -207,9 +215,12 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           onSaved: (value) {
                             _cleaningItem = Cleaning(
                               id: _cleaningItem.id,
-                              apartment: value,
+                              apartmentNumber: value,
                               dateFrom: _cleaningItem.dateFrom,
                               dateTo: _cleaningItem.dateTo,
+                              authorId: _cleaningItem.authorId != ''
+                                  ? _cleaningItem.authorId
+                                  : userId,
                             );
                           },
                         ),
@@ -224,11 +235,14 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                         child: TextFormField(
                           controller: _dateFromController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Frá...",
                             prefixText:
                                 _dateFromController.text != "" ? "Frá: " : "",
                             prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
+                         //   border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           textInputAction: TextInputAction.next,
@@ -247,9 +261,10 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           onSaved: (value) {
                             _cleaningItem = Cleaning(
                               id: _cleaningItem.id,
-                              apartment: _cleaningItem.apartment,
+                              apartmentNumber: _cleaningItem.apartmentNumber,
                               dateFrom: convertToDate(value),
                               dateTo: _cleaningItem.dateTo,
+                              authorId: _cleaningItem.authorId,
                             );
                           },
                         ),
@@ -264,11 +279,14 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                         child: TextFormField(
                           controller: _dateToController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Til...",
                             prefixText:
                                 _dateToController.text != "" ? "Til: " : "",
                             prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
+                         //   border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           validator: (value) {
@@ -286,9 +304,10 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                           onSaved: (value) {
                             _cleaningItem = Cleaning(
                               id: _cleaningItem.id,
-                              apartment: _cleaningItem.apartment,
+                              apartmentNumber: _cleaningItem.apartmentNumber,
                               dateFrom: _cleaningItem.dateFrom,
                               dateTo: convertToDate(value),
+                              authorId: _cleaningItem.authorId,
                             );
                           },
                         ),
@@ -300,7 +319,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                     Platform.isAndroid
                         ? SaveButton(
                             text: _initValues['save-text'],
-                            saveFunc: _saveForm,
+                            saveFunc: () => _saveForm(residentAssociationId),
                           )
                         : Container(),
                   ],

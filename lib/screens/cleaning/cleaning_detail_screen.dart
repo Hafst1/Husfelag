@@ -25,7 +25,7 @@ class _CleaningDetailScreenState extends State<CleaningDetailScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<CleaningProvider>(context)
           .fetchCleaningTasks(residentAssociationId, context)
           .then((_) {
@@ -72,7 +72,7 @@ class _CleaningDetailScreenState extends State<CleaningDetailScreen> {
                   SizedBox(width: 15),
                   Expanded(
                     child: Text(
-                      'Íbúð ' + cleaning.apartment,
+                      'Íbúð ' + cleaning.apartmentNumber,
                       style: TextStyle(fontSize: 25),
                       overflow: TextOverflow.ellipsis,
                     ),

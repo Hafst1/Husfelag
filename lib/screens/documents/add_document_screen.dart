@@ -86,7 +86,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     });
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     if(_document.id != null) {
       try {
         await Provider.of<DocumentsProvider>(context, listen: false)
@@ -107,7 +107,6 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     setState(() {
       _isLoading = false; 
     });
-    
     Navigator.of(context).pop();
     Navigator.of(context).push(
       MaterialPageRoute(

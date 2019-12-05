@@ -3,34 +3,41 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/resident_association.dart';
 import '../models/apartment.dart';
+import '../models/user.dart';
 import '../services/database.dart';
+import '../shared/constants.dart' as Constants;
 
 class CurrentUserProvider with ChangeNotifier {
-  String _id = '';
-  String _email = '';
-  String _name = '';
-  String _home = '';
-  String _residentAssociationNumber = '';
-  String _apartmentId;
+  var _currentUser = UserData(
+    id: '',
+    email: '',
+    name: '',
+    residentAssociationId: '',
+    apartmentId: '',
+    isAdmin: false,
+  );
 
   List<ResidentAssociation> _residentAssociations = [];
   List<Apartment> _apartments = [];
 
   CollectionReference _associationRef =
-      Firestore.instance.collection('ResidentAssociation');
-  CollectionReference _userRef = Firestore.instance.collection('user');
+      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
+  CollectionReference _userRef =
+      Firestore.instance.collection(Constants.USERS_COLLECTION);
 
-  // fetch user when starting application and store in the variables above.
+  // fetch user when starting application and store in the _currentUser object.
   Future<void> fetchCurrentUser(String id) async {
     try {
       final fetchedUser = await _userRef.document(id).get();
-      _id = fetchedUser.documentID;
-      _email = fetchedUser.data['email'];
-      _name = fetchedUser.data['name'];
-      _home = fetchedUser.data['home'];
-      _residentAssociationNumber =
-          fetchedUser.data['residentAssociationNumber'];
-      _apartmentId = fetchedUser['apartmentId'];
+      _currentUser = UserData(
+        id: fetchedUser.documentID,
+        email: fetchedUser.data[Constants.EMAIL],
+        name: fetchedUser.data[Constants.NAME],
+        residentAssociationId:
+            fetchedUser.data[Constants.RESIDENT_ASSOCIATION_ID],
+        apartmentId: fetchedUser[Constants.APARTMENT_ID],
+        isAdmin: fetchedUser[Constants.IS_ADMIN],
+      );
     } catch (error) {
       print(error);
       // error handling vantar
@@ -41,13 +48,13 @@ class CurrentUserProvider with ChangeNotifier {
   Future<void> fetchAssociations(BuildContext context) async {
     List<ResidentAssociation> loadedAssociations = [];
     try {
-      final response = await _associationRef.getDocuments();
+      final response = await _associationRef.orderBy('address').getDocuments();
       response.documents.forEach((association) {
         loadedAssociations.add(ResidentAssociation(
           id: association.documentID,
-          address: association.data['address'],
-          description: association.data['description'],
-          accessCode: association.data['accessCode'],
+          address: association.data[Constants.ADDRESS],
+          description: association.data[Constants.DESCRIPTION],
+          accessCode: association.data[Constants.ACCESS_CODE],
         ));
       });
       _residentAssociations = loadedAssociations;
@@ -77,29 +84,29 @@ class CurrentUserProvider with ChangeNotifier {
       ResidentAssociation association, Apartment apartment) async {
     try {
       final response = await _associationRef.add({
-        'address': association.address,
-        'description': association.description,
-        'accessCode': association.accessCode,
+        Constants.ADDRESS: association.address,
+        Constants.DESCRIPTION: association.description,
+        Constants.ACCESS_CODE: association.accessCode,
       });
       await _associationRef.document(response.documentID).updateData({
-        'address': association.address,
-        'description': association.description,
-        'accessCode': response.documentID,
+        Constants.ADDRESS: association.address,
+        Constants.DESCRIPTION: association.description,
+        Constants.ACCESS_CODE: response.documentID,
       });
       final apartmentId = await _associationRef
           .document(response.documentID)
-          .collection('Apartments')
+          .collection(Constants.APARTMENTS_COLLECTION)
           .add({
-        'apartmentNumber': apartment.apartmentNumber,
-        'accessCode': apartment.accessCode,
-        'residents': [_id],
+        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
+        Constants.ACCESS_CODE: apartment.accessCode,
+        Constants.RESIDENTS: [_currentUser.id],
       });
-      await DatabaseService(uid: _id).updateUserData(
-        _name,
-        _email,
-        _home,
-        apartmentId.documentID,
+      await DatabaseService(uid: _currentUser.id).updateUserData(
+        _currentUser.name,
+        _currentUser.email,
         response.documentID,
+        apartmentId.documentID,
+        true,
       );
       return response.documentID;
     } catch (error) {
@@ -127,14 +134,15 @@ class CurrentUserProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('Apartments')
+          .collection(Constants.APARTMENTS_COLLECTION)
+          .orderBy(Constants.APARTMENT_NUMBER)
           .getDocuments();
       response.documents.forEach((apartment) {
         loadedApartments.add(Apartment(
           id: apartment.documentID,
-          apartmentNumber: apartment.data['apartmentNumber'],
-          accessCode: apartment.data['accessCode'],
-          residents: List.from(apartment.data['residents']),
+          apartmentNumber: apartment.data[Constants.APARTMENT_NUMBER],
+          accessCode: apartment.data[Constants.ACCESS_CODE],
+          residents: List.from(apartment.data[Constants.RESIDENTS]),
         ));
       });
       _apartments = loadedApartments;
@@ -150,18 +158,18 @@ class CurrentUserProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('Apartments')
+          .collection(Constants.APARTMENTS_COLLECTION)
           .add({
-        'apartmentNumber': apartment.apartmentNumber,
-        'accessCode': apartment.accessCode,
-        'residents': apartment.residents,
+        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
+        Constants.ACCESS_CODE: apartment.accessCode,
+        Constants.RESIDENTS: apartment.residents,
       });
-      await DatabaseService(uid: _id).updateUserData(
-        _name,
-        _email,
-        _home,
-        response.documentID,
+      await DatabaseService(uid: _currentUser.id).updateUserData(
+        _currentUser.name,
+        _currentUser.email,
         residentAssociationId,
+        response.documentID,
+        _currentUser.isAdmin,
       );
     } catch (error) {
       throw (error);
@@ -174,23 +182,23 @@ class CurrentUserProvider with ChangeNotifier {
       String residentAssociationId, String apartmentId) async {
     final apartment =
         _apartments.firstWhere((apartment) => apartment.id == apartmentId);
-    apartment.residents.add(_id);
+    apartment.residents.add(_currentUser.id);
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('Apartments')
+          .collection(Constants.APARTMENTS_COLLECTION)
           .document(apartmentId)
           .updateData({
-        'apartmentNumber': apartment.apartmentNumber,
-        'accessCode': apartment.accessCode,
-        'residents': apartment.residents,
+        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
+        Constants.ACCESS_CODE: apartment.accessCode,
+        Constants.RESIDENTS: apartment.residents,
       });
-      await DatabaseService(uid: _id).updateUserData(
-        _name,
-        _email,
-        _home,
-        apartmentId,
+      await DatabaseService(uid: _currentUser.id).updateUserData(
+        _currentUser.name,
+        _currentUser.email,
         residentAssociationId,
+        apartmentId,
+        _currentUser.isAdmin,
       );
     } catch (error) {
       throw (error);
@@ -200,6 +208,20 @@ class CurrentUserProvider with ChangeNotifier {
   // getter for the apartments list.
   List<Apartment> getApartments() {
     return [..._apartments];
+  }
+
+  // function which gets the apartment number of the logged in user.
+  String getApartmentNumber() {
+    if (_apartments.isEmpty) {
+      return '';
+    }
+    var retVal = '';
+    final apartmentIndex = _apartments
+        .indexWhere((apartment) => apartment.id == _currentUser.apartmentId);
+    if (apartmentIndex >= 0) {
+      retVal = _apartments[apartmentIndex].apartmentNumber;
+    }
+    return retVal;
   }
 
   // function which checks whether an apartment number is available or not.
@@ -234,46 +256,60 @@ class CurrentUserProvider with ChangeNotifier {
 
   // function which checks whether the user is part of a resident association or not.
   bool containsRAN() {
-    return _residentAssociationNumber != '';
+    return _currentUser.residentAssociationId != '';
   }
 
   // getter for the user id.
   String getId() {
-    return _id;
+    return _currentUser.id;
   }
 
   // getter for the user email.
   String getEmail() {
-    return _email;
+    return _currentUser.email;
   }
 
   // getter for the user name.
   String getName() {
-    return _name;
-  }
-
-  // getter for the user address.
-  String getHome() {
-    return _home;
+    return _currentUser.name;
   }
 
   // getter for the user resident assocation number.
-  String getResidentAssociationNumber() {
-    return _residentAssociationNumber;
+  String getResidentAssociationId() {
+    return _currentUser.residentAssociationId;
   }
 
   // getter for the user apartment id.
   String getApartmentId() {
-    return _apartmentId;
+    return _currentUser.apartmentId;
+  }
+
+  // function which returns true if current user is admin, false otherwise.
+  bool isAdmin() {
+    return _currentUser.isAdmin;
   }
 
   // setter for the user resident association number.
-  void setResidentAssociationNumber(String residentAssociationNumber) {
-    _residentAssociationNumber = residentAssociationNumber;
+  void setResidentAssociationId(String residentAssociationId) {
+    _currentUser = UserData(
+      id: _currentUser.id,
+      name: _currentUser.name,
+      email: _currentUser.email,
+      residentAssociationId: residentAssociationId,
+      apartmentId: _currentUser.apartmentId,
+      isAdmin: _currentUser.isAdmin,
+    );
   }
 
   // setter for the user apartment id.
   void setApartmentId(String apartmentId) {
-    _apartmentId = apartmentId;
+    _currentUser = UserData(
+      id: _currentUser.id,
+      name: _currentUser.name,
+      email: _currentUser.email,
+      residentAssociationId: _currentUser.residentAssociationId,
+      apartmentId: apartmentId,
+      isAdmin: _currentUser.isAdmin,
+    );
   }
 }

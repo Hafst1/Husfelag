@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/construction.dart';
+import '../shared/constants.dart' as Constants;
 
 enum ConstructionStatus { current, ahead, old }
 
@@ -9,7 +11,7 @@ class ConstructionsProvider with ChangeNotifier {
 
   // collection reference to the resident associations.
   CollectionReference _associationRef =
-      Firestore.instance.collection('ResidentAssociation');
+      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
 
   // function which fetches the constructions of a resident association
   // and stores them in the _constructions list.
@@ -18,28 +20,30 @@ class ConstructionsProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('ConstructionItems')
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
           .getDocuments();
       final List<Construction> loadedConstructions = [];
       response.documents.forEach((construction) {
         loadedConstructions.add(Construction(
           id: construction.documentID,
-          title: construction.data['title'],
+          title: construction.data[Constants.TITLE],
           dateFrom: DateTime.fromMillisecondsSinceEpoch(
-              construction.data['dateFrom']),
-          dateTo:
-              DateTime.fromMillisecondsSinceEpoch(construction.data['dateTo']),
-          description: construction.data['description'],
+              construction.data[Constants.DATE_FROM]),
+          dateTo: DateTime.fromMillisecondsSinceEpoch(
+              construction.data[Constants.DATE_TO]),
+          description: construction.data[Constants.DESCRIPTION],
+          authorId: construction.data[Constants.AUTHOR_ID],
         ));
       });
       _constructions = loadedConstructions;
+      sortConstructions();
       notifyListeners();
     } catch (error) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp fundum!'),
+          content: Text('Ekki tókst að hlaða upp framkvæmdum!'),
           actions: <Widget>[
             FlatButton(
               child: Text('Halda áfram'),
@@ -59,18 +63,20 @@ class ConstructionsProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('ConstructionItems')
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
           .add({
-        'title': construction.title,
-        'dateFrom': construction.dateFrom.millisecondsSinceEpoch,
-        'dateTo': construction.dateTo.millisecondsSinceEpoch,
-        'description': construction.description
+        Constants.TITLE: construction.title,
+        Constants.DATE_FROM: construction.dateFrom.millisecondsSinceEpoch,
+        Constants.DATE_TO: construction.dateTo.millisecondsSinceEpoch,
+        Constants.DESCRIPTION: construction.description,
+        Constants.AUTHOR_ID: construction.authorId,
       });
       final newConstruction = Construction(
         title: construction.title,
         dateFrom: construction.dateFrom,
         dateTo: construction.dateTo,
         description: construction.description,
+        authorId: construction.authorId,
         id: response.documentID,
       );
       _constructions.add(newConstruction);
@@ -91,7 +97,7 @@ class ConstructionsProvider with ChangeNotifier {
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('ConstructionItems')
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
           .document(constructionId)
           .delete();
       deletedConstruction = null;
@@ -113,18 +119,26 @@ class ConstructionsProvider with ChangeNotifier {
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('ConstructionItems')
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
           .document(editedConstruction.id)
           .updateData({
-        'title': editedConstruction.title,
-        'dateFrom': editedConstruction.dateFrom.millisecondsSinceEpoch,
-        'dateTo': editedConstruction.dateTo.millisecondsSinceEpoch,
-        'description': editedConstruction.description,
+        Constants.TITLE: editedConstruction.title,
+        Constants.DATE_FROM: editedConstruction.dateFrom.millisecondsSinceEpoch,
+        Constants.DATE_TO: editedConstruction.dateTo.millisecondsSinceEpoch,
+        Constants.DESCRIPTION: editedConstruction.description,
+        Constants.AUTHOR_ID: editedConstruction.authorId,
       });
       final constructionIndex = _constructions.indexWhere(
           (construction) => construction.id == editedConstruction.id);
       if (constructionIndex >= 0) {
+        final oldConstruction = _constructions[constructionIndex];
         _constructions[constructionIndex] = editedConstruction;
+
+        // if the either of the dates have changed we have to sort the list again.
+        if (oldConstruction.dateFrom != editedConstruction.dateFrom ||
+            oldConstruction.dateTo != editedConstruction.dateTo) {
+          sortConstructions();
+        }
       }
       notifyListeners();
     } catch (error) {
@@ -186,25 +200,18 @@ class ConstructionsProvider with ChangeNotifier {
     return displayList;
   }
 
-  Map<DateTime, List> filterForCalendar() {
-    List<Construction> constructions = [..._constructions];
-    Map<DateTime, List> _events = Map();
-    if (constructions == []) {
-      return null;
-    } else {
-      constructions.forEach((item) {
-        if (_events.containsKey(item.dateFrom)) {
-          _events[item.dateFrom].add(
-            ["Framkvæmd:    ", item.title, item.description, "Framkvæmd"],
-          );
-        } else {
-          _events[item.dateFrom] = [
-            ["Framkvæmd:    ", item.title, item.description, "Framkvæmd"],
-          ];
-        }
-        return _events;
-      });
-      return _events;
-    }
+  // function which sorts the constructions list by the dateFrom property, if
+  // equal the items are sorted by the dateTo property.
+  void sortConstructions() {
+    _constructions.sort(
+      (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
+          ? a.dateTo.compareTo(b.dateTo)
+          : a.dateFrom.compareTo(b.dateFrom),
+    );
+  }
+
+  // function which returns all constructions.
+  List<Construction> getAllConstructions() {
+    return [..._constructions];
   }
 }

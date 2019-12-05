@@ -60,7 +60,7 @@ class Document extends StatelessWidget {
           deleteFunc: () async{
             final residentAssociationId =
                 Provider.of<CurrentUserProvider>(context, listen: false)
-                    .getResidentAssociationNumber();
+                    .getResidentAssociationId();
             Provider.of<DocumentsProvider>(context, listen: false)
                 .deleteDocument(residentAssociationId, this.id, this.fileName);
           },

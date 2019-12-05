@@ -30,7 +30,7 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<ConstructionsProvider>(context)
           .fetchConstructions(residentAssociationId, context)
           .then((_) {
@@ -86,9 +86,8 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final constructionData = Provider.of<ConstructionsProvider>(context);
     final constructions = constructionData.filteredItems(
       _searchQuery,
@@ -158,8 +157,10 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () =>
-                          _refreshConstructions(residentAssociationId, context),
+                      onRefresh: () => _refreshConstructions(
+                        currentUserData.getResidentAssociationId(),
+                        context,
+                      ),
                       child: Container(
                         padding: const EdgeInsets.only(
                           bottom: 5,
@@ -171,6 +172,9 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                             title: constructions[i].title,
                             dateFrom: constructions[i].dateFrom,
                             dateTo: constructions[i].dateTo,
+                            isAdmin: currentUserData.isAdmin(),
+                            isAuthor: constructions[i].authorId ==
+                                currentUserData.getId(),
                           ),
                         ),
                       ),

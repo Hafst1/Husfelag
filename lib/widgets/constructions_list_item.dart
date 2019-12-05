@@ -14,12 +14,16 @@ class ConstructionsListItem extends StatelessWidget {
   final String title;
   final DateTime dateFrom;
   final DateTime dateTo;
+  final bool isAdmin;
+  final bool isAuthor;
 
   ConstructionsListItem({
     @required this.id,
     @required this.title,
     @required this.dateFrom,
     @required this.dateTo,
+    @required this.isAdmin,
+    @required this.isAuthor,
   });
 
   void _showActionDialog(BuildContext context) {
@@ -30,7 +34,7 @@ class ConstructionsListItem extends StatelessWidget {
           deleteFunc: () {
             final residentAssociationId =
                 Provider.of<CurrentUserProvider>(context, listen: false)
-                    .getResidentAssociationNumber();
+                    .getResidentAssociationId();
             Provider.of<ConstructionsProvider>(context, listen: false)
                 .deleteConstruction(residentAssociationId, id);
           },
@@ -102,16 +106,16 @@ class ConstructionsListItem extends StatelessWidget {
             ],
           ),
         ),
-        // trailing: IconButton(
-        //   icon: Icon(Icons.comment),
-        //   color: Colors.grey,
-        //   onPressed: () => {},
-        // ),
-        trailing: IconButton(
-          icon: Icon(CustomIcons.dot_3),
-          color: Colors.grey,
-          onPressed: () => _showActionDialog(context),
-        ),
+        trailing: (isAdmin || isAuthor)
+            ? IconButton(
+                icon: Icon(CustomIcons.dot_3),
+                color: Colors.grey,
+                onPressed: () => _showActionDialog(context),
+              )
+            : Icon(
+                Icons.question_answer,
+                color: Colors.white,
+              ),
       ),
     );
   }

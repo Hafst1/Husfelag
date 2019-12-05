@@ -32,7 +32,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<DocumentsProvider>(context)
           .fetchDocuments(residentAssociationId, context)
           .then((_) {
@@ -87,7 +87,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
         kBottomNavigationBarHeight;
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     final documentData = Provider.of<DocumentsProvider>(context);
     final documents = documentData.filteredItems(
       _searchQuery,

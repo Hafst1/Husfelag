@@ -30,7 +30,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<DocumentsProvider>(context)
           .fetchFolders(residentAssociationId, context)
           .then((_) {
@@ -83,7 +83,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         kBottomNavigationBarHeight;
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     final folderData = Provider.of<DocumentsProvider>(context);
     final folders = folderData.filteredFolders(_searchQuery);
     return Scaffold(

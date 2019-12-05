@@ -23,15 +23,39 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
       setState(() {
         _isLoading = true;
       });
-      final residentAssociationId =
-          Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
-      Provider.of<CleaningProvider>(context)
+      final currentUserData =
+          Provider.of<CurrentUserProvider>(context, listen: false);
+      final cleaningTaskData = Provider.of<CleaningProvider>(context);
+      final residentAssociationId = currentUserData.getResidentAssociationId();
+      cleaningTaskData
           .fetchCleaningTasks(residentAssociationId, context)
           .then((_) {
-        setState(() {
-          _isLoading = false;
+        currentUserData.fetchApartments(residentAssociationId).then((_) {
+          cleaningTaskData
+              .fetchCleaningItems(residentAssociationId, context)
+              .then((_) {
+            setState(() {
+              _isLoading = false;
+            });
+          });
         });
+      }).catchError((error) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Villa kom upp'),
+            content: Text('Eitthvað fór úrskeiðis!'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Halda áfram'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+        );
       });
     }
     _isInit = false;
@@ -40,6 +64,8 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final cleaningTaskData = Provider.of<CleaningProvider>(context);
     final cleaningTasks = cleaningTaskData.getAllTasks();
     return Scaffold(
@@ -53,32 +79,42 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Card(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 5,
-                  ),
-                  child: MaterialButton(
-                    color: Colors.white,
-                    textColor: Colors.lightBlueAccent,
-                    padding: EdgeInsets.all(20.0),
-                    child: Text("Bæta við verkefni"),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => AddCleaningTaskScreen(),
-                      ));
-                    },
+                currentUserData.isAdmin()
+                    ? Card(
+                        margin: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 5,
+                        ),
+                        child: MaterialButton(
+                          color: Colors.white,
+                          textColor: Colors.lightBlueAccent,
+                          padding: EdgeInsets.all(20.0),
+                          child: Text("Bæta við verkefni"),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AddCleaningTaskScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : Container(),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: cleaningTasks.length,
+                    itemBuilder: (ctx, i) => CleaningTaskItem(
+                      id: cleaningTasks[i].id,
+                      title: cleaningTasks[i].title,
+                      description: cleaningTasks[i].description,
+                      taskDone: cleaningTasks[i].taskDone,
+                      isAdmin: currentUserData.isAdmin(),
+                      canCheck: cleaningTaskData.isUsersTurnToClean(
+                        currentUserData.getApartmentNumber(),
+                      ),
+                    ),
                   ),
                 ),
-                Expanded(
-                    child: ListView.builder(
-                        itemCount: cleaningTasks.length,
-                        itemBuilder: (ctx, i) => CleaningTaskItem(
-                              id: cleaningTasks[i].id,
-                              title: cleaningTasks[i].title,
-                              description: cleaningTasks[i].description,
-                              taskDone: cleaningTasks[i].taskDone,
-                            ))),
               ],
             ),
     );

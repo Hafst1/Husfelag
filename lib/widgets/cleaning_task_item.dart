@@ -14,12 +14,16 @@ class CleaningTaskItem extends StatefulWidget {
   final String title;
   final String description;
   final bool taskDone;
+  final bool isAdmin;
+  final bool canCheck;
 
   CleaningTaskItem({
     @required this.id,
     @required this.title,
     @required this.description,
     @required this.taskDone,
+    @required this.isAdmin,
+    @required this.canCheck,
   });
 
   @override
@@ -27,11 +31,10 @@ class CleaningTaskItem extends StatefulWidget {
 }
 
 class _CleaningTaskItemState extends State<CleaningTaskItem> {
- 
   _changeTaskStatus(bool value) async {
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+            .getResidentAssociationId();
     try {
       await Provider.of<CleaningProvider>(context).updateCleaningTaskItem(
         residentAssociationId,
@@ -73,7 +76,7 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
           deleteFunc: () {
             final residentAssociationId =
                 Provider.of<CurrentUserProvider>(context, listen: false)
-                    .getResidentAssociationNumber();
+                    .getResidentAssociationId();
             Provider.of<CleaningProvider>(context, listen: false)
                 .deleteCleaningTaskItem(residentAssociationId, widget.id);
           },
@@ -94,40 +97,62 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-        margin: EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 5,
-        ),
-        elevation: 5,
-        child: ListTile(
-          contentPadding: EdgeInsets.all(10),
-          leading: CircularCheckBox(
-            value: widget.taskDone,
-            materialTapTargetSize: MaterialTapTargetSize.padded,
-            onChanged: (value) => _changeTaskStatus(value),
-          ),
-          title: Text(
-            widget.title,
-            style: Theme.of(context).textTheme.title,
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    widget.description,
-                    style: TextStyle(fontSize: 15),
+      margin: const EdgeInsets.symmetric(
+        vertical: 8,
+        horizontal: 5,
+      ),
+      elevation: 5,
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(10),
+        leading: widget.canCheck
+            ? CircularCheckBox(
+                value: widget.taskDone,
+                materialTapTargetSize: MaterialTapTargetSize.padded,
+                onChanged: (value) => _changeTaskStatus(value),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(
+                  left: 8,
+                  right: 8,
+                  bottom: 5,
+                  top: 13,
+                ),
+                child: FittedBox(
+                  child: Icon(
+                    CustomIcons.circle,
+                    color: Colors.grey,
+                    size: 18,
                   ),
                 ),
-              ],
-            ),
+              ),
+        title: Text(
+          widget.title,
+          style: Theme.of(context).textTheme.title,
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  widget.description,
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+            ],
           ),
-          trailing: IconButton(
-            icon: Icon(CustomIcons.dot_3),
-            color: Colors.grey,
-            onPressed: () => _showActionDialog(context),
-          ),
-        ));
+        ),
+        trailing: widget.isAdmin
+            ? IconButton(
+                icon: Icon(CustomIcons.dot_3),
+                color: Colors.grey,
+                onPressed: () => _showActionDialog(context),
+              )
+            : Icon(
+                Icons.question_answer,
+                color: Colors.white,
+              ),
+      ),
+    );
   }
 }

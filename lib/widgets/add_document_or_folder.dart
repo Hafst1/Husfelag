@@ -55,7 +55,7 @@ class AddOption extends StatelessWidget {
           onPressed: () async {
             if(_addFolderController.text != "" && folderData.folderTitleExists(_addFolderController.text) == false) {
               final residentAssociationId = Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
               try {
                 await folderData.addFolder(residentAssociationId, _addFolderController.text);
                 Navigator.of(context, rootNavigator: true).pop();
