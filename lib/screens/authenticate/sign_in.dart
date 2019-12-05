@@ -88,22 +88,41 @@ class _SignInState extends State<SignIn> {
                               },
                             ),
                             SizedBox(
-                              height: 15,
+                              height: 5,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Text(
-                                  "Gleymt lykilorð?",
-                                  style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 15,
+                                FlatButton(
+                                  child: Text(
+                                    "Gleymt lykilorð?",
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 15,),
                                   ),
-                                )
+                                  onPressed: () {
+                                    setState(() {
+                                      
+                                    });
+                                  },
+                                ),
                               ],
                             ),
+                            
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.end,
+                            //   children: <Widget>[
+                            //     Text(
+                            //       "Gleymt lykilorð?",
+                            //       style: TextStyle(
+                            //         color: Theme.of(context).primaryColor,
+                            //         fontSize: 15,
+                            //       ),
+                            //     )
+                            //   ],
+                            // ),
                             SizedBox(
-                              height: 30,
+                              height: 15,
                             ),
                             buildButton(),
                             SizedBox(
