@@ -45,7 +45,7 @@ class MapScreenState extends State<ProfilePage>
             return Scaffold(
                 appBar: AppBar(
                   title: Text('Mín síða',
-                      style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                      style: TextStyle(fontSize: 20.0, color: Colors.white, fontFamily: 'AlegreyaSansSC',)),
                 ),
                 body: Container(
                   color: Colors.white,
