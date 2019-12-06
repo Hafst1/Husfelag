@@ -15,8 +15,7 @@ class MeetingsProvider with ChangeNotifier {
 
   // function which fetches meetings from a resident association and stores
   // them in the _meetings list.
-  Future<void> fetchMeetings(
-      String residentAssociationId, BuildContext context) async {
+  Future<void> fetchMeetings(String residentAssociationId) async {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
@@ -28,7 +27,8 @@ class MeetingsProvider with ChangeNotifier {
         loadedMeetings.add(Meeting(
           id: meeting.documentID,
           title: meeting.data[Constants.TITLE],
-          date: DateTime.fromMillisecondsSinceEpoch(meeting.data[Constants.DATE]),
+          date:
+              DateTime.fromMillisecondsSinceEpoch(meeting.data[Constants.DATE]),
           duration: parseDuration(meeting.data[Constants.DURATION]),
           location: meeting.data[Constants.LOCATION],
           description: meeting.data[Constants.DESCRIPTION],
@@ -38,21 +38,7 @@ class MeetingsProvider with ChangeNotifier {
       _meetings = loadedMeetings;
       notifyListeners();
     } catch (error) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp fundum!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Halda áfram'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        ),
-      );
+      throw (error);
     }
   }
 

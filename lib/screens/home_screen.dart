@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/auth.dart';
 //import 'package:husfelagid/screens/settings_form.dart';
 import '../screens/profile_page.dart';
+import '../screens/my_association_screen.dart';
 import '../widgets/home_option.dart';
 import '../screens/constructions/constructions_screen.dart';
 import '../screens/meetings/meetings_screen.dart';
@@ -26,14 +27,21 @@ class HomeScreen extends StatelessWidget {
     // }
 
     void choiceAction(String choice) {
-    if (choice == Constants.MyPage){
+    if (choice == Constants.MY_PAGE){
       //_showSettingsPanel();
       Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ProfilePage(),
           ),
         );
-    } else if (choice == Constants.SignOut) {
+    } else if (choice == Constants.MY_ASSOCIATION){
+      Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => MyAssociationScreen(),
+          ),
+        );
+    } 
+    else if (choice == Constants.SIGN_OUT) {
       _auth.signOut();
     }
   }

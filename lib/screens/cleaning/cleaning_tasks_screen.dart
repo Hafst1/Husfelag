@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
+import '../../providers/association_provider.dart';
+import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/cleaning_task_item.dart';
 import 'add_cleaningTask_screen.dart';
 import '../../shared/loading_spinner.dart';
@@ -23,49 +25,53 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
       setState(() {
         _isLoading = true;
       });
-      final currentUserData =
-          Provider.of<CurrentUserProvider>(context, listen: false);
       final cleaningTaskData = Provider.of<CleaningProvider>(context);
-      final residentAssociationId = currentUserData.getResidentAssociationId();
-      cleaningTaskData
-          .fetchCleaningTasks(residentAssociationId, context)
-          .then((_) {
-        currentUserData.fetchApartments(residentAssociationId).then((_) {
-          cleaningTaskData
-              .fetchCleaningItems(residentAssociationId, context)
-              .then((_) {
+      final residentAssociationId =
+          Provider.of<CurrentUserProvider>(context).getResidentAssociationId();
+      cleaningTaskData.fetchCleaningTasks(residentAssociationId).then((_) {
+        Provider.of<AssociationsProvider>(context)
+            .fetchApartments(residentAssociationId)
+            .then((_) {
+          cleaningTaskData.fetchCleaningItems(residentAssociationId).then((_) {
             setState(() {
               _isLoading = false;
             });
+          }).catchError((error) {
+            setState(() {
+              _isLoading = false;
+            });
+            _printErrorDialog();
           });
         });
-      }).catchError((error) {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text('Villa kom upp'),
-            content: Text('Eitthvað fór úrskeiðis!'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Halda áfram'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          ),
-        );
       });
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Ekki tókst að hlaða upp verkefnalista!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final currentUserData =
-        Provider.of<CurrentUserProvider>(context, listen: false);
+    final currentUserData = Provider.of<CurrentUserProvider>(context);
+    final apartmentData = Provider.of<AssociationsProvider>(context);
     final cleaningTaskData = Provider.of<CleaningProvider>(context);
     final cleaningTasks = cleaningTaskData.getAllTasks();
     return Scaffold(
@@ -75,48 +81,66 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
       ),
       body: _isLoading
           ? LoadingSpinner()
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                currentUserData.isAdmin()
-                    ? Card(
-                        margin: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 5,
+          : (cleaningTasks.isEmpty && !currentUserData.isAdmin())
+              ? Container(
+                  padding: const EdgeInsets.only(
+                    top: 30,
+                    left: 10,
+                    right: 10,
+                  ),
+                  width: double.infinity,
+                  child: Text(
+                    "Verkefnalisti yfir þrif á sameign er tómur!",
+                    style: TextStyle(
+                      fontSize: 17,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    currentUserData.isAdmin()
+                        ? Card(
+                            margin: EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 5,
+                            ),
+                            child: MaterialButton(
+                              color: Colors.white,
+                              textColor: Colors.lightBlueAccent,
+                              padding: EdgeInsets.all(20.0),
+                              child: Text("Bæta við verkefni"),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddCleaningTaskScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : Container(),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: cleaningTasks.length,
+                        itemBuilder: (ctx, i) => CleaningTaskItem(
+                          id: cleaningTasks[i].id,
+                          title: cleaningTasks[i].title,
+                          description: cleaningTasks[i].description,
+                          taskDone: cleaningTasks[i].taskDone,
+                          isAdmin: currentUserData.isAdmin(),
+                          canCheck: cleaningTaskData.isUsersTurnToClean(
+                            apartmentData.getApartmentNumber(
+                                currentUserData.getApartmentId()),
+                          ),
                         ),
-                        child: MaterialButton(
-                          color: Colors.white,
-                          textColor: Colors.lightBlueAccent,
-                          padding: EdgeInsets.all(20.0),
-                          child: Text("Bæta við verkefni"),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => AddCleaningTaskScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    : Container(),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: cleaningTasks.length,
-                    itemBuilder: (ctx, i) => CleaningTaskItem(
-                      id: cleaningTasks[i].id,
-                      title: cleaningTasks[i].title,
-                      description: cleaningTasks[i].description,
-                      taskDone: cleaningTasks[i].taskDone,
-                      isAdmin: currentUserData.isAdmin(),
-                      canCheck: cleaningTaskData.isUsersTurnToClean(
-                        currentUserData.getApartmentNumber(),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
     );
   }
 }

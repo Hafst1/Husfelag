@@ -32,21 +32,48 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
           Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationId();
       Provider.of<ConstructionsProvider>(context)
-          .fetchConstructions(residentAssociationId, context)
+          .fetchConstructions(residentAssociationId)
           .then((_) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog();
       });
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  void _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Ekki tókst að hlaða upp framkvæmdum!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Future<void> _refreshConstructions(
       String residentAssociationId, BuildContext context) async {
-    await Provider.of<ConstructionsProvider>(context)
-        .fetchConstructions(residentAssociationId, context);
+    try {
+      await Provider.of<ConstructionsProvider>(context)
+          .fetchConstructions(residentAssociationId);
+    } catch (error) {
+      _printErrorDialog();
+    }
   }
 
   _selectFilter(int index) {

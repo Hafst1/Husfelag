@@ -50,12 +50,10 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      final documentId =
-          ModalRoute.of(context).settings.arguments as String;
+      final documentId = ModalRoute.of(context).settings.arguments as String;
       if (documentId != null) {
-        _document =
-            Provider.of<DocumentsProvider>(context, listen: false)
-                .findDocumentById(documentId);
+        _document = Provider.of<DocumentsProvider>(context, listen: false)
+            .findDocumentById(documentId);
         _initValues = {
           'appbar-title': 'Breyta skjali',
           'title': _document.title,
@@ -83,9 +81,9 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     }
     _form.currentState.save();
     setState(() {
-      _isLoading = true; 
+      _isLoading = true;
     });
-    if(_document.id != null) {
+    if (_document.id != null) {
       try {
         await Provider.of<DocumentsProvider>(context, listen: false)
             .updateDocument(residentAssociationId, _document);
@@ -98,19 +96,17 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
             .addFile(_path, _document);
         await Provider.of<DocumentsProvider>(context, listen: false)
             .addDocument(residentAssociationId, _document);
-      } catch (error){
+      } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við skjali!');
       }
     }
     setState(() {
-      _isLoading = false; 
+      _isLoading = false;
     });
     Navigator.of(context).pop();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => DocumentsFolderScreen(id: _document.folderId),
-      )
-    );
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => DocumentsFolderScreen(id: _document.folderId),
+    ));
   }
 
   Future<void> printErrorDialog(String errorMessage) {
@@ -130,19 +126,19 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
       ),
     );
   }
- 
+
   void openFileExplorer() async {
     try {
       _path = null;
       _path = await FilePicker.getFilePath(
-      type: _pickType, fileExtension: _extension);
+          type: _pickType, fileExtension: _extension);
       // unique name for a file
       fileName = DateTime.now().toString() + _path.split('/').last;
     } on PlatformException catch (e) {
       print("Óleyfileg aðgerð" + e.toString());
     }
     setState(() {
-       filePreviewName =  _path.split('/').last;
+      filePreviewName = _path.split('/').last;
     });
     if (!mounted) return;
   }
@@ -153,7 +149,8 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
         Provider.of<CurrentUserProvider>(context, listen: false);
     final residentAssociationId = currentUserData.getResidentAssociationId();
     final userId = currentUserData.getId();
-    final folder = Provider.of<DocumentsProvider>(context, listen: false).getAllFolders();
+    final folder =
+        Provider.of<DocumentsProvider>(context, listen: false).getAllFolders();
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
@@ -186,13 +183,17 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       height: 15.0,
                     ),
                     Container(
-                      child: filePreviewName == ""? Container(height: 10,)
-                        : Text(filePreviewName,
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontSize: 15,
+                      child: filePreviewName == ""
+                          ? Container(
+                              height: 10,
+                            )
+                          : Text(
+                              filePreviewName,
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                fontSize: 15,
+                              ),
                             ),
-                          ),
                     ),
                     SizedBox(
                       height: 15.0,
@@ -256,11 +257,9 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                     DropdownButtonFormField(
                       value: selectedFolder,
                       hint: Text("Veldu möppu"),
-                      onChanged: ((newValue) =>
-                        setState(() {
-                          selectedFolder = newValue;
-                        })
-                      ),
+                      onChanged: ((newValue) => setState(() {
+                            selectedFolder = newValue;
+                          })),
                       onSaved: (value) {
                         _document = Document(
                           id: _document.id,
@@ -268,7 +267,9 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                           description: _document.description,
                           fileName: fileName,
                           downloadUrl: _document.downloadUrl,
-                          folderId: Provider.of<DocumentsProvider>(context, listen: false).findFolderIdByTitle(value),
+                          folderId: Provider.of<DocumentsProvider>(context,
+                                  listen: false)
+                              .findFolderIdByTitle(value),
                           authorId: _document.authorId,
                         );
                       },
@@ -299,10 +300,10 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                             saveFunc: () => _saveForm(residentAssociationId),
                           )
                         : Container(),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
     );
   }
 }
