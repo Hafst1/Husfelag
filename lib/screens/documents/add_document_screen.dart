@@ -31,11 +31,12 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
   final _form = GlobalKey<FormState>();
   var _document = Document(
     id: null,
-    title: "",
-    description: "",
-    fileName: "",
-    downloadUrl: "",
-    folderId: "",
+    title: '',
+    description: '',
+    fileName: '',
+    downloadUrl: '',
+    folderId: '',
+    authorId: '',
   ); //Document
   var _initValues = {
     'appbar-title': 'Bæta við skjali',
@@ -75,7 +76,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     super.dispose();
   }
 
-  void _saveForm() async {
+  void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -84,9 +85,6 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     setState(() {
       _isLoading = true; 
     });
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationId();
     if(_document.id != null) {
       try {
         await Provider.of<DocumentsProvider>(context, listen: false)
@@ -151,6 +149,10 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
+    final residentAssociationId = currentUserData.getResidentAssociationId();
+    final userId = currentUserData.getId();
     final folder = Provider.of<DocumentsProvider>(context, listen: false).getAllFolders();
     return Scaffold(
       appBar: AppBar(
@@ -162,7 +164,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm();
+                    _saveForm(residentAssociationId);
                   },
                 )
               : Container(),
@@ -219,6 +221,9 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                           fileName: _document.fileName,
                           downloadUrl: _document.downloadUrl,
                           folderId: _document.folderId,
+                          authorId: _document.authorId != ''
+                              ? _document.authorId
+                              : userId,
                         );
                       },
                     ),
@@ -241,6 +246,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                           fileName: _document.fileName,
                           downloadUrl: _document.downloadUrl,
                           folderId: _document.folderId,
+                          authorId: _document.authorId,
                         );
                       },
                     ),
@@ -263,6 +269,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                           fileName: fileName,
                           downloadUrl: _document.downloadUrl,
                           folderId: Provider.of<DocumentsProvider>(context, listen: false).findFolderIdByTitle(value),
+                          authorId: _document.authorId,
                         );
                       },
                       validator: (value) {
@@ -289,7 +296,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                     Platform.isAndroid
                         ? SaveButton(
                             text: _initValues['save-text'],
-                            saveFunc: _saveForm,
+                            saveFunc: () => _saveForm(residentAssociationId),
                           )
                         : Container(),
                 ],

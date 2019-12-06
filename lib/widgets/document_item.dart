@@ -15,6 +15,8 @@ class Document extends StatelessWidget {
   final String fileName;
   final String downloadUrl;
   final String folderId;
+  final bool isAdmin;
+  final bool isAuthor;
 
   Document({
     @required this.id,
@@ -22,7 +24,9 @@ class Document extends StatelessWidget {
     @required this.description,
     @required this.fileName,
     @required this.downloadUrl,
-    @required this.folderId
+    @required this.folderId,
+    @required this.isAdmin,
+    @required this.isAuthor,
   });
 
   _launchURL(BuildContext context) async {

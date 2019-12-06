@@ -84,6 +84,8 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
             .getResidentAssociationId();
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final folderData = Provider.of<DocumentsProvider>(context);
     final folders = folderData.filteredFolders(_searchQuery);
     return Scaffold(
@@ -101,8 +103,6 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
               },
               child: Container(
               padding: const EdgeInsets.only(
-                          //left: 10,
-                          //right: 10,
                           bottom: 5,
                 ),
                 height: heightOfBody,
@@ -156,6 +156,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                                 itemBuilder: (ctx, i) =>DocumentFolder(
                                   id: folders[i].id,
                                   title: folders[i].title,
+                                  isAdmin: currentUserData.isAdmin(),
+                                  isAuthor: folders[i].authorId ==
+                                  currentUserData.getId(),
                                 ),
                               )
                             ),
