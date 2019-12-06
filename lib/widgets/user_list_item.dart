@@ -32,6 +32,8 @@ class UserListItem extends StatefulWidget {
 class _UserListItemState extends State<UserListItem> {
   var _isPushed = false;
 
+  // function which presents the buttons to promote a user to
+  // admin or kick him out of the resident association.
   _presentOptions() {
     setState(() {
       _isPushed = !_isPushed;
@@ -71,14 +73,35 @@ class _UserListItemState extends State<UserListItem> {
                   SizedBox(
                     width: 10,
                   ),
-                  Expanded(
-                    child: Text(
-                      'Íbúð ' + widget.apartmentNumber,
-                      style: TextStyle(
-                        fontSize: 17,
-                      ),
+                  Text(
+                    'Íbúð ' + widget.apartmentNumber,
+                    style: TextStyle(
+                      fontSize: 17,
                     ),
                   ),
+                  widget.targetIsAdmin
+                      ? Expanded(
+                          child: Row(
+                            children: <Widget>[
+                              SizedBox(
+                                width: 25,
+                              ),
+                              Icon(
+                                Icons.settings,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Admin',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
             ),
@@ -104,11 +127,12 @@ class _UserListItemState extends State<UserListItem> {
                                 child: Container(),
                               ),
                               FlatButton(
-                                onPressed: widget.makeAdminFunc,
+                                onPressed: () =>
+                                    widget.makeAdminFunc(widget.userId),
                                 child: Row(
                                   children: <Widget>[
                                     Icon(
-                                      CustomIcons.user_secret,
+                                      Icons.settings,
                                       size: 20,
                                     ),
                                     SizedBox(
@@ -132,7 +156,12 @@ class _UserListItemState extends State<UserListItem> {
                                 child: Container(),
                               ),
                               FlatButton(
-                                onPressed: widget.kickUserFunc,
+                                onPressed: () {
+                                  widget.kickUserFunc(
+                                    widget.userId,
+                                    widget.apartmentNumber,
+                                  );
+                                },
                                 child: Row(
                                   children: <Widget>[
                                     Icon(
