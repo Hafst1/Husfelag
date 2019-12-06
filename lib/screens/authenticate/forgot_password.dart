@@ -18,7 +18,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       body: SafeArea(
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
