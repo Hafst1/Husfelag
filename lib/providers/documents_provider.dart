@@ -2,78 +2,40 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:husfelagid/models/document_folder.dart';
+
 import '../models/document.dart';
 import '../models/document_folder.dart';
+import '../shared/constants.dart' as Constants;
 
 class DocumentsProvider with ChangeNotifier {
+  List<Document> _documents = [];
+  List<DocumentFolder> _folders = [];
+  String downloadUrl; //obtain the download url for the document
 
   // collection reference to the resident associations.
   CollectionReference _associationRef =
-      Firestore.instance.collection('ResidentAssociation');
+      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
 
-  List<Document> _documents = [];
-  List<DocumentFolder> _folders = [];
-  
-  String downloadUrl;
-
-  Future<void> addDocumentItem(String filePath/*, FileType _pickType*/) async{
-    String fileName = filePath.split('/').last;
-    StorageReference storageRef =
-        FirebaseStorage.instance.ref().child(fileName);
-    StorageUploadTask uploadTask = storageRef.putFile(File(filePath));
-    await getDownloadUrl(uploadTask);
-  }
-
-  Future getDownloadUrl(StorageUploadTask uploadTask) async {
-    StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
-    downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
-    print("downloadUrl: " + downloadUrl);
-  }
-
-  void addDocument(String residentAssociationId, Document document) async{
+  // function which fetches the documents of a resident association
+  // and stores them in the _documents list.
+  Future<void> fetchDocuments(
+      String residentAssociationId, BuildContext context) async {
     try {
-      if(downloadUrl != "") {
-        final response = await _associationRef
+      final response = await _associationRef
           .document(residentAssociationId)
-          .collection('DocumentItems')
-          .add({
-          'title': document.title,
-          'description': document.description,
-          'documentItem': downloadUrl,
-          'folderId': document.folderId
-        });
-        final newDocument = Document(
-          id: response.documentID,
-          title: document.title,
-          description: document.description,
-          documentItem: downloadUrl,
-          folderId: document.folderId
-        );
-        _documents.add(newDocument);
-          notifyListeners();
-      }
-    } catch (error) {
-        throw (error);
-      }
-  }
-
-  Future<void> fetchDocuments(String residentAssociationId, BuildContext context) async {
-    try {
-      final response =
-          await _associationRef
-          .document(residentAssociationId)
-          .collection('DocumentItems')
+          .collection(Constants.DOCUMENTS_COLLECTION)
           .getDocuments();
       final List<Document> loadedDocuments = [];
       response.documents.forEach((document) {
         loadedDocuments.add(Document(
           id: document.documentID,
-          title: document.data['title'],
-          description: document.data['description'],
-          documentItem: document.data['documentItem'],
-          folderId: document.data['folderId']
-        ));
+          title: document.data[Constants.TITLE],
+          description: document.data[Constants.DESCRIPTION],
+          fileName: document.data[Constants.FILE_NAME],
+          downloadUrl: document.data[Constants.DOWNLOAD_URL],
+          folderId: document.data[Constants.FOLDER_ID],
+          authorId: document.data[Constants.AUTHOR_ID],
+        )); // Document
       });
       _documents = loadedDocuments;
       notifyListeners();
@@ -95,7 +57,116 @@ class DocumentsProvider with ChangeNotifier {
       );
     }
   }
+   ///athuga með constants hér!!
+  // function which adds a file to firebase storage.
+  Future<void> addFile(String filePath, Document document/*, FileType _pickType*/) async{
+    StorageReference storageRef =
+        FirebaseStorage.instance.ref().child(document.fileName);
+    StorageUploadTask uploadTask = storageRef.putFile(File(filePath));
+    await getDownloadUrl(uploadTask);
+  }
 
+  // function which obtains the downloadURL for the document.
+  Future getDownloadUrl(StorageUploadTask uploadTask) async {
+    StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+    downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+  
+  // function which adds a document to a resident association.
+  Future<void> addDocument(
+      String residentAssociationId, Document document) async{
+    try {
+      if(downloadUrl != "") {
+        final response = await _associationRef
+          .document(residentAssociationId)
+          .collection(Constants.DOCUMENTS_COLLECTION)
+          .add({
+        Constants.TITLE: document.title,
+        Constants.DESCRIPTION: document.description,
+        Constants.FILE_NAME: document.fileName,
+        Constants.DOWNLOAD_URL: downloadUrl,
+        Constants.FOLDER_ID: document.folderId,
+        Constants.AUTHOR_ID: document.authorId,
+        });
+        final newDocument = Document(
+          id: response.documentID,
+          title: document.title,
+          description: document.description,
+          fileName: document.fileName,
+          downloadUrl: downloadUrl,
+          folderId: document.folderId,
+          authorId: document.authorId,
+        );
+        _documents.add(newDocument);
+        notifyListeners();
+      }
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+   // function which deletes a document from a resident association.
+   // and file from storage
+  Future<void> deleteDocument(
+      String residentAssociationId, String documentId, String fileTitle) async {
+    final deleteIndex = _documents
+        .indexWhere((document) => document.id == documentId);
+    var deletedDocument = _documents[deleteIndex];
+    _documents.removeAt(deleteIndex);
+    notifyListeners();
+    try {
+      StorageReference storageRef =
+      FirebaseStorage.instance.ref().child(fileTitle);
+      await storageRef.delete();
+      await _associationRef
+          .document(residentAssociationId)
+          .collection(Constants.DOCUMENTS_COLLECTION)
+          .document(documentId)
+          .delete();
+      deletedDocument = null;
+    } catch (error) {
+      _documents.insert(deleteIndex, deletedDocument);
+      notifyListeners();
+    }
+  }
+
+  // function which updates a document in a resident association.
+  //athuga með update!!
+  Future<void> updateDocument(
+      String residentAssociationId, Document editedDocument) async {
+    try {
+      await _associationRef
+          .document(residentAssociationId)
+          .collection(Constants.DOCUMENTS_COLLECTION)
+          .document(editedDocument.id)
+          .updateData({
+        Constants.TITLE: editedDocument.title,
+        Constants.DESCRIPTION: editedDocument.description,
+        Constants.FILE_NAME: editedDocument.fileName,
+        Constants.DOWNLOAD_URL: downloadUrl,
+        Constants.FOLDER_ID: editedDocument.folderId,
+        Constants.AUTHOR_ID: editedDocument.authorId,
+      });
+      final documentIndex = _documents.indexWhere(
+          (document) => document.id == editedDocument.id);
+      if (documentIndex >= 0) {
+        _documents[documentIndex] = editedDocument;
+      }
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  // function which returns a document which has the id taken in as
+  // parameter, if found.
+  Document findDocumentById(String id) {
+    return _documents.firstWhere((document) => document.id == id);
+  }
+
+  // function which returns a list of document which contain the 
+  // folderId and/or search query
   List<Document> filteredItems(String query, String folderId) {
     List<Document> documents = [..._documents];
     String searchQuery = query.toLowerCase();
@@ -107,8 +178,7 @@ class DocumentsProvider with ChangeNotifier {
           displayList.add(item);
         }
       });
-    }
-    else {
+    } else {
       documents.forEach((item) {
         if(item.folderId == folderId) {
           displayList.add(item);
@@ -118,37 +188,45 @@ class DocumentsProvider with ChangeNotifier {
     return displayList;
   }
 
-    void addFolder(String residentAssociationId, String folderTitle) async{
+  // function which adds a document folder to a resident association.
+  Future<void> addFolder(
+        String residentAssociationId, String folderTitle, String authorId) async {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('Folders')
+          .collection(Constants.FOLDERS_COLLECTION)
           .add({
-        'title': folderTitle,
+        Constants.TITLE: folderTitle,
+        Constants.AUTHOR_ID: authorId,
       });
       final newFolder = DocumentFolder(
         id: response.documentID,
         title: folderTitle,
+        authorId: authorId,
       );
       _folders.add(newFolder);
         notifyListeners();
     } catch (error) {
-        throw (error);
-      }
+      throw (error);
+    }
   }
 
-  Future<void> fetchFolders(String residentAssociationId, BuildContext context) async {
+  // function which fetches the folders of a resident association
+  // and stores them in the _folders list.
+  Future<void> fetchFolders(
+      String residentAssociationId, BuildContext context) async {
     try {
       final response =
           await _associationRef
           .document(residentAssociationId)
-          .collection('Folders')
+          .collection(Constants.FOLDERS_COLLECTION)
           .getDocuments();
       final List<DocumentFolder> loadedFolders = [];
-      response.documents.forEach((document) {
+      response.documents.forEach((folder) {
         loadedFolders.add(DocumentFolder(
-          id: document.documentID,
-          title: document.data['title'],
+          id: folder.documentID,
+          title: folder.data[Constants.TITLE],
+          authorId: folder.data[Constants.AUTHOR_ID],
         ));
       });
       _folders = loadedFolders;
@@ -170,25 +248,60 @@ class DocumentsProvider with ChangeNotifier {
         ),
       );
     }
-
   }
 
+  // function which returns a list of document which contain the 
+  // folderId and/or search query
+  List<DocumentFolder> filteredFolders(String query) {
+    List<DocumentFolder> folders = [..._folders];
+   // List<Document> documents = [..._documents];
+    String searchQuery = query.toLowerCase();
+    List<DocumentFolder> displayList = [];
+    if (query.isNotEmpty) {
+      folders.forEach((item) {
+      if (item.title.toLowerCase().contains(searchQuery)) {
+          displayList.add(item);
+        }
+      });
+    } else {
+      folders.forEach((item) {
+          displayList.add(item);
+      });
+    }
+    return displayList;
+  }
+
+  // function which return all folders
   List<DocumentFolder> getAllFolders() {
     return [..._folders];
   }
   
+  // function which returns the id of a folder by it's title
   String findFolderIdByTitle(String title){
     String returnId = "";
-    List<DocumentFolder> documents = [..._folders];
-    for(int i = 0; i < documents.length; i++) {
-      if(documents[i].title == title) {
-        returnId = documents[i].id;
+    for(final folder in [..._folders]) {
+      if(folder.title.compareTo(title) == 0) {
+        returnId = folder.id;
+        break;
       }
     }
     return returnId;
   }
 
-  DocumentFolder findFolderNameById(String id) {
+  // function which checks if folder title already exists
+  bool folderTitleExists(String folderTitle) {
+    bool exists = false;
+    for(final folder in [..._folders]) {
+      if(folder.title.compareTo(folderTitle) == 0) {
+        exists = true;
+        break;
+      }
+    }
+    return exists;
+  }
+
+  // function which returns a folder by its' id
+  DocumentFolder findFolderById(String id) {
     return _folders.firstWhere((folder) => folder.id == id);
   }
 }

@@ -45,7 +45,7 @@ class _RegisterState extends State<Register> {
                       top: 50,
                     ),
                     child: Text(
-                      "Búa til aðgang",
+                      'Búa til aðgang',
                       style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.bold,

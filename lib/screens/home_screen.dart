@@ -7,7 +7,7 @@ import '../screens/my_association_screen.dart';
 import '../widgets/home_option.dart';
 import '../screens/constructions/constructions_screen.dart';
 import '../screens/meetings/meetings_screen.dart';
-import '../screens/documents/documents_folders_screen.dart';
+import '../screens/documents/documents_screen.dart';
 import '../screens/cleaning/cleaning_screen.dart';
 import '../widgets/custom_icons_icons.dart';
 import '../shared/constants.dart' as Constants;
