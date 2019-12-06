@@ -370,7 +370,7 @@ class MapScreenState extends State<ProfilePage>
                           ),
                           Padding(
                             padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 5.0),
+                                left: 25.0, right: 25.0, top: 0.0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
