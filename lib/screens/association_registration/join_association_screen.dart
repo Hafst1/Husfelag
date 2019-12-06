@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 
 import '../../providers/current_user_provider.dart';
+import '../../providers/association_provider.dart';
 import '../../widgets/association_list_item.dart';
 import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/choice_tab_button.dart';
@@ -40,12 +41,15 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<CurrentUserProvider>(context)
-          .fetchAssociations(context)
-          .then((_) {
+      Provider.of<AssociationsProvider>(context).fetchAssociations().then((_) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog('Ekki tókst að hlapa upp húsfélögum!');
       });
     }
     _isInit = false;
@@ -77,7 +81,11 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
 
   // function for refreshing and getting the latest associations.
   Future<void> _refreshAssociations() async {
-    await Provider.of<CurrentUserProvider>(context).fetchAssociations(context);
+    try {
+      await Provider.of<AssociationsProvider>(context).fetchAssociations();
+    } catch (error) {
+      _printErrorDialog('Ekki tókst að endurhlaða húsfélögum!');
+    }
   }
 
   // function for refreshing and getting the latest apartments for a given association id.
@@ -86,7 +94,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       return;
     }
     try {
-      await Provider.of<CurrentUserProvider>(context)
+      await Provider.of<AssociationsProvider>(context)
           .fetchApartments(residentAssocationId);
     } catch (error) {
       _printErrorDialog('Ekki tókst að hlaða niður íbúðum!');
@@ -100,7 +108,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       _isLoading = true;
     });
     try {
-      await Provider.of<CurrentUserProvider>(context).fetchApartments(id);
+      await Provider.of<AssociationsProvider>(context).fetchApartments(id);
       setState(() {
         _tempAssociationNumber = id;
         _showApartmentSection = true;
@@ -118,6 +126,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
   void _validateForm() async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
+      print('went in here');
       return;
     }
     _form.currentState.save();
@@ -125,8 +134,9 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       _isLoading = true;
     });
     try {
-      await Provider.of<CurrentUserProvider>(context, listen: false)
-          .addApartment(_tempAssociationNumber, _newApartment);
+      final newUser = Provider.of<CurrentUserProvider>(context).getUser();
+      await Provider.of<AssociationsProvider>(context)
+          .addApartment(_tempAssociationNumber, _newApartment, newUser);
       await _printConfirmationDialog(
           'Þú hefur bætt við íbúð og gengið til liðs við húsfélagið!');
     } catch (error) {
@@ -144,8 +154,9 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       _isLoading = true;
     });
     try {
-      await Provider.of<CurrentUserProvider>(context, listen: false)
-          .joinApartment(_tempAssociationNumber, id);
+      final newUser = Provider.of<CurrentUserProvider>(context).getUser();
+      await Provider.of<AssociationsProvider>(context)
+          .joinApartment(_tempAssociationNumber, id, newUser);
       await _printConfirmationDialog(
           'Þér hefur verið bætt við tiltekna íbúð í húsfélaginu!');
     } catch (error) {
@@ -203,9 +214,9 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserData = Provider.of<CurrentUserProvider>(context);
-    final associations = currentUserData.filteredItems(_searchQuery);
-    final apartments = currentUserData.getApartments();
+    final associationsData = Provider.of<AssociationsProvider>(context);
+    final associations = associationsData.filteredItems(_searchQuery);
+    final apartments = associationsData.getApartments();
     return Scaffold(
       appBar: AppBar(
         title: Text('Ganga í húsfélag'),
@@ -224,14 +235,14 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
       body: _isLoading
           ? LoadingSpinner()
           : _showApartmentSection
-              ? _buildApartmentSection(currentUserData, apartments)
+              ? _buildApartmentSection(associationsData, apartments)
               : _buildAssociationSection(associations),
     );
   }
 
   // function which builds the apartment section of the screen.
   Widget _buildApartmentSection(
-      CurrentUserProvider currentUserData, List<Apartment> apartments) {
+      AssociationsProvider associationsData, List<Apartment> apartments) {
     return Column(
       children: <Widget>[
         Row(
@@ -263,7 +274,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
           color: Colors.grey,
         ),
         _selectedChoiceIndex == 0
-            ? _buildForm(currentUserData)
+            ? _buildForm(associationsData)
             : _buildApartmentList(apartments)
       ],
     );
@@ -271,7 +282,8 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
 
   // function which builds the form to add an apartment to a given
   // resident association.
-  Widget _buildForm(CurrentUserProvider currentUserData) {
+  Widget _buildForm(AssociationsProvider associationsData) {
+    final currentUserData = Provider.of<CurrentUserProvider>(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -291,7 +303,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
                 if (value.length > 4) {
                   return "Íbúðarnúmer getur ekki verið lengra en 4 stafir á lengd!";
                 }
-                if (!currentUserData.apartmentIsAvailable(value)) {
+                if (!associationsData.apartmentIsAvailable(value)) {
                   return "Viðkomandi íbúðarnúmer er nú þegar skráð!";
                 }
                 return null;

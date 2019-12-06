@@ -6,7 +6,6 @@ import 'dart:io';
 import '../../models/meeting.dart';
 import '../../providers/meetings_provider.dart';
 import '../../providers/current_user_provider.dart';
-import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/save_button.dart';
 import '../../shared/loading_spinner.dart';
 
