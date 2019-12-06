@@ -63,6 +63,7 @@ class AuthService {
       await user.updatePassword(password);
     } on Exception catch (error) {
       print('Password can\'t be changed' + error.toString());
+      return null;
     }
   }
 
