@@ -32,7 +32,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
           Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationId();
       Provider.of<ConstructionsProvider>(context)
-          .fetchConstructions(residentAssociationId, context)
+          .fetchConstructions(residentAssociationId)
           .then((_) {
         setState(() {
           _isLoading = false;

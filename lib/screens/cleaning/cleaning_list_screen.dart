@@ -31,21 +31,48 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
           Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationId();
       Provider.of<CleaningProvider>(context)
-          .fetchCleaningItems(residentAssociationId, context)
+          .fetchCleaningItems(residentAssociationId)
           .then((_) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog();
       });
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  void _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Ekki tókst að hlaða upp þrifum!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Future<void> _refreshCleaningItems(
       String residentAssociationId, BuildContext context) async {
-    await Provider.of<CleaningProvider>(context)
-        .fetchCleaningItems(residentAssociationId, context);
+    try {
+      await Provider.of<CleaningProvider>(context)
+          .fetchCleaningItems(residentAssociationId);
+    } catch (error) {
+      _printErrorDialog();
+    }
   }
 
   _selectFilter(int index) {

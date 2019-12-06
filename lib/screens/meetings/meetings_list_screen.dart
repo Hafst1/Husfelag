@@ -31,21 +31,48 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
           Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationId();
       Provider.of<MeetingsProvider>(context)
-          .fetchMeetings(residentAssociationId, context)
+          .fetchMeetings(residentAssociationId)
           .then((_) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog();
       });
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  void _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Ekki tókst að hlaða upp fundum!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Future<void> _refreshMeetings(
       String residentAssociationId, BuildContext context) async {
-    await Provider.of<MeetingsProvider>(context)
-        .fetchMeetings(residentAssociationId, context);
+    try {
+      await Provider.of<MeetingsProvider>(context)
+          .fetchMeetings(residentAssociationId);
+    } catch (error) {
+      _printErrorDialog();
+    }
   }
 
   _selectFilter(int index) {
@@ -161,7 +188,8 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
                             date: meetings[i].date,
                             location: meetings[i].location,
                             isAdmin: currentUserData.isAdmin(),
-                            isAuthor: meetings[i].authorId == currentUserData.getId(),
+                            isAuthor:
+                                meetings[i].authorId == currentUserData.getId(),
                           ),
                         ),
                       ),

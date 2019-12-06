@@ -27,15 +27,38 @@ class _CleaningDetailScreenState extends State<CleaningDetailScreen> {
           Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationId();
       Provider.of<CleaningProvider>(context)
-          .fetchCleaningTasks(residentAssociationId, context)
+          .fetchCleaningTasks(residentAssociationId)
           .then((_) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog();
       });
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  void _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Ekki tókst að hlaða upp verkefnalista!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
   }
 
   @override

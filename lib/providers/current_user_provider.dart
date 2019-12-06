@@ -37,8 +37,8 @@ class CurrentUserProvider with ChangeNotifier {
         isAdmin: fetchedUser[Constants.IS_ADMIN],
       );
     } catch (error) {
+      //error handling vantar
       print(error);
-      // error handling vantar
     }
   }
 

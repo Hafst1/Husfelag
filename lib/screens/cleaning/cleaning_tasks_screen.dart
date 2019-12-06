@@ -24,30 +24,24 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
       setState(() {
         _isLoading = true;
       });
-
       final cleaningTaskData = Provider.of<CleaningProvider>(context);
       final residentAssociationId =
-          Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationId();
-      cleaningTaskData
-          .fetchCleaningTasks(residentAssociationId, context)
-          .then((_) {
+          Provider.of<CurrentUserProvider>(context).getResidentAssociationId();
+      cleaningTaskData.fetchCleaningTasks(residentAssociationId).then((_) {
         Provider.of<AssociationsProvider>(context)
             .fetchApartments(residentAssociationId)
             .then((_) {
-          cleaningTaskData
-              .fetchCleaningItems(residentAssociationId, context)
-              .then((_) {
+          cleaningTaskData.fetchCleaningItems(residentAssociationId).then((_) {
             setState(() {
               _isLoading = false;
             });
+          }).catchError((error) {
+            setState(() {
+              _isLoading = false;
+            });
+            _printErrorDialog();
           });
         });
-      }).catchError((error) {
-        setState(() {
-          _isLoading = false;
-        });
-        _printErrorDialog();
       });
     }
     _isInit = false;
@@ -59,7 +53,7 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('Villa kom upp'),
-        content: Text('Eitthvað fór úrskeiðis!'),
+        content: Text('Ekki tókst að hlaða upp verkefnalista!'),
         actions: <Widget>[
           FlatButton(
             child: Text('Halda áfram'),
