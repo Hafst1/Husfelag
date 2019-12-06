@@ -69,7 +69,7 @@ class Document extends StatelessWidget {
                 .deleteDocument(residentAssociationId, this.id, this.fileName);
           },
           //ekki hægt að breyta skjalinu sjálfu, athuga
-          /*editFunc: () {
+          editFunc: () {
             Navigator.of(ctx).pop();
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -77,7 +77,7 @@ class Document extends StatelessWidget {
                 settings: RouteSettings(arguments: id),
               ),
             );
-          },*/
+          },
         );
       },
     );

@@ -22,10 +22,10 @@ class AddDocumentScreen extends StatefulWidget {
 }
 
 class _AddDocumentScreenState extends State<AddDocumentScreen> {
-  String _path;
-  String _extension;
+  String _path = '';
+  String _extension = '';
   FileType _pickType;
-  String fileName;
+  String fileName = '';
   String filePreviewName = "";
   String selectedFolder; //selected folder in dropdownbutton
   final _form = GlobalKey<FormState>();
@@ -46,7 +46,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
   };
   var _isInit = true;
   var _isLoading = false;
-
+  var oldFileName = '';
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -56,6 +56,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
         _document =
             Provider.of<DocumentsProvider>(context, listen: false)
                 .findDocumentById(documentId);
+            oldFileName = _document.fileName;
         _initValues = {
           'appbar-title': 'Breyta skjali',
           'title': _document.title,
@@ -65,6 +66,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
           'save-text': 'BREYTA',
         };
         fileName = _document.fileName;
+        selectedFolder = Provider.of<DocumentsProvider>(context, listen: false).findFolderById(_document.folderId).title;
       }
     }
     _isInit = false;
@@ -78,7 +80,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
 
   void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
-    if (!isValid) {
+    if (!isValid || fileName == '') {
       return;
     }
     _form.currentState.save();
@@ -86,9 +88,11 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
       _isLoading = true; 
     });
     if(_document.id != null) {
+      print("downloadurl: " + _document.downloadUrl);
+      print("_path" + _path);
       try {
         await Provider.of<DocumentsProvider>(context, listen: false)
-            .updateDocument(residentAssociationId, _document);
+            .updateDocument(residentAssociationId, _document, oldFileName, _path);
       } catch (error) {
         await printErrorDialog('Ekki tókst að breyta skjali!');
       }
