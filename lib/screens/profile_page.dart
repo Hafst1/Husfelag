@@ -63,21 +63,21 @@ class MapScreenState extends State<ProfilePage>
                               child: Form(
                                 key: _formKey,
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  // crossAxisAlignment: CrossAxisAlignment.start,
+                                  // mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 0.0),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
+                                          // mainAxisAlignment:
+                                          //     MainAxisAlignment.spaceBetween,
+                                          // mainAxisSize: MainAxisSize.max,
+                                          // children: <Widget>[
+                                          //   Column(
+                                          //     mainAxisAlignment:
+                                          //         MainAxisAlignment.start,
+                                          //     mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
                                                 Text(
                                                   'Mínar upplýsingar',
@@ -87,19 +87,19 @@ class MapScreenState extends State<ProfilePage>
                                                           FontWeight.bold),
                                                 ),
                                               ],
-                                            ),
-                                          ],
+                                          //   ),
+                                          // ],
                                         )),
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 25.0),
                                         child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
+                                          // mainAxisSize: MainAxisSize.max,
+                                          // children: <Widget>[
+                                          //   Column(
+                                          //     mainAxisAlignment:
+                                          //         MainAxisAlignment.start,
+                                          //     mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
                                                 Text(
                                                   'Nafn',
@@ -109,14 +109,14 @@ class MapScreenState extends State<ProfilePage>
                                                           FontWeight.bold),
                                                 ),
                                               ],
-                                            ),
-                                          ],
+                                          //   ),
+                                          // ],
                                         )),
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 2.0),
                                         child: Row(
-                                          mainAxisSize: MainAxisSize.max,
+                                          // mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
                                             Flexible(
                                               child: TextFormField(
@@ -135,9 +135,9 @@ class MapScreenState extends State<ProfilePage>
                                               ),
                                             ),
                                             Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              mainAxisSize: MainAxisSize.min,
+                                              // mainAxisAlignment:
+                                              //     MainAxisAlignment.end,
+                                              // mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
                                                 _nameStatus
                                                     ? _getNameEditIcon()
@@ -151,9 +151,9 @@ class MapScreenState extends State<ProfilePage>
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 20.0),
                                         child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                          // mainAxisSize: MainAxisSize.max,
+                                          // mainAxisAlignment:
+                                          //     MainAxisAlignment.start,
                                           children: <Widget>[
                                             Expanded(
                                               child: Padding(
@@ -227,12 +227,12 @@ class MapScreenState extends State<ProfilePage>
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 25.0),
                                         child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
+                                          // mainAxisSize: MainAxisSize.max,
+                                          // children: <Widget>[
+                                          //   Column(
+                                          //     mainAxisAlignment:
+                                          //         MainAxisAlignment.start,
+                                          //     mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
                                                 Text(
                                                   'Netfang',
@@ -242,14 +242,14 @@ class MapScreenState extends State<ProfilePage>
                                                           FontWeight.bold),
                                                 ),
                                               ],
-                                            ),
-                                          ],
+                                          //   ),
+                                          // ],
                                         )),
                                     Padding(
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 2.0),
                                         child: Row(
-                                          mainAxisSize: MainAxisSize.max,
+                                          // mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
                                             Flexible(
                                               child: TextFormField(
@@ -266,9 +266,9 @@ class MapScreenState extends State<ProfilePage>
                                               ),
                                             ),
                                             Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              mainAxisSize: MainAxisSize.min,
+                                              // mainAxisAlignment:
+                                              //     MainAxisAlignment.end,
+                                              // mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
                                                 _emailStatus
                                                     ? _getEmailEditIcon()
@@ -282,9 +282,9 @@ class MapScreenState extends State<ProfilePage>
                                         padding: EdgeInsets.only(
                                             left: 25.0, right: 25.0, top: 20.0),
                                         child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                          // mainAxisSize: MainAxisSize.max,
+                                          // mainAxisAlignment:
+                                          //     MainAxisAlignment.start,
                                           children: <Widget>[
                                             Expanded(
                                               child: Padding(
