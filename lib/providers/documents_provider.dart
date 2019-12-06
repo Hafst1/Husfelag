@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../models/document.dart';
 import '../models/document_folder.dart';
+import '../shared/constants.dart' as Constants;
 
 class DocumentsProvider with ChangeNotifier {
   List<Document> _documents = [];
@@ -13,7 +14,7 @@ class DocumentsProvider with ChangeNotifier {
 
   // collection reference to the resident associations.
   CollectionReference _associationRef =
-      Firestore.instance.collection('ResidentAssociation');
+      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
 
   // function which fetches the documents of a resident association
   // and stores them in the _documents list.
@@ -22,17 +23,18 @@ class DocumentsProvider with ChangeNotifier {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('DocumentItems')
+          .collection(Constants.DOCUMENTS_COLLECTION)
           .getDocuments();
       final List<Document> loadedDocuments = [];
       response.documents.forEach((document) {
         loadedDocuments.add(Document(
           id: document.documentID,
-          title: document.data['title'],
-          description: document.data['description'],
-          fileName: document.data['fileName'],
-          downloadUrl: document.data['downloadUrl'],
-          folderId: document.data['folderId']
+          title: document.data[Constants.TITLE],
+          description: document.data[Constants.DESCRIPTION],
+          fileName: document.data[Constants.FILE_NAME],
+          downloadUrl: document.data[Constants.DOWNLOAD_URL],
+          folderId: document.data[Constants.FOLDER_ID],
+          authorId: document.data[Constants.AUTHOR_ID],
         )); // Document
       });
       _documents = loadedDocuments;
@@ -55,10 +57,9 @@ class DocumentsProvider with ChangeNotifier {
       );
     }
   }
-
+   ///athuga með constants hér!!
   // function which adds a file to firebase storage.
   Future<void> addFile(String filePath, Document document/*, FileType _pickType*/) async{
-    //String fileName = filePath.split('/').last;
     StorageReference storageRef =
         FirebaseStorage.instance.ref().child(document.fileName);
     StorageUploadTask uploadTask = storageRef.putFile(File(filePath));
@@ -79,13 +80,14 @@ class DocumentsProvider with ChangeNotifier {
       if(downloadUrl != "") {
         final response = await _associationRef
           .document(residentAssociationId)
-          .collection('DocumentItems')
+          .collection(Constants.DOCUMENTS_COLLECTION)
           .add({
-          'title': document.title,
-          'description': document.description,
-          'fileName': document.fileName,
-          'downloadUrl': downloadUrl,
-          'folderId': document.folderId
+        Constants.TITLE: document.title,
+        Constants.DESCRIPTION: document.description,
+        Constants.FILE_NAME: document.fileName,
+        Constants.DOWNLOAD_URL: downloadUrl,
+        Constants.FOLDER_ID: document.folderId,
+        Constants.AUTHOR_ID: document.authorId,
         });
         final newDocument = Document(
           id: response.documentID,
@@ -93,7 +95,8 @@ class DocumentsProvider with ChangeNotifier {
           description: document.description,
           fileName: document.fileName,
           downloadUrl: downloadUrl,
-          folderId: document.folderId
+          folderId: document.folderId,
+          authorId: document.authorId,
         );
         _documents.add(newDocument);
         notifyListeners();
@@ -118,7 +121,7 @@ class DocumentsProvider with ChangeNotifier {
       await storageRef.delete();
       await _associationRef
           .document(residentAssociationId)
-          .collection('DocumentItems')
+          .collection(Constants.DOCUMENTS_COLLECTION)
           .document(documentId)
           .delete();
       deletedDocument = null;
@@ -135,14 +138,15 @@ class DocumentsProvider with ChangeNotifier {
     try {
       await _associationRef
           .document(residentAssociationId)
-          .collection('DocumentItems')
+          .collection(Constants.DOCUMENTS_COLLECTION)
           .document(editedDocument.id)
           .updateData({
-        'title': editedDocument.title,
-        'description': editedDocument.description,
-        'fileName': editedDocument.fileName,
-        'downloadUrl': downloadUrl,
-        'folderId': editedDocument.folderId,
+        Constants.TITLE: editedDocument.title,
+        Constants.DESCRIPTION: editedDocument.description,
+        Constants.FILE_NAME: editedDocument.fileName,
+        Constants.DOWNLOAD_URL: downloadUrl,
+        Constants.FOLDER_ID: editedDocument.folderId,
+        Constants.AUTHOR_ID: editedDocument.authorId,
       });
       final documentIndex = _documents.indexWhere(
           (document) => document.id == editedDocument.id);
@@ -186,17 +190,19 @@ class DocumentsProvider with ChangeNotifier {
 
   // function which adds a document folder to a resident association.
   Future<void> addFolder(
-        String residentAssociationId, String folderTitle) async {
+        String residentAssociationId, String folderTitle, String authorId) async {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
-          .collection('Folders')
+          .collection(Constants.FOLDERS_COLLECTION)
           .add({
-        'title': folderTitle,
+        Constants.TITLE: folderTitle,
+        Constants.AUTHOR_ID: authorId,
       });
       final newFolder = DocumentFolder(
         id: response.documentID,
         title: folderTitle,
+        authorId: authorId,
       );
       _folders.add(newFolder);
         notifyListeners();
@@ -213,13 +219,14 @@ class DocumentsProvider with ChangeNotifier {
       final response =
           await _associationRef
           .document(residentAssociationId)
-          .collection('Folders')
+          .collection(Constants.FOLDERS_COLLECTION)
           .getDocuments();
       final List<DocumentFolder> loadedFolders = [];
-      response.documents.forEach((document) {
+      response.documents.forEach((folder) {
         loadedFolders.add(DocumentFolder(
-          id: document.documentID,
-          title: document.data['title'],
+          id: folder.documentID,
+          title: folder.data[Constants.TITLE],
+          authorId: folder.data[Constants.AUTHOR_ID],
         ));
       });
       _folders = loadedFolders;
@@ -247,6 +254,7 @@ class DocumentsProvider with ChangeNotifier {
   // folderId and/or search query
   List<DocumentFolder> filteredFolders(String query) {
     List<DocumentFolder> folders = [..._folders];
+   // List<Document> documents = [..._documents];
     String searchQuery = query.toLowerCase();
     List<DocumentFolder> displayList = [];
     if (query.isNotEmpty) {
