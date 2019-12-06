@@ -68,7 +68,7 @@ class _RegisterState extends State<Register> {
                           children: <Widget>[
                             TextFormField(
                               decoration: InputDecoration(
-                                hintText: "Fullt nafn",
+                                hintText: 'Fullt nafn',
                                 prefixIcon: Icon(Icons.person),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -93,7 +93,7 @@ class _RegisterState extends State<Register> {
                             ),
                             TextFormField(
                               decoration: InputDecoration(
-                                hintText: "Netfang",
+                                hintText: 'Netfang',
                                 prefixIcon: Icon(Icons.email),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -118,7 +118,7 @@ class _RegisterState extends State<Register> {
                             ),
                             TextFormField(
                                 decoration: InputDecoration(
-                                  hintText: "Lykilorð",
+                                  hintText: 'Lykilorð',
                                   prefixIcon: Icon(Icons.lock),
                                   suffixIcon: Icon(Icons.visibility_off),
                                   border: OutlineInputBorder(
@@ -143,7 +143,7 @@ class _RegisterState extends State<Register> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  "Ertu nú þegar með aðgang?",
+                                  'Ertu nú þegar með aðgang?',
                                   style: TextStyle(
                                     fontSize: 15,
                                   ),
@@ -156,7 +156,7 @@ class _RegisterState extends State<Register> {
                                     widget.toggleView();
                                   },
                                   child: Text(
-                                    "Skráðu þig inn!",
+                                    'Skráðu þig inn!',
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Theme.of(context).primaryColor,
@@ -183,7 +183,6 @@ class _RegisterState extends State<Register> {
                 ],
               ),
             ),
-            // resizeToAvoidBottomPadding: false,
           );
   }
 
@@ -226,7 +225,7 @@ class _RegisterState extends State<Register> {
         ),
         child: Center(
           child: Text(
-            "STOFNA AÐGANG",
+            'STOFNA AÐGANG',
             style: TextStyle(
               color: Colors.white,
               fontSize: 17,

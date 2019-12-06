@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../providers/association_provider.dart';
-import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/cleaning_task_item.dart';
 import 'add_cleaningTask_screen.dart';
 import '../../shared/loading_spinner.dart';

@@ -4,7 +4,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import '../../providers/constructions_provider.dart';
 import '../../widgets/detail_date_item.dart';
-import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/slide_dots.dart';
 
 class DummyItem {

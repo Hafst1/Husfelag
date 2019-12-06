@@ -16,16 +16,6 @@ class HomeScreen extends StatelessWidget {
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
-
-    // void _showSettingsPanel() {
-    //   showModalBottomSheet(context: context, builder: (context) {
-    //     return Container(
-    //       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal:60.0),
-    //       child: SettingsForm(),
-    //     );
-    //   });
-    // }
-
     void choiceAction(String choice) {
     if (choice == Constants.MY_PAGE){
       //_showSettingsPanel();
@@ -62,29 +52,6 @@ class HomeScreen extends StatelessWidget {
               }).toList();
             }
           ),
-          /*FlatButton.icon(
-            icon: Icon(Icons.person, color: Colors.white),
-            label: Text(
-              'Skrá út',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
-            onPressed: () async {
-              await _auth.signOut();
-            }),
-          FlatButton.icon(
-            icon: Icon(Icons.settings, color: Colors.white),
-            label: Text(
-              'Settings',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
-            onPressed: () => _showSettingsPanel(),
-          )*/
         ],
       ),
       body: GridView(

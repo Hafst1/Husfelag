@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../widgets/detail_date_item.dart';
 import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
-import '../../widgets/custom_icons_icons.dart';
 import '../../shared/loading_spinner.dart';
 
 class CleaningDetailScreen extends StatefulWidget {
