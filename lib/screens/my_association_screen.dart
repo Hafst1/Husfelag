@@ -78,6 +78,9 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
   // function which makes the current user leave the resident association he is
   // registered in.
   void _leaveResidentAssociation(Apartment apartment) async {
+    setState(() {
+      _isLoadingAssociation = true;
+    });
     if (apartment.id == '') {
       await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
     }
@@ -87,6 +90,9 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     } catch (error) {
       await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
     }
+    setState(() {
+      _isLoadingAssociation = false;
+    });
   }
 
   // function which presents an action dialog when user wants to leave the

@@ -186,26 +186,12 @@ class _CleaningDetailScreenState extends State<CleaningDetailScreen> {
                                 .toList(),
                           ],
                         )
-                      : Column(
-                          children: <Widget>[
-                            Text(
-                              "Verkefnalisti yfir þrif á sameign er tómur.",
-                              style: TextStyle(
-                                fontSize: 17,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Container(
-                              height: 100,
-                              width: 100,
-                              child: FittedBox(
-                                child: Icon(CustomIcons.smile),
-                              ),
-                            ),
-                          ],
+                      : Text(
+                          "Verkefnalisti yfir þrif á sameign er tómur!",
+                          style: TextStyle(
+                            fontSize: 17,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
             ),
           ],
