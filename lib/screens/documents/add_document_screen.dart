@@ -23,11 +23,9 @@ class AddDocumentScreen extends StatefulWidget {
 
 class _AddDocumentScreenState extends State<AddDocumentScreen> {
   String _path = '';
-  String _extension = '';
-  FileType _pickType;
   String fileName = '';
-  String filePreviewName = "";
-  String selectedFolder; //selected folder in dropdownbutton
+  // String filePreviewName = "";
+  String _selectedFolder; //selected folder in dropdownbutton
   final _form = GlobalKey<FormState>();
   var _document = Document(
     id: null,
@@ -40,6 +38,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
   ); //Document
   var _initValues = {
     'appbar-title': 'Bæta við skjali',
+    'filePreviewName': '',
     'title': '',
     'description': '',
     'save-text': 'BÆTA VIÐ',
@@ -52,10 +51,9 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     if (_isInit) {
       final documentId = ModalRoute.of(context).settings.arguments as String;
       if (documentId != null) {
-        _document =
-            Provider.of<DocumentsProvider>(context, listen: false)
-                .findDocumentById(documentId);
-            oldFileName = _document.fileName;
+        _document = Provider.of<DocumentsProvider>(context, listen: false)
+            .findDocumentById(documentId);
+        oldFileName = _document.fileName;
         _initValues = {
           'appbar-title': 'Breyta skjali',
           'title': _document.title,
@@ -65,7 +63,9 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
           'save-text': 'BREYTA',
         };
         fileName = _document.fileName;
-        selectedFolder = Provider.of<DocumentsProvider>(context, listen: false).findFolderById(_document.folderId).title;
+        _selectedFolder = Provider.of<DocumentsProvider>(context, listen: false)
+            .findFolderById(_document.folderId)
+            .title;
       }
     }
     _isInit = false;
@@ -89,9 +89,10 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     if (_document.id != null) {
       try {
         await Provider.of<DocumentsProvider>(context, listen: false)
-            .updateDocument(residentAssociationId, _document, oldFileName, _path);
+            .updateDocument(
+                residentAssociationId, _document, oldFileName, _path);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að breyta skjali!');
+        await _printErrorDialog('Ekki tókst að breyta skjali!');
       }
     } else {
       try {
@@ -100,19 +101,19 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
         await Provider.of<DocumentsProvider>(context, listen: false)
             .addDocument(residentAssociationId, _document);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að bæta við skjali!');
+        await _printErrorDialog('Ekki tókst að bæta við skjali!');
       }
     }
     setState(() {
       _isLoading = false;
     });
     Navigator.of(context).pop();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => DocumentsFolderScreen(id: _document.folderId),
-    ));
+    // Navigator.of(context).push(MaterialPageRoute(
+    //   builder: (context) => DocumentsFolderScreen(id: _document.folderId),
+    // ));
   }
 
-  Future<void> printErrorDialog(String errorMessage) {
+  Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -132,16 +133,15 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
 
   void openFileExplorer() async {
     try {
-      _path = null;
-      _path = await FilePicker.getFilePath(
-          type: _pickType, fileExtension: _extension);
+      _path = await FilePicker.getFilePath();
       // unique name for a file
       fileName = DateTime.now().toString() + _path.split('/').last;
     } on PlatformException catch (e) {
       print("Óleyfileg aðgerð" + e.toString());
+      _printErrorDialog('');
     }
     setState(() {
-      filePreviewName = _path.split('/').last;
+      _initValues['filePreviewName'] = _path.split('/').last;
     });
     if (!mounted) return;
   }
@@ -186,12 +186,12 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       height: 15.0,
                     ),
                     Container(
-                      child: filePreviewName == ""
+                      child: _initValues['filePreviewName'] == ""
                           ? Container(
                               height: 10,
                             )
                           : Text(
-                              filePreviewName,
+                              _initValues['filePreviewName'],
                               style: TextStyle(
                                 decoration: TextDecoration.underline,
                                 fontSize: 15,
@@ -258,10 +258,10 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       height: 15.0,
                     ),
                     DropdownButtonFormField(
-                      value: selectedFolder,
+                      value: _selectedFolder,
                       hint: Text("Veldu möppu"),
                       onChanged: ((newValue) => setState(() {
-                            selectedFolder = newValue;
+                            _selectedFolder = newValue;
                           })),
                       onSaved: (value) {
                         _document = Document(
