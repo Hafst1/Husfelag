@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
+import '../../providers/association_provider.dart';
 import '../../widgets/cleaning_task_item.dart';
 import 'add_cleaningTask_screen.dart';
 import '../../shared/loading_spinner.dart';
@@ -23,14 +24,17 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
       setState(() {
         _isLoading = true;
       });
-      final currentUserData =
-          Provider.of<CurrentUserProvider>(context, listen: false);
+
       final cleaningTaskData = Provider.of<CleaningProvider>(context);
-      final residentAssociationId = currentUserData.getResidentAssociationId();
+      final residentAssociationId =
+          Provider.of<CurrentUserProvider>(context, listen: false)
+              .getResidentAssociationId();
       cleaningTaskData
           .fetchCleaningTasks(residentAssociationId, context)
           .then((_) {
-        currentUserData.fetchApartments(residentAssociationId).then((_) {
+        Provider.of<AssociationsProvider>(context)
+            .fetchApartments(residentAssociationId)
+            .then((_) {
           cleaningTaskData
               .fetchCleaningItems(residentAssociationId, context)
               .then((_) {
@@ -40,32 +44,39 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
           });
         });
       }).catchError((error) {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text('Villa kom upp'),
-            content: Text('Eitthvað fór úrskeiðis!'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Halda áfram'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          ),
-        );
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog();
       });
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Eitthvað fór úrskeiðis!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final currentUserData =
-        Provider.of<CurrentUserProvider>(context, listen: false);
+    final currentUserData = Provider.of<CurrentUserProvider>(context);
+    final apartmentData = Provider.of<AssociationsProvider>(context);
     final cleaningTaskData = Provider.of<CleaningProvider>(context);
     final cleaningTasks = cleaningTaskData.getAllTasks();
     return Scaffold(
@@ -110,7 +121,8 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
                       taskDone: cleaningTasks[i].taskDone,
                       isAdmin: currentUserData.isAdmin(),
                       canCheck: cleaningTaskData.isUsersTurnToClean(
-                        currentUserData.getApartmentNumber(),
+                        apartmentData.getApartmentNumber(
+                            currentUserData.getApartmentId()),
                       ),
                     ),
                   ),
