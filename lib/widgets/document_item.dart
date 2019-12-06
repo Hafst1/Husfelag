@@ -6,6 +6,7 @@ import '../providers/documents_provider.dart';
 import '../providers/current_user_provider.dart';
 import '../widgets/action_dialog.dart';
 import '../widgets/custom_icons_icons.dart';
+import '../screens/documents/add_document_screen.dart';
 
 class Document extends StatelessWidget {
   final String id;
