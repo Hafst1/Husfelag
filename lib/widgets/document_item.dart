@@ -6,6 +6,7 @@ import '../providers/documents_provider.dart';
 import '../providers/current_user_provider.dart';
 import '../widgets/action_dialog.dart';
 import '../widgets/custom_icons_icons.dart';
+import '../screens/documents/add_document_screen.dart';
 
 class Document extends StatelessWidget {
   final String id;
@@ -68,7 +69,7 @@ class Document extends StatelessWidget {
                 .deleteDocument(residentAssociationId, this.id, this.fileName);
           },
           //ekki hægt að breyta skjalinu sjálfu, athuga
-          /*editFunc: () {
+          editFunc: () {
             Navigator.of(ctx).pop();
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -76,7 +77,7 @@ class Document extends StatelessWidget {
                 settings: RouteSettings(arguments: id),
               ),
             );
-          },*/
+          },
         );
       },
     );
