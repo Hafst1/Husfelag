@@ -18,7 +18,7 @@ class CleaningProvider with ChangeNotifier {
   // function which fetches cleaning items of a resident association
   // and stores them in the _cleaningItems list.
   Future<void> fetchCleaningItems(
-      String residentAssociationId, BuildContext context) async {
+      String residentAssociationId) async {
     try {
       final response = await _associationsRef
           .document(residentAssociationId)
@@ -40,21 +40,7 @@ class CleaningProvider with ChangeNotifier {
       sortCleaningItems();
       notifyListeners();
     } catch (error) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp þrifum!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Halda áfram'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        ),
-      );
+      throw (error);
     }
   }
 
@@ -241,8 +227,7 @@ class CleaningProvider with ChangeNotifier {
 
   // function which fetches cleaning task items of a resident association and
   // stores them in the _cleaningTasks list.
-  Future<void> fetchCleaningTasks(
-      String residentAssociationId, BuildContext context) async {
+  Future<void> fetchCleaningTasks(String residentAssociationId) async {
     try {
       final response = await _associationsRef
           .document(residentAssociationId)
@@ -260,21 +245,7 @@ class CleaningProvider with ChangeNotifier {
       _cleaningTasks = loadedCleaningTask;
       notifyListeners();
     } catch (error) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp verkefnalista!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Halda áfram'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        ),
-      );
+      throw (error);
     }
   }
 

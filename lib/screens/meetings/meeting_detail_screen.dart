@@ -45,10 +45,12 @@ class MeetingDetailScreen extends StatelessWidget {
                     children: <Widget>[
                       Icon(Icons.date_range, size: 30),
                       SizedBox(width: 15),
-                      Text(
-                        '${Constants.weekdays[meeting.date.weekday - 1]}, ${meeting.date.day}. ${Constants.months[meeting.date.month - 1].toLowerCase()} ${meeting.date.year}',
-                        style: TextStyle(fontSize: 17),
-                        softWrap: true,
+                      Expanded(
+                        child: Text(
+                          '${Constants.weekdays[meeting.date.weekday - 1]}, ${meeting.date.day}. ${Constants.months[meeting.date.month - 1].toLowerCase()} ${meeting.date.year}',
+                          style: TextStyle(fontSize: 17),
+                          softWrap: true,
+                        ),
                       ),
                     ],
                   ),
@@ -57,10 +59,12 @@ class MeetingDetailScreen extends StatelessWidget {
                     children: <Widget>[
                       Icon(Icons.access_time, size: 30),
                       SizedBox(width: 15),
-                      Text(
-                        '${DateFormat.Hm().format(meeting.date)}  -  ${DateFormat.Hm().format(meeting.date.add(meeting.duration))}',
-                        style: TextStyle(fontSize: 17),
-                        softWrap: true,
+                      Expanded(
+                        child: Text(
+                          '${DateFormat.Hm().format(meeting.date)}  -  ${DateFormat.Hm().format(meeting.date.add(meeting.duration))}',
+                          style: TextStyle(fontSize: 17),
+                          softWrap: true,
+                        ),
                       ),
                     ],
                   ),
@@ -69,10 +73,12 @@ class MeetingDetailScreen extends StatelessWidget {
                     children: <Widget>[
                       Icon(Icons.location_on, size: 30),
                       SizedBox(width: 15),
-                      Text(
-                        meeting.location,
-                        style: TextStyle(fontSize: 17),
-                        softWrap: true,
+                      Expanded(
+                        child: Text(
+                          meeting.location,
+                          style: TextStyle(fontSize: 17),
+                          softWrap: true,
+                        ),
                       ),
                     ],
                   ),

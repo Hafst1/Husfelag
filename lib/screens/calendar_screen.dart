@@ -57,23 +57,46 @@ class _CalendarScreenState extends State<CalendarScreen>
           Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationId();
       Provider.of<MeetingsProvider>(context, listen: false)
-          .fetchMeetings(residentAssociationId, context)
+          .fetchMeetings(residentAssociationId)
           .then((_) {
         Provider.of<ConstructionsProvider>(context, listen: false)
-            .fetchConstructions(residentAssociationId, context)
+            .fetchConstructions(residentAssociationId)
             .then((_) {
           Provider.of<CleaningProvider>(context, listen: false)
-              .fetchCleaningItems(residentAssociationId, context)
+              .fetchCleaningItems(residentAssociationId)
               .then((_) {
             setState(() {
               _isLoading = false;
             });
+          }).catchError((_) {
+            setState(() {
+              _isLoading = false;
+            });
+            _printErrorDialog();
           });
         });
       });
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  void _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Ekki tókst að sækja viðburði fyrir dagatal!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
   }
 
   @override
