@@ -313,8 +313,8 @@ class MapScreenState extends State<ProfilePage>
                                                           userData.name,
                                                           _currentEmail ??
                                                               userData.email,
-                                                          userData.apartmentId,
                                                           userData.residentAssociationId,
+                                                          userData.apartmentId,
                                                           userData.isAdmin,
                                                         );
                                                       }
@@ -401,7 +401,7 @@ class MapScreenState extends State<ProfilePage>
                                     obscureText: true,
                                     decoration: InputDecoration(
                                         hintText:
-                                            'Skráðu nýtt lykilorð'),
+                                            'Skráðu inn nýtt lykilorð'),
                                     validator: (val) => val.length <
                                             6
                                         ? 'Lykilorð þarf að innihalda 6+ stafi'
@@ -445,6 +445,7 @@ class MapScreenState extends State<ProfilePage>
                                       onPressed: () async {
                                         if (_formKey.currentState
                                             .validate()) {
+                                              print('changing password');
                                           await _auth
                                               .changePassword(
                                                   _currentPassword);
