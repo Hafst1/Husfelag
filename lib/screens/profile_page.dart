@@ -16,8 +16,8 @@ class MapScreenState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   bool _nameStatus = true;
   bool _emailStatus = true;
-  bool _passwordStatus = true;
-  bool _isValid = true;
+  // bool _passwordStatus = true;
+  // bool _isValid = true;
   //final FocusNode myFocusNode = FocusNode();
 
   final AuthService _auth = AuthService();
@@ -25,7 +25,7 @@ class MapScreenState extends State<ProfilePage>
 
   String _currentName;
   String _currentEmail;
-  String _currentPassword;
+  // String _currentPassword;
 
   @override
   void initState() {
@@ -527,22 +527,22 @@ class MapScreenState extends State<ProfilePage>
     );
   }
 
-  Widget _getPasswordEditIcon() {
-    return GestureDetector(
-      child: CircleAvatar(
-        backgroundColor: Colors.blue,
-        radius: 14.0,
-        child: Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      onTap: () {
-        setState(() {
-          _passwordStatus = false;
-        });
-      },
-    );
-  }
+  // Widget _getPasswordEditIcon() {
+  //   return GestureDetector(
+  //     child: CircleAvatar(
+  //       backgroundColor: Colors.blue,
+  //       radius: 14.0,
+  //       child: Icon(
+  //         Icons.edit,
+  //         color: Colors.white,
+  //         size: 16.0,
+  //       ),
+  //     ),
+  //     onTap: () {
+  //       setState(() {
+  //         _passwordStatus = false;
+  //       });
+  //     },
+  //   );
+  // }
 }
