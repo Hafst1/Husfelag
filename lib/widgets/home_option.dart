@@ -5,10 +5,11 @@ class HomeOption extends StatelessWidget {
   final String optionText;
   final String optionRoute;
 
-  HomeOption(
-      {@required this.optionIcon,
-      @required this.optionText,
-      @required this.optionRoute});
+  HomeOption({
+    @required this.optionIcon,
+    @required this.optionText,
+    @required this.optionRoute,
+  });
 
   void selectOption(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(

@@ -20,7 +20,7 @@ class DocumentsFolderScreen extends StatefulWidget {
 
 class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
   final _textFieldController = TextEditingController();
-  String _searchQuery = "";
+  String _searchQuery = '';
   var _isInit = true;
   var _isLoading = false;
 
@@ -59,7 +59,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
 
   _onClear() {
     setState(() {
-      _searchQuery = "";
+      _searchQuery = '';
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _textFieldController.clear());
     });
@@ -117,7 +117,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
                         controller: _textFieldController,
                         onChanged: (value) => _changeSearchQuery(value),
                         decoration: InputDecoration(
-                          hintText: "Leita...",
+                          hintText: 'Leita...',
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.grey,
@@ -125,7 +125,7 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
                           suffixIcon: IconButton(
                             icon: Icon(
                               Icons.clear,
-                              color: _searchQuery == "" ? Colors.white : Colors.grey,
+                              color: _searchQuery == '' ? Colors.white : Colors.grey,
                             ),
                             onPressed: () => _onClear(),
                           ),

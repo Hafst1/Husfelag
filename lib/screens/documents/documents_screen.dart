@@ -18,7 +18,7 @@ class DocumentsScreen extends StatefulWidget {
 class _DocumentsScreenState extends State<DocumentsScreen> {
   final _addFolderController = TextEditingController(); 
   final _textFieldController = TextEditingController();
-  String _searchQuery = "";
+  String _searchQuery = '';
   var _isInit = true;
   var _isLoading = false;
   
@@ -57,7 +57,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
 
   _onClear() {
     setState(() {
-      _searchQuery = "";
+      _searchQuery = '';
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _textFieldController.clear());
     });
@@ -74,7 +74,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
-      title: Text("Skjöl"),
+      title: Text('Skjöl'),
       centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
@@ -110,7 +110,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                   children: <Widget>[
                     AddOption(
                       optionIcon: Icons.add,
-                      optionText: "Bæta við",
+                      optionText: 'Bæta við',
                     ),
                     Container( //her
                       padding: const EdgeInsets.only(
@@ -122,7 +122,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                         controller: _textFieldController,
                         onChanged: (value) => _changeSearchQuery(value),
                         decoration: InputDecoration(
-                          hintText: "Leita...",
+                          hintText: 'Leita...',
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.grey,
@@ -130,7 +130,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                           suffixIcon: IconButton(
                             icon: Icon(
                               Icons.clear,
-                              color: _searchQuery == "" ? Colors.white : Colors.grey,
+                              color: _searchQuery == '' ? Colors.white : Colors.grey,
                             ),
                             onPressed: () => _onClear(),
                           ),

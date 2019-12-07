@@ -149,20 +149,20 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                   children: <Widget>[
                     TextFormField(
                       decoration: InputDecoration(
-                        hintText: "Heimilisfang húsfélags...",
+                        hintText: 'Heimilisfang húsfélags...',
                         prefixIcon: Icon(Icons.location_on),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return "Fylla þarft út heimilisfang!";
+                          return 'Fylla þarft út heimilisfang!';
                         }
                         if (value.length > 30) {
-                          return "Heimilisfang getur ekki verið meira en 30 stafir á lengd!";
+                          return 'Heimilisfang getur ekki verið meira en 30 stafir á lengd!';
                         }
                         if (!associationsData
                             .associationAddressIsAvailable(value)) {
-                          return "Viðkomandi heimilisfang er nú þegar frátekið!";
+                          return 'Viðkomandi heimilisfang er nú þegar frátekið!';
                         }
                         return null;
                       },
@@ -182,7 +182,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                     TextFormField(
                       maxLines: 10,
                       decoration: InputDecoration(
-                        hintText: "Nánari lýsing (valfrjálst)...",
+                        hintText: 'Nánari lýsing (valfrjálst)...',
                         border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.text,
@@ -200,16 +200,16 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                     ),
                     TextFormField(
                       decoration: InputDecoration(
-                        hintText: "Þitt íbúðarnúmer...",
+                        hintText: 'Þitt íbúðarnúmer...',
                         prefixIcon: Icon(Icons.home),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return "Fylla þarf út íbúðarnúmer!";
+                          return 'Fylla þarf út íbúðarnúmer!';
                         }
                         if (value.length > 4) {
-                          return "Íbúðarnúmer getur ekki verið lengra en 4 stafir á lengd!";
+                          return 'Íbúðarnúmer getur ekki verið lengra en 4 stafir á lengd!';
                         }
                         return null;
                       },
@@ -227,7 +227,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                     ),
                     TextFormField(
                       decoration: InputDecoration(
-                        hintText: "Aðgangskóði íbúðar...",
+                        hintText: 'Aðgangskóði íbúðar...',
                         prefixIcon: Icon(Icons.lock),
                         suffixIcon: Icon(Icons.visibility_off),
                         border: OutlineInputBorder(),
@@ -235,7 +235,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                       obscureText: true,
                       validator: (value) {
                         if (value.length < 6) {
-                          return "Lykilorð þarf að vera að minnsta kosti 6 stafir á lengd!";
+                          return 'Lykilorð þarf að vera að minnsta kosti 6 stafir á lengd!';
                         }
                         return null;
                       },

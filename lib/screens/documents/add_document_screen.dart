@@ -26,7 +26,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
   String _extension = '';
   FileType _pickType;
   String fileName = '';
-  String filePreviewName = "";
+  String filePreviewName = '';
   String selectedFolder; //selected folder in dropdownbutton
   final _form = GlobalKey<FormState>();
   var _document = Document(
@@ -132,13 +132,11 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
 
   void openFileExplorer() async {
     try {
-      _path = null;
-      _path = await FilePicker.getFilePath(
-          type: _pickType, fileExtension: _extension);
+      _path = await FilePicker.getFilePath();
       // unique name for a file
       fileName = DateTime.now().toString() + _path.split('/').last;
     } on PlatformException catch (e) {
-      print("Óleyfileg aðgerð" + e.toString());
+      print('Óleyfileg aðgerð' + e.toString());
     }
     setState(() {
       filePreviewName = _path.split('/').last;
@@ -180,7 +178,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                   children: <Widget>[
                     OutlineButton(
                       onPressed: () => openFileExplorer(),
-                      child: new Text("Velja skjal"),
+                      child: new Text('Velja skjal'),
                     ),
                     SizedBox(
                       height: 15.0,
@@ -204,16 +202,16 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                     TextFormField(
                       initialValue: _initValues['title'],
                       decoration: InputDecoration(
-                        hintText: "Titill...",
+                        hintText: 'Titill...',
                         prefixIcon: Icon(CustomIcons.pencil),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return "Fylla þarf út titil skjals!";
+                          return 'Fylla þarf út titil skjals!';
                         }
                         if (value.length > 40) {
-                          return "Titill skjals getur ekki verið meira en 40 stafir á lengd!";
+                          return 'Titill skjals getur ekki verið meira en 40 stafir á lengd!';
                         }
                         return null;
                       },
@@ -238,7 +236,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       initialValue: _initValues['description'],
                       maxLines: 3,
                       decoration: InputDecoration(
-                        hintText: "Nánari lýsing (valfrjálst)...",
+                        hintText: 'Nánari lýsing (valfrjálst)...',
                         border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.text,
@@ -259,7 +257,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                     ),
                     DropdownButtonFormField(
                       value: selectedFolder,
-                      hint: Text("Veldu möppu"),
+                      hint: Text('Veldu möppu'),
                       onChanged: ((newValue) => setState(() {
                             selectedFolder = newValue;
                           })),
@@ -278,7 +276,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       },
                       validator: (value) {
                         if (value.isEmpty) {
-                          return "Veldu möppu";
+                          return 'Veldu möppu';
                         }
                         return null;
                       },
