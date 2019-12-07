@@ -16,6 +16,7 @@ const String FOLDERS_COLLECTION = 'Folders';
 const String MEETINGS_COLLECTION = 'Meetings';
 const String CLEANING_ITEMS_COLLECTION = 'CleaningItems';
 const String CLEANING_TASKS_COLLECTION = 'CleaningTasks';
+const String NOTIFICATIONS_COLLECTION = 'Notifications';
 
 // constants for properties
 const String ACCESS_CODE = 'accessCode';
