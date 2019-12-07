@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/screens/my_association_screen.dart';
 
 import '../screens/profile_page.dart';
 import '../services/auth.dart';
 
 class MainDrawer extends StatelessWidget {
   final AuthService _auth = AuthService();
-  Widget buildListTile(String title, IconData icon) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        size: 26,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          //fontFamily: '',
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      onTap: () {
-        //
-      },
-    );
-  }
+  // Widget buildListTile(String title, IconData icon) {
+  //   return ListTile(
+  //     leading: Icon(
+  //       icon,
+  //       size: 26,
+  //     ),
+  //     title: Text(
+  //       title,
+  //       style: TextStyle(
+  //         //fontFamily: '',
+  //         fontSize: 24,
+  //         fontWeight: FontWeight.bold,
+  //       ),
+  //     ),
+  //     onTap: () {
+  //       //
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,25 +47,64 @@ class MainDrawer extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          buildListTile(
-            'Mín síða', 
-            Icons.person,
-
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => ProfilePage()),
-            // )
-            // Navigator.of(context).pushNamed()
+          ListTile(
+            leading: Icon(
+              Icons.person,
+              size: 26,
+            ),
+            title: Text(
+              'Mín síða',
+              style: TextStyle(
+                //fontFamily: '',
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+               context,
+               MaterialPageRoute(
+                 builder: (context) => ProfilePage()),
+             );
+            },
           ),
-          buildListTile(
-            'Mitt húsfélag',
-            Icons.home
-
+          ListTile(
+            leading: Icon(
+              Icons.home,
+              size: 26,
+            ),
+            title: Text(
+              'Mitt húsfélag',
+              style: TextStyle(
+                //fontFamily: '',
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+               context,
+               MaterialPageRoute(
+                 builder: (context) => MyAssociationScreen()),
+             );
+            },
           ),
-          buildListTile(
-            'Skrá út',
-            Icons.power_settings_new,
+          ListTile(
+            leading: Icon(
+              Icons.power_settings_new,
+              size: 26,
+            ),
+            title: Text(
+              'Skrá út',
+              style: TextStyle(
+                //fontFamily: '',
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () {
+              _auth.signOut();
+            },
           ),
         ],
       ),
