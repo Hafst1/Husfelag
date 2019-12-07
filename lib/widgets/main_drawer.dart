@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:husfelagid/providers/current_user_provider.dart';
 import 'package:husfelagid/screens/my_association_screen.dart';
 
 import '../screens/profile_page.dart';
@@ -6,28 +8,10 @@ import '../services/auth.dart';
 
 class MainDrawer extends StatelessWidget {
   final AuthService _auth = AuthService();
-  // Widget buildListTile(String title, IconData icon) {
-  //   return ListTile(
-  //     leading: Icon(
-  //       icon,
-  //       size: 26,
-  //     ),
-  //     title: Text(
-  //       title,
-  //       style: TextStyle(
-  //         //fontFamily: '',
-  //         fontSize: 24,
-  //         fontWeight: FontWeight.bold,
-  //       ),
-  //     ),
-  //     onTap: () {
-  //       //
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
+    final _user = Provider.of<CurrentUserProvider>(context).getName();
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -38,11 +22,11 @@ class MainDrawer extends StatelessWidget {
             alignment: Alignment.centerLeft,
             color: Theme.of(context).primaryColor,
             child: Text(
-              'FEFEFE',
+              _user,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
-                fontSize: 30,
-                color: Colors.black,
+                fontSize: 25,
+                color: Colors.white,
               ),
             ),
           ),
