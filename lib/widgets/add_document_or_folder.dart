@@ -56,15 +56,18 @@ class AddOption extends StatelessWidget {
             if(_addFolderController.text != "" && folderData.folderTitleExists(_addFolderController.text) == false) {
               final residentAssociationId = Provider.of<CurrentUserProvider>(context, listen: false)
               .getResidentAssociationId();
+              final currentUserData =
+                 Provider.of<CurrentUserProvider>(context, listen: false);
+              final userId = currentUserData.getId();
               try {
-                await folderData.addFolder(residentAssociationId, _addFolderController.text);
+                await folderData.addFolder(residentAssociationId, _addFolderController.text, userId);
                 Navigator.of(context, rootNavigator: true).pop();
                 _addFolderController.clear();
               } catch (error) {
                   await printErrorDialog('Ekki tókst að bæta við möppu!', context);
               }
             } else {
-              await printErrorDialog('Veldu nafn á möppu\nEkki er leyfilegt að velja nafn á möppu sem er nú þegar til!', context);
+              await printErrorDialog('Veldu nafn á möppu.\nEkki er leyfilegt að velja nafn á möppu sem er nú þegar til!', context);
               _addFolderController.clear();
             }
           },

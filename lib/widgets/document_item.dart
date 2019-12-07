@@ -4,9 +4,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/documents_provider.dart';
 import '../providers/current_user_provider.dart';
-import '../screens/documents/add_document_screen.dart';
 import '../widgets/action_dialog.dart';
 import '../widgets/custom_icons_icons.dart';
+import '../screens/documents/add_document_screen.dart';
 
 class Document extends StatelessWidget {
   final String id;
@@ -15,6 +15,8 @@ class Document extends StatelessWidget {
   final String fileName;
   final String downloadUrl;
   final String folderId;
+  final bool isAdmin;
+  final bool isAuthor;
 
   Document({
     @required this.id,
@@ -22,7 +24,9 @@ class Document extends StatelessWidget {
     @required this.description,
     @required this.fileName,
     @required this.downloadUrl,
-    @required this.folderId
+    @required this.folderId,
+    @required this.isAdmin,
+    @required this.isAuthor,
   });
 
   _launchURL(BuildContext context) async {
@@ -65,7 +69,7 @@ class Document extends StatelessWidget {
                 .deleteDocument(residentAssociationId, this.id, this.fileName);
           },
           //ekki hægt að breyta skjalinu sjálfu, athuga
-          /*editFunc: () {
+          editFunc: () {
             Navigator.of(ctx).pop();
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -73,7 +77,7 @@ class Document extends StatelessWidget {
                 settings: RouteSettings(arguments: id),
               ),
             );
-          },*/
+          },
         );
       },
     );

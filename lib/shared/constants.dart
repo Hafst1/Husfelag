@@ -1,9 +1,10 @@
 library constants;
 
 // constants for user options.
-const MyPage = 'Mín Síða';
-const SignOut = 'Skrá út';
-const List<String> choices = <String>[MyPage, SignOut];
+const MY_PAGE = 'Mín Síða';
+const MY_ASSOCIATION = 'Mitt húsfélag';
+const SIGN_OUT = 'Skrá út';
+const List<String> choices = <String>[MY_PAGE, MY_ASSOCIATION, SIGN_OUT];
 
 // constants for collection names
 const String RESIDENT_ASSOCIATIONS_COLLECTION = 'ResidentAssociations';
@@ -28,7 +29,10 @@ const String DATE_FROM = 'dateFrom';
 const String DATE_TO = 'dateTo';
 const String DURATION = 'duration';
 const String DESCRIPTION = 'description';
+const String DOWNLOAD_URL = 'downloadUrl';
 const String EMAIL = 'email';
+const String FOLDER_ID = 'folderId';
+const String FILE_NAME = 'fileName';
 const String IS_ADMIN = 'isAdmin';
 const String LOCATION = 'location';
 const String NAME = 'name';

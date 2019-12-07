@@ -15,8 +15,7 @@ class ConstructionsProvider with ChangeNotifier {
 
   // function which fetches the constructions of a resident association
   // and stores them in the _constructions list.
-  Future<void> fetchConstructions(
-      String residentAssociationId, BuildContext context) async {
+  Future<void> fetchConstructions(String residentAssociationId) async {
     try {
       final response = await _associationRef
           .document(residentAssociationId)
@@ -39,21 +38,7 @@ class ConstructionsProvider with ChangeNotifier {
       sortConstructions();
       notifyListeners();
     } catch (error) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp framkvæmdum!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Halda áfram'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        ),
-      );
+      throw (error);
     }
   }
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../models/resident_association.dart';
-import '../models/apartment.dart';
 import '../models/user.dart';
+import '../models/apartment.dart';
 import '../services/database.dart';
 import '../shared/constants.dart' as Constants;
 
 class CurrentUserProvider with ChangeNotifier {
+  // logged in user.
   var _currentUser = UserData(
     id: '',
     email: '',
@@ -17,10 +17,8 @@ class CurrentUserProvider with ChangeNotifier {
     isAdmin: false,
   );
 
-  List<ResidentAssociation> _residentAssociations = [];
-  List<Apartment> _apartments = [];
-
-  CollectionReference _associationRef =
+  // reference to the resident associations and users collections.
+  CollectionReference _associationsRef =
       Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
   CollectionReference _userRef =
       Firestore.instance.collection(Constants.USERS_COLLECTION);
@@ -39,219 +37,54 @@ class CurrentUserProvider with ChangeNotifier {
         isAdmin: fetchedUser[Constants.IS_ADMIN],
       );
     } catch (error) {
+      //error handling vantar
       print(error);
-      // error handling vantar
     }
   }
 
-  // fetch associations from firebase and store in _residentAssociation list.
-  Future<void> fetchAssociations(BuildContext context) async {
-    List<ResidentAssociation> loadedAssociations = [];
+  // functions which makes the current user leave the resident association
+  // he is registered in. If the user is the only resident in his apartment
+  // then the apartment is deleted as well.
+  Future<void> leaveResidentAssociation(Apartment apartment) async {
     try {
-      final response = await _associationRef.orderBy('address').getDocuments();
-      response.documents.forEach((association) {
-        loadedAssociations.add(ResidentAssociation(
-          id: association.documentID,
-          address: association.data[Constants.ADDRESS],
-          description: association.data[Constants.DESCRIPTION],
-          accessCode: association.data[Constants.ACCESS_CODE],
-        ));
-      });
-      _residentAssociations = loadedAssociations;
-      notifyListeners();
-    } catch (error) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp húsfélögum!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Halda áfram'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        ),
-      );
-    }
-  }
-
-  // function for creating a resident association which also adds apartment
-  // to it and updates user info on firebase.
-  Future<String> createAssociation(
-      ResidentAssociation association, Apartment apartment) async {
-    try {
-      final response = await _associationRef.add({
-        Constants.ADDRESS: association.address,
-        Constants.DESCRIPTION: association.description,
-        Constants.ACCESS_CODE: association.accessCode,
-      });
-      await _associationRef.document(response.documentID).updateData({
-        Constants.ADDRESS: association.address,
-        Constants.DESCRIPTION: association.description,
-        Constants.ACCESS_CODE: response.documentID,
-      });
-      final apartmentId = await _associationRef
-          .document(response.documentID)
-          .collection(Constants.APARTMENTS_COLLECTION)
-          .add({
-        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
-        Constants.ACCESS_CODE: apartment.accessCode,
-        Constants.RESIDENTS: [_currentUser.id],
-      });
-      await DatabaseService(uid: _currentUser.id).updateUserData(
-        _currentUser.name,
-        _currentUser.email,
-        response.documentID,
-        apartmentId.documentID,
-        true,
-      );
-      return response.documentID;
-    } catch (error) {
-      throw (error);
-    }
-  }
-
-  // function which checks whether an association address is available or not.
-  bool associationAddressIsAvailable(String query) {
-    String searchQuery = query.toLowerCase();
-    bool retVal = true;
-    for (final association in [..._residentAssociations]) {
-      if (association.address.toLowerCase().compareTo(searchQuery) == 0) {
-        retVal = false;
-        break;
+      if (apartment.residents.length <= 1) {
+        await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.APARTMENTS_COLLECTION)
+            .document(_currentUser.apartmentId)
+            .delete();
+      } else {
+        var updatedResidentsList = apartment.residents;
+        updatedResidentsList
+            .removeWhere((residentId) => residentId == _currentUser.id);
+        await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.APARTMENTS_COLLECTION)
+            .document(_currentUser.apartmentId)
+            .updateData({
+          Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
+          Constants.ACCESS_CODE: apartment.accessCode,
+          Constants.RESIDENTS: updatedResidentsList,
+        });
       }
-    }
-    return retVal;
-  }
-
-  // function which fetches apartments from firebase and stores them in the
-  // _apartments list in the provider.
-  Future<void> fetchApartments(String residentAssociationId) async {
-    List<Apartment> loadedApartments = [];
-    try {
-      final response = await _associationRef
-          .document(residentAssociationId)
-          .collection(Constants.APARTMENTS_COLLECTION)
-          .orderBy(Constants.APARTMENT_NUMBER)
-          .getDocuments();
-      response.documents.forEach((apartment) {
-        loadedApartments.add(Apartment(
-          id: apartment.documentID,
-          apartmentNumber: apartment.data[Constants.APARTMENT_NUMBER],
-          accessCode: apartment.data[Constants.ACCESS_CODE],
-          residents: List.from(apartment.data[Constants.RESIDENTS]),
-        ));
-      });
-      _apartments = loadedApartments;
+      await DatabaseService(uid: _currentUser.id)
+          .updateUserData(_currentUser.name, _currentUser.email, '', '', false);
       notifyListeners();
     } catch (error) {
       throw (error);
     }
   }
 
-  // function which adds an apartment to a resident association on firebase.
-  Future<void> addApartment(
-      String residentAssociationId, Apartment apartment) async {
-    try {
-      final response = await _associationRef
-          .document(residentAssociationId)
-          .collection(Constants.APARTMENTS_COLLECTION)
-          .add({
-        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
-        Constants.ACCESS_CODE: apartment.accessCode,
-        Constants.RESIDENTS: apartment.residents,
-      });
-      await DatabaseService(uid: _currentUser.id).updateUserData(
-        _currentUser.name,
-        _currentUser.email,
-        residentAssociationId,
-        response.documentID,
-        _currentUser.isAdmin,
-      );
-    } catch (error) {
-      throw (error);
-    }
-  }
-
-  // function which adds resident to an apartment of a resident
-  // association on firebase.
-  Future<void> joinApartment(
-      String residentAssociationId, String apartmentId) async {
-    final apartment =
-        _apartments.firstWhere((apartment) => apartment.id == apartmentId);
-    apartment.residents.add(_currentUser.id);
-    try {
-      await _associationRef
-          .document(residentAssociationId)
-          .collection(Constants.APARTMENTS_COLLECTION)
-          .document(apartmentId)
-          .updateData({
-        Constants.APARTMENT_NUMBER: apartment.apartmentNumber,
-        Constants.ACCESS_CODE: apartment.accessCode,
-        Constants.RESIDENTS: apartment.residents,
-      });
-      await DatabaseService(uid: _currentUser.id).updateUserData(
-        _currentUser.name,
-        _currentUser.email,
-        residentAssociationId,
-        apartmentId,
-        _currentUser.isAdmin,
-      );
-    } catch (error) {
-      throw (error);
-    }
-  }
-
-  // getter for the apartments list.
-  List<Apartment> getApartments() {
-    return [..._apartments];
-  }
-
-  // function which gets the apartment number of the logged in user.
-  String getApartmentNumber() {
-    if (_apartments.isEmpty) {
-      return '';
-    }
-    var retVal = '';
-    final apartmentIndex = _apartments
-        .indexWhere((apartment) => apartment.id == _currentUser.apartmentId);
-    if (apartmentIndex >= 0) {
-      retVal = _apartments[apartmentIndex].apartmentNumber;
-    }
-    return retVal;
-  }
-
-  // function which checks whether an apartment number is available or not.
-  bool apartmentIsAvailable(String query) {
-    String searchQuery = query.toLowerCase();
-    bool retVal = true;
-    for (final apartment in [..._apartments]) {
-      if (apartment.apartmentNumber.toLowerCase().compareTo(searchQuery) == 0) {
-        retVal = false;
-        break;
-      }
-    }
-    return retVal;
-  }
-
-  // function which returns an association list filtered by the search query
-  // taken in as parameter.
-  List<ResidentAssociation> filteredItems(String query) {
-    List<ResidentAssociation> associations = [..._residentAssociations];
-    String searchQuery = query.toLowerCase();
-    List<ResidentAssociation> displayList = [];
-    if (query.isEmpty) {
-      return associations;
-    }
-    associations.forEach((association) {
-      if (association.address.toLowerCase().contains(searchQuery)) {
-        displayList.add(association);
-      }
-    });
-    return displayList;
+  // function which returns the current user.
+  UserData getUser() {
+    return UserData(
+      id: _currentUser.id,
+      name: _currentUser.name,
+      email: _currentUser.email,
+      residentAssociationId: _currentUser.residentAssociationId,
+      apartmentId: _currentUser.apartmentId,
+      isAdmin: _currentUser.isAdmin,
+    );
   }
 
   // function which checks whether the user is part of a resident association or not.

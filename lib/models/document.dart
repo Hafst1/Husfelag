@@ -7,6 +7,7 @@ class Document {
   final String fileName;
   final String downloadUrl;
   final String folderId;
+  final String authorId;
 
   Document({
     @required this.id,
@@ -15,5 +16,6 @@ class Document {
     @required this.fileName,
     @required this.downloadUrl,
     @required this.folderId,
+    @required this.authorId,
   });
 }

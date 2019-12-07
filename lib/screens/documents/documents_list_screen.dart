@@ -85,6 +85,8 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
             .getResidentAssociationId();
@@ -151,6 +153,9 @@ class _DocumentsFolderScreenState extends State<DocumentsFolderScreen> {
                               fileName: documents[i].fileName,
                               downloadUrl: documents[i].downloadUrl,
                               folderId: documents[i].folderId,
+                              isAdmin: currentUserData.isAdmin(),
+                              isAuthor: documents[i].authorId ==
+                                  currentUserData.getId(),
                             ),
                           )
                         ),

@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import '../../services/auth.dart';
 
 class ForgotPassword extends StatefulWidget {
-  // final Function toggleView;
-  // Register({this.toggleView});
-
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
 }
@@ -21,7 +18,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       body: SafeArea(
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
@@ -51,7 +48,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     children: <Widget>[
                       TextFormField(
                           decoration: InputDecoration(
-                            hintText: "Netfang",
+                            hintText: 'Netfang',
                             prefixIcon: Icon(Icons.email),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -73,7 +70,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text('Go back!'),
+                        child: Text('Til baka'),
                       ),
                     ],
                   ),
@@ -89,7 +86,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       onTap: () async {
         if (_formKey.currentState.validate()) {
           await _auth.sendPasswordResetEmail(_email);
-          print("Password reset email sent");
+          print('Password reset email sent');
 
           _popupDialog(context);
         }
@@ -103,7 +100,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         ),
         child: Center(
           child: Text(
-            "Senda",
+            'Senda',
             style: TextStyle(
               color: Colors.white,
               fontSize: 17,

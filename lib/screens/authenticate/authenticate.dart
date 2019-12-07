@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/screens/authenticate/register.dart';
-import 'package:husfelagid/screens/authenticate/sign_in.dart';
+
+import '../../screens/authenticate/register.dart';
+import '../../screens/authenticate/sign_in.dart';
 
 class Authenticate extends StatefulWidget {
   @override
@@ -8,7 +9,6 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
-
   bool showSignIn = true;
   void toggleView() {
     setState(() => showSignIn = !showSignIn);
