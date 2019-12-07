@@ -1,6 +1,30 @@
 import 'package:flutter/material.dart';
 
+import '../screens/profile_page.dart';
+import '../services/auth.dart';
+
 class MainDrawer extends StatelessWidget {
+  final AuthService _auth = AuthService();
+  Widget buildListTile(String title, IconData icon) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        size: 26,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          //fontFamily: '',
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      onTap: () {
+        //
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -11,50 +35,37 @@ class MainDrawer extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.all(20),
             alignment: Alignment.centerLeft,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
             child: Text(
-              'Cooking up',
+              'FEFEFE',
               style: TextStyle(
                 fontWeight: FontWeight.w900,
-                color: Theme.of(context).primaryColor,
+                fontSize: 30,
+                color: Colors.black,
               ),
             ),
           ),
           SizedBox(height: 20),
-          ListTile(
-            leading: Icon(
-              Icons.person,
-              size: 26,
-            ),
-            title: Text(
-              'Mín síða', 
-              style: TextStyle(
-                //fontFamily: '',
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onTap: () {
-              // ...
-            },
+          buildListTile(
+            'Mín síða', 
+            Icons.person,
+
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => ProfilePage()),
+            // )
+            // Navigator.of(context).pushNamed()
           ),
-          ListTile(
-            leading: Icon(
-              Icons.person,
-              size: 26,
-            ),
-            title: Text(
-              'Mitt húsfélag', 
-              style: TextStyle(
-                //fontFamily: '',
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onTap: () {
-              // ...
-            },
-          )
+          buildListTile(
+            'Mitt húsfélag',
+            Icons.home
+
+          ),
+          buildListTile(
+            'Skrá út',
+            Icons.power_settings_new,
+          ),
         ],
       ),
     );

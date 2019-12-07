@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/main_drawer.dart';
 import '../services/auth.dart';
-//import 'package:husfelagid/screens/settings_form.dart';
 import '../screens/profile_page.dart';
 import '../screens/my_association_screen.dart';
 import '../widgets/home_option.dart';
@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
         //   ),
         // ],
       ),
-      drawer: Drawer(child: Text('The Drawer!')),
+      drawer: MainDrawer(),
       body: GridView(
         padding: const EdgeInsets.all(25),
         children: <Widget>[
