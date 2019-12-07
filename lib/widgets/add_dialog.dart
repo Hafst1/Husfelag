@@ -22,7 +22,10 @@ class AddDialog extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: GestureDetector(
-                onTap: () => addFolderFunc(),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  addFolderFunc();
+                },
                 child: Column(
                   children: <Widget>[
                     Expanded(

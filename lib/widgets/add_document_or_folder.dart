@@ -67,7 +67,7 @@ class AddOption extends StatelessWidget {
                   await printErrorDialog('Ekki tókst að bæta við möppu!', context);
               }
             } else {
-              await printErrorDialog('Veldu nafn á möppu\nEkki er leyfilegt að velja nafn á möppu sem er nú þegar til!', context);
+              await printErrorDialog('Veldu nafn á möppu.\nEkki er leyfilegt að velja nafn á möppu sem er nú þegar til!', context);
               _addFolderController.clear();
             }
           },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
@@ -124,6 +125,12 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
             .addConstruction(residentAssociationId, _construction);
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við framkvæmd!');
+      }
+      try {
+        await Provider.of<NotificationsProvider>(context, listen: false)
+            .addNotificationConstruction(residentAssociationId, _construction);
+      } catch (error) {
+        await printErrorDialog('Ekki tókst að bæta við notification!');
       }
     }
     setState(() {

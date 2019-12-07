@@ -59,7 +59,7 @@ class DocumentsProvider with ChangeNotifier {
   }
    ///athuga með constants hér!!
   // function which adds a file to firebase storage.
-  Future<void> addFile(String filePath, Document document/*, FileType _pickType*/) async{
+  Future<void> addFile(String filePath, Document document) async{
     StorageReference storageRef =
         FirebaseStorage.instance.ref().child(document.fileName);
     StorageUploadTask uploadTask = storageRef.putFile(File(filePath));
@@ -131,11 +131,44 @@ class DocumentsProvider with ChangeNotifier {
     }
   }
 
+  Future<void> updateFile(String filePath, Document editedDocument, String oldFileName) async {
+    StorageReference storageRef =
+      FirebaseStorage.instance.ref().child(oldFileName);
+      try {
+        await addFile(filePath, editedDocument);
+        await storageRef.delete();
+      } catch (error) {
+        throw (error);
+      }
+  }
+
   // function which updates a document in a resident association.
-  //athuga með update!!
   Future<void> updateDocument(
-      String residentAssociationId, Document editedDocument) async {
+      String residentAssociationId, Document editedDocument, String editedFileName, String filePath) async {
+      if(filePath != '') {
+        String newFileName = filePath.split('/').last;
+        if(newFileName != editedFileName) {
+          print("1: " + newFileName);
+          print("2: " + editedFileName);
+          final response = _associationRef
+            .document(residentAssociationId)
+            .collection(Constants.DOCUMENTS_COLLECTION)
+            .document(editedDocument.id);
+          final newEditedDocument = Document(
+            id: response.documentID,
+            title: editedDocument.title,
+            description: editedDocument.description,
+            fileName: newFileName,
+            downloadUrl: downloadUrl,
+            folderId: editedDocument.folderId,
+            authorId: editedDocument.authorId,
+          );
+          editedDocument = newEditedDocument;
+          await updateFile(filePath, editedDocument, editedFileName);
+        }
+      }
     try {
+      print("inni i provider: " + editedDocument.downloadUrl);
       await _associationRef
           .document(residentAssociationId)
           .collection(Constants.DOCUMENTS_COLLECTION)
@@ -144,7 +177,7 @@ class DocumentsProvider with ChangeNotifier {
         Constants.TITLE: editedDocument.title,
         Constants.DESCRIPTION: editedDocument.description,
         Constants.FILE_NAME: editedDocument.fileName,
-        Constants.DOWNLOAD_URL: downloadUrl,
+        Constants.DOWNLOAD_URL: editedDocument.downloadUrl,
         Constants.FOLDER_ID: editedDocument.folderId,
         Constants.AUTHOR_ID: editedDocument.authorId,
       });

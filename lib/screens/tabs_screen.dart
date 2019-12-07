@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/navigators/home_navigator.dart';
 import '../widgets/navigators/calendar_navigator.dart';
 import '../widgets/navigators/notification_navigator.dart';
+import '../services/message_handler.dart';
 
 class TabsScreen extends StatefulWidget {
   @override
@@ -43,6 +44,7 @@ class _TabsScreenState extends State<TabsScreen> {
       child: Scaffold(
         body: Stack(
           children: <Widget>[
+            MessageHandler(),
             _buildOffstageNavigator(
               HomeNavigator(navigatorKey: navigatorKeys[0]),
               0,
