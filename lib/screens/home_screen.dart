@@ -40,41 +40,42 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Húsfélagið'),
         centerTitle: true,
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: choiceAction,
-            itemBuilder: (BuildContext context) {
-              return Constants.choices.map((String choice) {
-                return PopupMenuItem<String> (
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            }
-          ),
-        ],
+        // actions: <Widget>[
+        //   PopupMenuButton<String>(
+        //     onSelected: choiceAction,
+        //     itemBuilder: (BuildContext context) {
+        //       return Constants.choices.map((String choice) {
+        //         return PopupMenuItem<String> (
+        //           value: choice,
+        //           child: Text(choice),
+        //         );
+        //       }).toList();
+        //     }
+        //   ),
+        // ],
       ),
+      drawer: Drawer(child: Text('The Drawer!')),
       body: GridView(
         padding: const EdgeInsets.all(25),
         children: <Widget>[
           HomeOption(
             optionIcon: CustomIcons.tools,
-            optionText: "Framkvæmdir",
+            optionText: 'Framkvæmdir',
             optionRoute: ConstructionsScreen.routeName,
           ),
           HomeOption(
             optionIcon: CustomIcons.group,
-            optionText: "Fundir",
+            optionText: 'Fundir',
             optionRoute: MeetingsScreen.routeName,
           ),
           HomeOption(
             optionIcon: CustomIcons.doc_text,
-            optionText: "Skjöl",
+            optionText: 'Skjöl',
             optionRoute: DocumentsScreen.routeName,
           ),
           HomeOption(
             optionIcon: CustomIcons.trash,
-            optionText: "Þrif",
+            optionText: 'Þrif',
             optionRoute: CleaningScreen.routeName,
           ),
         ],
