@@ -4,10 +4,13 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 
 import '../../models/meeting.dart';
+
+import '../../models/notification.dart';
 import '../../providers/meetings_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../widgets/save_button.dart';
 import '../../shared/loading_spinner.dart';
+import '../../providers/notification_provider.dart';
 
 class AddMeetingScreen extends StatefulWidget {
   static const routeName = '/add-meeting';
@@ -30,6 +33,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     description: '',
     authorId: '',
   );
+  
   var _initValues = {
     'appbar-title': 'Bóka fund',
     'title': '',
@@ -180,6 +184,13 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við fundi!');
       }
+      try {
+        await Provider.of<NotificationsProvider>(context, listen: false)
+            .addNotificationMeeting(residentAssociationId, _meeting);
+      } catch (error) {
+        await printErrorDialog('Ekki tókst að bæta við notification');
+      }
+
     }
     setState(() {
       _isLoading = false;
