@@ -29,23 +29,50 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<CleaningProvider>(context)
-          .fetchCleaningItems(residentAssociationId, context)
+          .fetchCleaningItems(residentAssociationId)
           .then((_) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog();
       });
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  void _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Ekki tókst að hlaða upp þrifum!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Future<void> _refreshCleaningItems(
       String residentAssociationId, BuildContext context) async {
-    await Provider.of<CleaningProvider>(context)
-        .fetchCleaningItems(residentAssociationId, context);
+    try {
+      await Provider.of<CleaningProvider>(context)
+          .fetchCleaningItems(residentAssociationId);
+    } catch (error) {
+      _printErrorDialog();
+    }
   }
 
   _selectFilter(int index) {
@@ -84,9 +111,8 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final cleaningData = Provider.of<CleaningProvider>(context);
     final cleanings = cleaningData.filteredItems(
       _searchQuery,
@@ -156,8 +182,10 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () =>
-                          _refreshCleaningItems(residentAssociationId, context),
+                      onRefresh: () => _refreshCleaningItems(
+                        currentUserData.getResidentAssociationId(),
+                        context,
+                      ),
                       child: Container(
                         padding: const EdgeInsets.only(
                           bottom: 5,
@@ -166,9 +194,12 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
                           itemCount: cleanings.length,
                           itemBuilder: (ctx, i) => CleaningListItem(
                             id: cleanings[i].id,
-                            apartment: cleanings[i].apartment,
+                            apartment: cleanings[i].apartmentNumber,
                             dateFrom: cleanings[i].dateFrom,
                             dateTo: cleanings[i].dateTo,
+                            isAdmin: currentUserData.isAdmin(),
+                            isAuthor: cleanings[i].authorId ==
+                                currentUserData.getId(),
                           ),
                         ),
                       ),

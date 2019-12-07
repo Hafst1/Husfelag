@@ -5,7 +5,6 @@ import 'dart:io';
 
 import '../../providers/constructions_provider.dart';
 import '../../providers/current_user_provider.dart';
-import '../../widgets/custom_icons_icons.dart';
 import '../../models/construction.dart';
 import '../../widgets/save_button.dart';
 import '../../shared/loading_spinner.dart';
@@ -23,10 +22,11 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
   final _form = GlobalKey<FormState>();
   var _construction = Construction(
     id: null,
-    title: "",
+    title: '',
     dateFrom: DateTime.now(),
     dateTo: DateTime.now(),
-    description: "",
+    description: '',
+    authorId: '',
   );
   var _initValues = {
     'appbar-title': 'Bæta við framkvæmd',
@@ -71,12 +71,15 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
 
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
+    final firstDate = exactDate.subtract(
+      Duration(days: 3650),
+    );
+    final convertedDate = convertToDate(controller.text) ?? exactDate;
     showDatePicker(
       context: context,
-      initialDate: convertToDate(controller.text) ?? DateTime.now(),
-      firstDate: exactDate.subtract(
-        Duration(days: 3650),
-      ),
+      initialDate:
+          convertedDate.isBefore(firstDate) ? firstDate : convertedDate,
+      firstDate: firstDate,
       lastDate: exactDate.add(
         Duration(days: 3650),
       ),
@@ -99,7 +102,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     }
   }
 
-  void _saveForm() async {
+  void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -108,9 +111,6 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     setState(() {
       _isLoading = true;
     });
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
     if (_construction.id != null) {
       try {
         await Provider.of<ConstructionsProvider>(context, listen: false)
@@ -152,6 +152,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
+    final residentAssociationId = currentUserData.getResidentAssociationId();
+    final userId = currentUserData.getId();
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
@@ -162,7 +166,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm();
+                    _saveForm(residentAssociationId);
                   },
                 )
               : Container(),
@@ -179,9 +183,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                     TextFormField(
                       initialValue: _initValues['title'],
                       decoration: InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Titill...",
-                        prefixIcon: Icon(CustomIcons.pencil),
-                        border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
@@ -199,6 +204,9 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                           dateFrom: _construction.dateFrom,
                           dateTo: _construction.dateTo,
                           description: _construction.description,
+                          authorId: _construction.authorId != ''
+                              ? _construction.authorId
+                              : userId,
                         );
                       },
                     ),
@@ -211,11 +219,13 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                         child: TextFormField(
                           controller: _dateFromController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Frá...",
                             prefixText:
                                 _dateFromController.text != "" ? "Frá: " : "",
                             prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           textInputAction: TextInputAction.next,
@@ -238,6 +248,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                               dateFrom: convertToDate(value),
                               dateTo: _construction.dateTo,
                               description: _construction.description,
+                              authorId: _construction.authorId,
                             );
                           },
                         ),
@@ -252,11 +263,13 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                         child: TextFormField(
                           controller: _dateToController,
                           decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: "Til...",
                             prefixText:
                                 _dateToController.text != "" ? "Til: " : "",
                             prefixIcon: Icon(Icons.date_range),
-                            border: OutlineInputBorder(),
                             errorMaxLines: 2,
                           ),
                           validator: (value) {
@@ -278,6 +291,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                               dateFrom: _construction.dateFrom,
                               dateTo: convertToDate(value),
                               description: _construction.description,
+                              authorId: _construction.authorId,
                             );
                           },
                         ),
@@ -290,8 +304,10 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                       initialValue: _initValues['description'],
                       maxLines: 10,
                       decoration: InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.white,
                         hintText: "Nánari lýsing (valfrjálst)...",
-                        border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.text,
                       onSaved: (value) {
@@ -301,6 +317,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                           dateFrom: _construction.dateFrom,
                           dateTo: _construction.dateTo,
                           description: value,
+                          authorId: _construction.authorId,
                         );
                       },
                     ),
@@ -310,7 +327,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                     Platform.isAndroid
                         ? SaveButton(
                             text: _initValues['save-text'],
-                            saveFunc: _saveForm,
+                            saveFunc: () => _saveForm(residentAssociationId),
                           )
                         : Container(),
                   ],

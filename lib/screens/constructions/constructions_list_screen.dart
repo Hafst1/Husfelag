@@ -30,23 +30,50 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
       });
       final residentAssociationId =
           Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationNumber();
+              .getResidentAssociationId();
       Provider.of<ConstructionsProvider>(context)
-          .fetchConstructions(residentAssociationId, context)
+          .fetchConstructions(residentAssociationId)
           .then((_) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog();
       });
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  void _printErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text('Ekki tókst að hlaða upp framkvæmdum!'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Future<void> _refreshConstructions(
       String residentAssociationId, BuildContext context) async {
-    await Provider.of<ConstructionsProvider>(context)
-        .fetchConstructions(residentAssociationId, context);
+    try {
+      await Provider.of<ConstructionsProvider>(context)
+          .fetchConstructions(residentAssociationId);
+    } catch (error) {
+      _printErrorDialog();
+    }
   }
 
   _selectFilter(int index) {
@@ -86,9 +113,8 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
         mediaQuery.padding.top -
         appBar.preferredSize.height -
         kBottomNavigationBarHeight;
-    final residentAssociationId =
-        Provider.of<CurrentUserProvider>(context, listen: false)
-            .getResidentAssociationNumber();
+    final currentUserData =
+        Provider.of<CurrentUserProvider>(context, listen: false);
     final constructionData = Provider.of<ConstructionsProvider>(context);
     final constructions = constructionData.filteredItems(
       _searchQuery,
@@ -158,8 +184,10 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () =>
-                          _refreshConstructions(residentAssociationId, context),
+                      onRefresh: () => _refreshConstructions(
+                        currentUserData.getResidentAssociationId(),
+                        context,
+                      ),
                       child: Container(
                         padding: const EdgeInsets.only(
                           bottom: 5,
@@ -171,6 +199,9 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
                             title: constructions[i].title,
                             dateFrom: constructions[i].dateFrom,
                             dateTo: constructions[i].dateTo,
+                            isAdmin: currentUserData.isAdmin(),
+                            isAuthor: constructions[i].authorId ==
+                                currentUserData.getId(),
                           ),
                         ),
                       ),

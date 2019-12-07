@@ -7,6 +7,7 @@ class Meeting {
   final Duration duration;
   final String location;
   final String description;
+  final String authorId;
 
   Meeting({
     @required this.id,
@@ -15,5 +16,6 @@ class Meeting {
     @required this.duration,
     @required this.location,
     @required this.description,
+    @required this.authorId,
   });
 }

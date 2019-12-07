@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import '../screens/documents/documents_folder_screen.dart';
+import '../screens/documents/documents_list_screen.dart';
 
 class DocumentFolder extends StatelessWidget {
   final String title;
   final String id;
+  final bool isAdmin;
+  final bool isAuthor;
 
-  DocumentFolder(
-      {@required this.title,
-      @required this.id});
+  DocumentFolder({
+      @required this.title,
+      @required this.id,
+      @required this.isAdmin,
+      @required this.isAuthor,
+  });
 
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../screens/authenticate/forgot_password.dart';
 import '../../services/auth.dart';
 import '../../shared/loading_spinner.dart';
 
@@ -24,7 +25,9 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? LoadingSpinner()
+        ? Scaffold(
+            body: LoadingSpinner(),
+          )
         : Scaffold(
             body: SafeArea(
               child: Column(
@@ -54,7 +57,7 @@ class _SignInState extends State<SignIn> {
                           children: <Widget>[
                             TextFormField(
                                 decoration: InputDecoration(
-                                  hintText: "Netfang",
+                                  hintText: 'Netfang',
                                   prefixIcon: Icon(Icons.email),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20.0),
@@ -70,7 +73,7 @@ class _SignInState extends State<SignIn> {
                             ),
                             TextFormField(
                               decoration: InputDecoration(
-                                hintText: "Lykilorð",
+                                hintText: 'Lykilorð',
                                 prefixIcon: Icon(Icons.lock),
                                 suffixIcon: Icon(Icons.visibility_off),
                                 border: OutlineInputBorder(
@@ -86,22 +89,32 @@ class _SignInState extends State<SignIn> {
                               },
                             ),
                             SizedBox(
-                              height: 15,
+                              height: 5,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Text(
-                                  "Gleymt lykilorð?",
-                                  style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 15,
+                                FlatButton(
+                                  child: Text(
+                                    'Gleymt lykilorð?',
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 15,
+                                    ),
                                   ),
-                                )
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ForgotPassword()),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                             SizedBox(
-                              height: 30,
+                              height: 15,
                             ),
                             buildButton(),
                             SizedBox(
@@ -111,7 +124,7 @@ class _SignInState extends State<SignIn> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  "Ertu ekki með aðgang?",
+                                  'Ertu ekki með aðgang?',
                                   style: TextStyle(
                                     fontSize: 15,
                                   ),
@@ -124,7 +137,7 @@ class _SignInState extends State<SignIn> {
                                     widget.toggleView();
                                   },
                                   child: Text(
-                                    "Stofnaðu aðgang!",
+                                    'Stofnaðu aðgang!',
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Theme.of(context).primaryColor,
@@ -178,7 +191,7 @@ class _SignInState extends State<SignIn> {
         ),
         child: Center(
           child: Text(
-            "SKRÁ INN",
+            'SKRÁ INN',
             style: TextStyle(
               color: Colors.white,
               fontSize: 17,

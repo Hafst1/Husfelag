@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../services/auth.dart';
 import '../../services/database.dart';
 import '../../shared/loading_spinner.dart';
+import '../../models/user.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -15,19 +16,26 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
-  bool loading = false;
+  var _isLoading = false;
 
-  // Text field state
-  String email = '';
-  String password = '';
-  String name = '';
-  String home = '';
-  String error = '';
+  var _user = UserData(
+    id: '',
+    name: '',
+    email: '',
+    residentAssociationId: '',
+    apartmentId: '',
+    isAdmin: false,
+  );
+
+  var _userPassword = '';
+  var _errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
-    return loading
-        ? LoadingSpinner()
+    return _isLoading
+        ? Scaffold(
+            body: LoadingSpinner(),
+          )
         : Scaffold(
             body: SafeArea(
               child: Column(
@@ -37,7 +45,7 @@ class _RegisterState extends State<Register> {
                       top: 50,
                     ),
                     child: Text(
-                      "Búa til aðgang",
+                      'Búa til aðgang',
                       style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.bold,
@@ -59,57 +67,58 @@ class _RegisterState extends State<Register> {
                         child: Column(
                           children: <Widget>[
                             TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: "Fullt nafn",
-                                  prefixIcon: Icon(Icons.person),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
+                              decoration: InputDecoration(
+                                hintText: 'Fullt nafn',
+                                prefixIcon: Icon(Icons.person),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                validator: (val) =>
-                                    val.isEmpty ? 'Sláðu inn fullt nafn' : null,
-                                onChanged: (val) {
-                                  setState(() => name = val);
-                                }),
+                              ),
+                              validator: (val) =>
+                                  val.isEmpty ? 'Sláðu inn fullt nafn' : null,
+                              onChanged: (val) {
+                                _user = UserData(
+                                  id: _user.id,
+                                  name: val,
+                                  email: _user.email,
+                                  residentAssociationId:
+                                      _user.residentAssociationId,
+                                  apartmentId: _user.apartmentId,
+                                  isAdmin: _user.isAdmin,
+                                );
+                              },
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Netfang',
+                                prefixIcon: Icon(Icons.email),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              validator: (val) =>
+                                  val.isEmpty ? 'Sláðu inn netfang' : null,
+                              onChanged: (val) {
+                                _user = UserData(
+                                  id: _user.id,
+                                  name: _user.name,
+                                  email: val,
+                                  residentAssociationId:
+                                      _user.residentAssociationId,
+                                  apartmentId: _user.apartmentId,
+                                  isAdmin: _user.isAdmin,
+                                );
+                              },
+                            ),
                             SizedBox(
                               height: 20,
                             ),
                             TextFormField(
                                 decoration: InputDecoration(
-                                  hintText: "Heimilisfang",
-                                  prefixIcon: Icon(Icons.home),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                                validator: (val) => val.isEmpty
-                                    ? 'Sláðu inn heimilisfang'
-                                    : null,
-                                onChanged: (val) {
-                                  setState(() => home = val);
-                                }),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: "Netfang",
-                                  prefixIcon: Icon(Icons.email),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                                validator: (val) =>
-                                    val.isEmpty ? 'Sláðu inn netfang' : null,
-                                onChanged: (val) {
-                                  setState(() => email = val);
-                                }),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: "Lykilorð",
+                                  hintText: 'Lykilorð',
                                   prefixIcon: Icon(Icons.lock),
                                   suffixIcon: Icon(Icons.visibility_off),
                                   border: OutlineInputBorder(
@@ -121,7 +130,7 @@ class _RegisterState extends State<Register> {
                                     ? 'Lykilorð þarf að innihalda 6+ stafi'
                                     : null,
                                 onChanged: (val) {
-                                  setState(() => password = val);
+                                  _userPassword = val;
                                 }),
                             SizedBox(
                               height: 60,
@@ -134,7 +143,7 @@ class _RegisterState extends State<Register> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  "Ertu nú þegar með aðgang?",
+                                  'Ertu nú þegar með aðgang?',
                                   style: TextStyle(
                                     fontSize: 15,
                                   ),
@@ -147,7 +156,7 @@ class _RegisterState extends State<Register> {
                                     widget.toggleView();
                                   },
                                   child: Text(
-                                    "Skráðu þig inn!",
+                                    'Skráðu þig inn!',
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Theme.of(context).primaryColor,
@@ -160,7 +169,7 @@ class _RegisterState extends State<Register> {
                               height: 12,
                             ),
                             Text(
-                              error,
+                              _errorMessage,
                               style: TextStyle(
                                 color: Colors.red,
                                 fontSize: 14,
@@ -174,7 +183,6 @@ class _RegisterState extends State<Register> {
                 ],
               ),
             ),
-            // resizeToAvoidBottomPadding: false,
           );
   }
 
@@ -182,18 +190,24 @@ class _RegisterState extends State<Register> {
     return GestureDetector(
       onTap: () async {
         if (_formKey.currentState.validate()) {
-          setState(() => loading = true);
+          setState(() => _isLoading = true);
           try {
-            dynamic result = await _auth
-                .registerWithEmailAndPassword(email, password);
-                if(result != null){
-                await DatabaseService(uid: result.uid).updateUserData(name, email, home, '', '');
-              }
+            dynamic result = await _auth.registerWithEmailAndPassword(
+                _user.email, _userPassword);
+            if (result != null) {
+              await DatabaseService(uid: result.uid).updateUserData(
+                _user.name,
+                _user.email,
+                _user.residentAssociationId,
+                _user.apartmentId,
+                _user.isAdmin,
+              );
+            }
             if (this.mounted) {
               if (result == null) {
                 setState(() {
-                  error = 'Vinsamlegast fylltu út gilt netfang';
-                  loading = false;
+                  _errorMessage = 'Vinsamlegast fylltu út gilt netfang';
+                  _isLoading = false;
                 });
               }
             }
@@ -211,7 +225,7 @@ class _RegisterState extends State<Register> {
         ),
         child: Center(
           child: Text(
-            "STOFNA AÐGANG",
+            'STOFNA AÐGANG',
             style: TextStyle(
               color: Colors.white,
               fontSize: 17,

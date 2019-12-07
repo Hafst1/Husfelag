@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/cleaning_task.dart';
 import '../models/cleaning.dart';
+import '../shared/constants.dart' as Constants;
 
 enum CleaningStatus { current, ahead, old }
 
@@ -12,46 +13,34 @@ class CleaningProvider with ChangeNotifier {
 
   // collection reference to resident associations.
   CollectionReference _associationsRef =
-      Firestore.instance.collection('ResidentAssociation');
+      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
 
   // function which fetches cleaning items of a resident association
   // and stores them in the _cleaningItems list.
   Future<void> fetchCleaningItems(
-      String residentAssociationId, BuildContext context) async {
+      String residentAssociationId) async {
     try {
       final response = await _associationsRef
           .document(residentAssociationId)
-          .collection('CleaningItems')
+          .collection(Constants.CLEANING_ITEMS_COLLECTION)
           .getDocuments();
       final List<Cleaning> loadedCleaningItems = [];
       response.documents.forEach((cleaningItem) {
         loadedCleaningItems.add(Cleaning(
           id: cleaningItem.documentID,
-          apartment: cleaningItem.data['apartment'],
+          apartmentNumber: cleaningItem.data[Constants.APARTMENT_NUMBER],
           dateFrom: DateTime.fromMillisecondsSinceEpoch(
-              cleaningItem.data['dateFrom']),
-          dateTo:
-              DateTime.fromMillisecondsSinceEpoch(cleaningItem.data['dateTo']),
+              cleaningItem.data[Constants.DATE_FROM]),
+          dateTo: DateTime.fromMillisecondsSinceEpoch(
+              cleaningItem.data[Constants.DATE_TO]),
+          authorId: cleaningItem.data[Constants.AUTHOR_ID],
         ));
       });
       _cleaningItems = loadedCleaningItems;
+      sortCleaningItems();
       notifyListeners();
     } catch (error) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp þrifum!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Halda áfram'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        ),
-      );
+      throw (error);
     }
   }
 
@@ -61,16 +50,18 @@ class CleaningProvider with ChangeNotifier {
     try {
       final response = await _associationsRef
           .document(residentAssociationId)
-          .collection("CleaningItems")
+          .collection(Constants.CLEANING_ITEMS_COLLECTION)
           .add({
-        'apartment': cleaningItem.apartment,
-        'dateFrom': cleaningItem.dateFrom.millisecondsSinceEpoch,
-        'dateTo': cleaningItem.dateTo.millisecondsSinceEpoch,
+        Constants.APARTMENT_NUMBER: cleaningItem.apartmentNumber,
+        Constants.DATE_FROM: cleaningItem.dateFrom.millisecondsSinceEpoch,
+        Constants.DATE_TO: cleaningItem.dateTo.millisecondsSinceEpoch,
+        Constants.AUTHOR_ID: cleaningItem.authorId,
       });
       final newCleaningItem = Cleaning(
-        apartment: cleaningItem.apartment,
+        apartmentNumber: cleaningItem.apartmentNumber,
         dateFrom: cleaningItem.dateFrom,
         dateTo: cleaningItem.dateTo,
+        authorId: cleaningItem.authorId,
         id: response.documentID,
       );
       _cleaningItems.add(newCleaningItem);
@@ -91,7 +82,7 @@ class CleaningProvider with ChangeNotifier {
     try {
       await _associationsRef
           .document(residentAssociationId)
-          .collection('CleaningItems')
+          .collection(Constants.CLEANING_ITEMS_COLLECTION)
           .document(cleaningId)
           .delete();
       deletedCleaningItem = null;
@@ -113,17 +104,25 @@ class CleaningProvider with ChangeNotifier {
     try {
       await _associationsRef
           .document(residentAssociationId)
-          .collection('CleaningItems')
+          .collection(Constants.CLEANING_ITEMS_COLLECTION)
           .document(editedCleaning.id)
           .updateData({
-        'apartment': editedCleaning.apartment,
-        'dateFrom': editedCleaning.dateFrom.millisecondsSinceEpoch,
-        'dateTo': editedCleaning.dateTo.millisecondsSinceEpoch,
+        Constants.APARTMENT_NUMBER: editedCleaning.apartmentNumber,
+        Constants.DATE_FROM: editedCleaning.dateFrom.millisecondsSinceEpoch,
+        Constants.DATE_TO: editedCleaning.dateTo.millisecondsSinceEpoch,
+        Constants.AUTHOR_ID: editedCleaning.authorId,
       });
       final cleaningIndex = _cleaningItems
           .indexWhere((cleaning) => cleaning.id == editedCleaning.id);
       if (cleaningIndex >= 0) {
+        final oldCleaningItem = _cleaningItems[cleaningIndex];
         _cleaningItems[cleaningIndex] = editedCleaning;
+
+        // if dates have changed we have to sort the list of cleaning items again.
+        if (oldCleaningItem.dateFrom != editedCleaning.dateFrom ||
+            oldCleaningItem.dateTo != editedCleaning.dateTo) {
+          sortCleaningItems();
+        }
       }
       notifyListeners();
     } catch (error) {
@@ -163,7 +162,7 @@ class CleaningProvider with ChangeNotifier {
     List<Cleaning> displayList = [];
     if (query.isNotEmpty) {
       constructions.forEach((item) {
-        if (item.apartment.toLowerCase().contains(searchQuery) &&
+        if (item.apartmentNumber.toLowerCase().contains(searchQuery) &&
             _cleaningStatusFilter(
               filterIndex,
               item.dateFrom,
@@ -186,42 +185,67 @@ class CleaningProvider with ChangeNotifier {
     return displayList;
   }
 
+  // functions which checks whether it is the user's turn to clean. If
+  // the function returns true he will be able to check the boxes of
+  // the cleaning task list.
+  bool isUsersTurnToClean(String apartment) {
+    if (_cleaningItems.isEmpty) {
+      return false;
+    }
+    DateTime exactDate = DateTime.now();
+    DateTime startOfCurrentDate =
+        DateTime(exactDate.year, exactDate.month, exactDate.day, 0, 0, 0, 0);
+    DateTime endOfCurrentDate = DateTime(
+        exactDate.year, exactDate.month, exactDate.day, 23, 59, 59, 999);
+    var retVal = false;
+    for (final cleaningItem in _cleaningItems) {
+      if (cleaningItem.dateFrom.isAfter(endOfCurrentDate)) {
+        break;
+      }
+      if (cleaningItem.apartmentNumber != apartment) {
+        continue;
+      }
+      if (cleaningItem.dateFrom.isBefore(endOfCurrentDate) &&
+          (cleaningItem.dateTo.compareTo(startOfCurrentDate) == 0 ||
+              cleaningItem.dateTo.isAfter(startOfCurrentDate))) {
+        retVal = true;
+        break;
+      }
+    }
+    return retVal;
+  }
+
+  // functions which sorts the cleaning item list by the dateFrom property,
+  // if equal it is ordered by the dateTo property.
+  void sortCleaningItems() {
+    _cleaningItems.sort(
+      (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
+          ? a.dateTo.compareTo(b.dateTo)
+          : a.dateFrom.compareTo(b.dateFrom),
+    );
+  }
+
   // function which fetches cleaning task items of a resident association and
   // stores them in the _cleaningTasks list.
-  Future<void> fetchCleaningTasks(
-      String residentAssociationId, BuildContext context) async {
+  Future<void> fetchCleaningTasks(String residentAssociationId) async {
     try {
       final response = await _associationsRef
           .document(residentAssociationId)
-          .collection('CleaningTasks')
+          .collection(Constants.CLEANING_TASKS_COLLECTION)
           .getDocuments();
       final List<CleaningTask> loadedCleaningTask = [];
       response.documents.forEach((cleaningTask) {
         loadedCleaningTask.add(CleaningTask(
           id: cleaningTask.documentID,
-          title: cleaningTask.data['title'],
-          description: cleaningTask.data['description'],
-          taskDone: cleaningTask.data['taskDone'],
+          title: cleaningTask.data[Constants.TITLE],
+          description: cleaningTask.data[Constants.DESCRIPTION],
+          taskDone: cleaningTask.data[Constants.TASK_DONE],
         ));
       });
       _cleaningTasks = loadedCleaningTask;
       notifyListeners();
     } catch (error) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Villa kom upp'),
-          content: Text('Ekki tókst að hlaða upp verkefnalista!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Halda áfram'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        ),
-      );
+      throw (error);
     }
   }
 
@@ -231,11 +255,11 @@ class CleaningProvider with ChangeNotifier {
     try {
       final response = await _associationsRef
           .document(residentAssociationId)
-          .collection("CleaningTasks")
+          .collection(Constants.CLEANING_TASKS_COLLECTION)
           .add({
-        'title': cleaningTaskItem.title,
-        'description': cleaningTaskItem.description,
-        'taskDone': cleaningTaskItem.taskDone,
+        Constants.TITLE: cleaningTaskItem.title,
+        Constants.DESCRIPTION: cleaningTaskItem.description,
+        Constants.TASK_DONE: cleaningTaskItem.taskDone,
       });
       final newCleaningTaskItem = CleaningTask(
         title: cleaningTaskItem.title,
@@ -261,12 +285,12 @@ class CleaningProvider with ChangeNotifier {
     try {
       await _associationsRef
           .document(residentAssociationId)
-          .collection('CleaningTasks')
+          .collection(Constants.CLEANING_TASKS_COLLECTION)
           .document(editedCleaningTask.id)
           .updateData({
-        'title': editedCleaningTask.title,
-        'taskDone': editedCleaningTask.taskDone,
-        'description': editedCleaningTask.description,
+        Constants.TITLE: editedCleaningTask.title,
+        Constants.DESCRIPTION: editedCleaningTask.description,
+        Constants.TASK_DONE: editedCleaningTask.taskDone,
       });
       notifyListeners();
     } catch (error) {
@@ -291,7 +315,7 @@ class CleaningProvider with ChangeNotifier {
     try {
       await _associationsRef
           .document(residentAssociationId)
-          .collection('CleaningTasks')
+          .collection(Constants.CLEANING_TASKS_COLLECTION)
           .document(cleaningTaskId)
           .delete();
       deletedCleaningItem = null;
@@ -304,5 +328,10 @@ class CleaningProvider with ChangeNotifier {
   // function which returns all cleaning tasks of a given resident assocation.
   List<CleaningTask> getAllTasks() {
     return [..._cleaningTasks];
+  }
+
+  // function which returns all cleaning items.
+  List<Cleaning> getAllCleaningItems() {
+    return [..._cleaningItems];
   }
 }

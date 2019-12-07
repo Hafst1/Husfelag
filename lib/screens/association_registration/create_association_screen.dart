@@ -4,8 +4,10 @@ import 'dart:io';
 
 import '../../models/resident_association.dart';
 import '../../models/apartment.dart';
+import '../../models/user.dart';
 import '../../widgets/save_button.dart';
 import '../../providers/current_user_provider.dart';
+import '../../providers/association_provider.dart';
 import '../../shared/loading_spinner.dart';
 
 class CreateAssociationScreen extends StatefulWidget {
@@ -38,10 +40,15 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<CurrentUserProvider>(context).fetchAssociations(context).then((_) {
+      Provider.of<AssociationsProvider>(context).fetchAssociations().then((_) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        _printErrorDialog('Eitthvað fór úrskeiðis!');
       });
     }
     _isInit = false;
@@ -50,7 +57,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
 
   // function which validates and saves form, if succesful it will try to add the
   // resident association to firebase.
-  void _saveForm() async {
+  void _saveForm(UserData newUser) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -60,8 +67,9 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       _isLoading = true;
     });
     try {
-      final response = await Provider.of<CurrentUserProvider>(context, listen: false)
-          .createAssociation(_newAssociation, _newApartment);
+      final response =
+          await Provider.of<AssociationsProvider>(context, listen: false)
+              .createAssociation(_newAssociation, _newApartment, newUser);
       await _printConfirmationDialog(response);
     } catch (error) {
       await _printErrorDialog('Ekki tókst að stofna húsfélag!');
@@ -114,7 +122,8 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserData = Provider.of<CurrentUserProvider>(context);
+    final currentUser = Provider.of<CurrentUserProvider>(context).getUser();
+    final associationsData = Provider.of<AssociationsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Stofna húsfélag'),
@@ -125,7 +134,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm();
+                    _saveForm(currentUser);
                   })
               : Container(),
         ],
@@ -148,10 +157,11 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                         if (value.isEmpty) {
                           return "Fylla þarft út heimilisfang!";
                         }
-                        if (value.length > 40) {
-                          return "Heimilisfang getur ekki verið meira en 40 stafir á lengd!";
+                        if (value.length > 30) {
+                          return "Heimilisfang getur ekki verið meira en 30 stafir á lengd!";
                         }
-                        if (!currentUserData.associationAddressIsAvailable(value)) {
+                        if (!associationsData
+                            .associationAddressIsAvailable(value)) {
                           return "Viðkomandi heimilisfang er nú þegar frátekið!";
                         }
                         return null;
@@ -159,7 +169,8 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                       onSaved: (value) {
                         _newAssociation = ResidentAssociation(
                           id: _newAssociation.id,
-                          address: value,
+                          address:
+                              '${value[0].toUpperCase()}${value.substring(1).toLowerCase()}',
                           description: _newAssociation.description,
                           accessCode: _newAssociation.accessCode,
                         );
@@ -207,8 +218,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                           id: _newApartment.id,
                           apartmentNumber: value,
                           accessCode: _newApartment.accessCode,
-                          residents: [currentUserData.getId()],
-
+                          residents: [currentUser.id],
                         );
                       },
                     ),
@@ -234,18 +244,19 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                           id: _newApartment.id,
                           apartmentNumber: _newApartment.apartmentNumber,
                           accessCode: value,
-                          residents: [currentUserData.getId()],
-
+                          residents: [currentUser.id],
                         );
                       },
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    Platform.isAndroid ? SaveButton(
-                      text: 'STOFNA',
-                      saveFunc: _saveForm,
-                    ) : Container(),
+                    Platform.isAndroid
+                        ? SaveButton(
+                            text: 'STOFNA',
+                            saveFunc: () => _saveForm(currentUser),
+                          )
+                        : Container(),
                   ],
                 ),
               ),

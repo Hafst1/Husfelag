@@ -17,7 +17,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     final currentUser =
-        Provider.of<CurrentUserProvider>(context, listen: false);
+        Provider.of<CurrentUserProvider>(context);
     // return Authenticate page if user has value of null
     if (user == null) {
       return Authenticate();
@@ -48,9 +48,6 @@ class Wrapper extends StatelessWidget {
                         ),
                         ChangeNotifierProvider.value(
                           value: DocumentsProvider(),
-                        ),
-                        ChangeNotifierProvider.value(
-                          value: DocumentsFolderProvider(),
                         )
                       ],
                       child: TabsScreen(),

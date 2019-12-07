@@ -39,6 +39,7 @@ class CategoryOption extends StatelessWidget {
             )
           ],
           color: optionColor,
+          //color: Colors.white,
           borderRadius: BorderRadius.circular(15),
         ),
         child: LayoutBuilder(
