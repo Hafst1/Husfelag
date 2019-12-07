@@ -45,19 +45,5 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
-    // return ChangeNotifierProvider.value(
-    //   value: CurrentUserProvider(),
-    //   child: StreamProvider<User>.value(
-    //     value: AuthService().user,
-    //     child: MaterialApp(
-    //       title: 'Húsfélagið',
-    //       theme: ThemeData(
-    //         primarySwatch: Colors.blue,
-    //         accentColor: Colors.pink[400],
-    //       ),
-    //       home: Wrapper(),
-    //     ),
-    //   ),
-    // );
   }
 }

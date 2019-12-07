@@ -1,11 +1,5 @@
 library constants;
 
-// constants for user options.
-const MY_PAGE = 'Mín Síða';
-const MY_ASSOCIATION = 'Mitt húsfélag';
-const SIGN_OUT = 'Skrá út';
-const List<String> choices = <String>[MY_PAGE, MY_ASSOCIATION, SIGN_OUT];
-
 // constants for collection names
 const String RESIDENT_ASSOCIATIONS_COLLECTION = 'ResidentAssociations';
 const String USERS_COLLECTION = 'Users';
