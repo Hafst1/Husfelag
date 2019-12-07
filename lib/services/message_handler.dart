@@ -57,7 +57,6 @@ class _MessageHandlerState extends State<MessageHandler> {
         ),
       );
 
-      notificationMessages = [message['notification']['title']];
       print("MESSAGESSSSS");
       print(message['notification']['title']);
       print(message['notification']['body']);
@@ -91,8 +90,6 @@ class _MessageHandlerState extends State<MessageHandler> {
 
     //get the token for this device
     String fcmToken = await _fcm.getToken();
-    print("Token");
-    print(fcmToken);
 
     if(fcmToken != null) {
       var tokenRef = _db

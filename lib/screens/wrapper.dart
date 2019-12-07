@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'tabs_screen.dart';
@@ -50,7 +51,7 @@ class Wrapper extends StatelessWidget {
                           value: DocumentsProvider(),
                         ),
                         ChangeNotifierProvider.value(
-                          value: DocumentsProvider(),
+                          value: NotificationsProvider(),
                         )
                       ],
                       child: TabsScreen(),
