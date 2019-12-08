@@ -12,7 +12,6 @@ class UserData {
   final String email;
   final String residentAssociationId;
   final String apartmentId;
-
   final bool isAdmin;
 
   UserData({
