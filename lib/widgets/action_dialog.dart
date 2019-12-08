@@ -22,6 +22,7 @@ class ActionDialog extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   Navigator.of(context).pop();
                   showDialog(
@@ -77,6 +78,7 @@ class ActionDialog extends StatelessWidget {
             ),
             Expanded(
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () => editFunc(),
                 child: Column(
                   children: <Widget>[
