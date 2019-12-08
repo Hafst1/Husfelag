@@ -15,6 +15,8 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
   final _form = GlobalKey<FormState>();
   var _folderTitle = '';
 
+  // function which validates and saves the form and sends the
+  // folder title to the widget's add function.
   void _saveForm(BuildContext context) {
     var isValid = _form.currentState.validate();
     if (!isValid) {

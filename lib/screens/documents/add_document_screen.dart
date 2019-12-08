@@ -43,6 +43,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // get document to edit if document id was passed through arguments.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -198,7 +199,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                             children: <Widget>[
                               OutlineButton(
                                 onPressed: () => openFileExplorer(),
-                                child: Text("Velja skjal"),
+                                child: Text('Velja skjal'),
                                 borderSide: BorderSide(color: Colors.black),
                                 shape: StadiumBorder(),
                               ),
@@ -210,7 +211,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 20,
                                 ),
-                                child: _initValues['filePreviewName'] == ""
+                                child: _initValues['filePreviewName'] == ''
                                     ? _errorMessage == ''
                                         ? Container(
                                             height: 10,
@@ -245,7 +246,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                     TextFormField(
                       initialValue: _initValues['title'],
                       decoration: InputDecoration(
-                        hintText: "Titill...",
+                        hintText: 'Titill...',
                         prefixIcon: Icon(CustomIcons.pencil),
                         border: OutlineInputBorder(),
                         errorStyle: TextStyle(
@@ -255,10 +256,10 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return "Fylla þarf út titil skjals!";
+                          return 'Fylla þarf út titil skjals!';
                         }
                         if (value.length > 40) {
-                          return "Titill skjals getur ekki verið meira en 40 stafir á lengd!";
+                          return 'Titill skjals getur ekki verið meira en 40 stafir á lengd!';
                         }
                         return null;
                       },
@@ -282,7 +283,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       value: _initValues['selected-folder'] != ''
                           ? _initValues['selected-folder']
                           : null,
-                      hint: Text("Veldu möppu..."),
+                      hint: Text('Veldu möppu...'),
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.folder),
                         border: OutlineInputBorder(),
@@ -296,7 +297,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       }),
                       validator: (value) {
                         if (value == null) {
-                          return "Veldu möppu!";
+                          return 'Veldu möppu!';
                         }
                         return null;
                       },

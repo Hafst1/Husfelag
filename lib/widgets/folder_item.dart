@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../screens/documents/documents_list_screen.dart';
 
 class FolderItem extends StatelessWidget {
@@ -31,9 +32,7 @@ class FolderItem extends StatelessWidget {
                 height: constraints.maxHeight * 0.75,
                 child: Icon(
                   Icons.folder,
-                  // color: Color.fromRGBO(244, 217, 132, 1), // yellow
-                  color: Color.fromRGBO(236, 202, 165, 1), // little browner
-                  // color: Color.fromRGBO(231, 190, 142, 1),
+                  color: Color.fromRGBO(236, 202, 165, 1),
                   size: constraints.maxHeight * 0.75,
                 ),
               ),

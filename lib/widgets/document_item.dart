@@ -27,6 +27,7 @@ class DocumentItem extends StatelessWidget {
     @required this.isAuthor,
   });
 
+  // function which launches an URL.
   void launchURL(BuildContext context) async {
     try {
       String url = downloadUrl;
@@ -38,6 +39,7 @@ class DocumentItem extends StatelessWidget {
     }
   }
 
+  // functions which prints an error dialog.
   Future<void> printErrorDialog(String errorMessage, BuildContext context) {
     return showDialog(
       context: context,
@@ -56,6 +58,8 @@ class DocumentItem extends StatelessWidget {
     );
   }
 
+  // function which shows an action dialog, where user can choose to edit a
+  // document or to delete it.
   void showActionDialog(BuildContext context) {
     showDialog(
       context: context,

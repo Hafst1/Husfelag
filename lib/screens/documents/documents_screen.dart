@@ -21,6 +21,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // fetch folders of the resident association.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -89,6 +90,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     );
   }
 
+  // function which presents the delete folder dialog.
   void _presentDeleteFolderDialog(List<Folder> folders) {
     showDialog(
       context: context,
@@ -99,15 +101,16 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     );
   }
 
+  // function which presents a dialog where user confirms the deletion of a folder.
   void _presentConfirmDeleteDialog(String folderId) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text("Ertu viss um að þú viljir eyða þessari möppu?"),
+        title: Text('Ertu viss um að þú viljir eyða þessari möppu?'),
         actions: <Widget>[
           FlatButton(
             child: Text(
-              "HÆTTA VIÐ",
+              'HÆTTA VIÐ',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
@@ -119,7 +122,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
           ),
           FlatButton(
             child: Text(
-              "EYÐA",
+              'EYÐA',
               style: TextStyle(
                 fontSize: 17,
               ),
@@ -201,7 +204,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     final isAdmin = currentUserData.isAdmin();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Skjöl"),
+        title: Text('Skjöl'),
         centerTitle: true,
       ),
       body: _isLoading

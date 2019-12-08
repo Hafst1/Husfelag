@@ -15,7 +15,7 @@ class DocumentsListScreen extends StatefulWidget {
 
 class _DocumentsListScreenState extends State<DocumentsListScreen> {
   final _textFieldController = TextEditingController();
-  String _searchQuery = "";
+  String _searchQuery = '';
   var _isInit = true;
   var _isLoading = false;
   var _folder = Folder(
@@ -23,6 +23,8 @@ class _DocumentsListScreenState extends State<DocumentsListScreen> {
     title: '',
   );
 
+  // get folder which has the id passed in through arguments and fetch it's 
+  // documents.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -30,22 +32,25 @@ class _DocumentsListScreenState extends State<DocumentsListScreen> {
       if (folderId != null) {
         _folder =
             Provider.of<DocumentsProvider>(context).findFolderById(folderId);
-      }
-      setState(() {
-        _isLoading = true;
-      });
-      final residentAssociationId =
-          Provider.of<CurrentUserProvider>(context, listen: false)
-              .getResidentAssociationId();
-      Provider.of<DocumentsProvider>(context)
-          .fetchDocuments(residentAssociationId, folderId)
-          .then((_) {
         setState(() {
-          _isLoading = false;
+          _isLoading = true;
         });
-      }).catchError((_) {
-        _printErrorDialog('Ekki tókst að sækja skjöl í tiltekinni möppu!');
-      });
+        final residentAssociationId =
+            Provider.of<CurrentUserProvider>(context, listen: false)
+                .getResidentAssociationId();
+        Provider.of<DocumentsProvider>(context)
+            .fetchDocuments(residentAssociationId, folderId)
+            .then((_) {
+          setState(() {
+            _isLoading = false;
+          });
+        }).catchError((_) {
+          setState(() {
+            _isLoading = false;
+          });
+          _printErrorDialog('Ekki tókst að sækja skjöl í tiltekinni möppu!');
+        });
+      }
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -74,7 +79,7 @@ class _DocumentsListScreenState extends State<DocumentsListScreen> {
   // function which clears the search bar.
   _onClear() {
     setState(() {
-      _searchQuery = "";
+      _searchQuery = '';
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _textFieldController.clear());
     });
@@ -148,7 +153,7 @@ class _DocumentsListScreenState extends State<DocumentsListScreen> {
                         controller: _textFieldController,
                         onChanged: (value) => _changeSearchQuery(value),
                         decoration: InputDecoration(
-                          hintText: "Leita...",
+                          hintText: 'Leita...',
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.grey,
@@ -156,7 +161,7 @@ class _DocumentsListScreenState extends State<DocumentsListScreen> {
                           suffixIcon: IconButton(
                             icon: Icon(
                               Icons.clear,
-                              color: _searchQuery == ""
+                              color: _searchQuery == ''
                                   ? Colors.white
                                   : Colors.grey,
                             ),
