@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../services/auth.dart';
@@ -27,11 +26,6 @@ class MapScreenState extends State<ProfilePage> {
   String _currentName;
   String _currentEmail;
   String _currentPassword;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
