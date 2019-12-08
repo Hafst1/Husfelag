@@ -126,7 +126,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 obscureText: true,
                                 validator: (val) => val.length < 6
-                                    ? 'Lykilorð þarf að innihalda 6+ stafi'
+                                    ? 'Lykilorð þarf að vera að minnsta kosti 6 stafir á lengd!'
                                     : null,
                                 onChanged: (val) {
                                   _userPassword = val;
