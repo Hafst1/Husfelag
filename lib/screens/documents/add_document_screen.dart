@@ -1,18 +1,17 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:provider/provider.dart';
 
 import '../../shared/loading_spinner.dart';
 import '../../providers/current_user_provider.dart';
-import '../../screens/documents/documents_list_screen.dart';
 import '../../models/document.dart';
 import '../../providers/documents_provider.dart';
 import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/save_button.dart';
 
-//ath vantar að setja í android manifest use permission og ios/Runner/Info.plist
+// //ath vantar að setja í android manifest use permission og ios/Runner/Info.plist
 
 class AddDocumentScreen extends StatefulWidget {
   static const routeName = '/add-document';
@@ -22,84 +21,92 @@ class AddDocumentScreen extends StatefulWidget {
 }
 
 class _AddDocumentScreenState extends State<AddDocumentScreen> {
-  String _path = '';
-  String fileName = '';
-  // String filePreviewName = "";
-  String _selectedFolder; //selected folder in dropdownbutton
   final _form = GlobalKey<FormState>();
+  var _oldFolderId = '';
+  var _path;
+  var _errorMessage = '';
   var _document = Document(
     id: null,
     title: '',
-    description: '',
     fileName: '',
     downloadUrl: '',
     folderId: '',
     authorId: '',
-  ); //Document
+  );
   var _initValues = {
     'appbar-title': 'Bæta við skjali',
-    'filePreviewName': '',
     'title': '',
-    'description': '',
+    'selected-folder': '',
+    'filePreviewName': '',
     'save-text': 'BÆTA VIÐ',
   };
   var _isInit = true;
   var _isLoading = false;
-  var oldFileName = '';
+
   @override
   void didChangeDependencies() {
     if (_isInit) {
       final documentId = ModalRoute.of(context).settings.arguments as String;
+      final documentData = Provider.of<DocumentsProvider>(context);
       if (documentId != null) {
-        _document = Provider.of<DocumentsProvider>(context, listen: false)
-            .findDocumentById(documentId);
-        oldFileName = _document.fileName;
+        _document = documentData.findDocumentById(documentId);
         _initValues = {
           'appbar-title': 'Breyta skjali',
           'title': _document.title,
-          'downloadUrl': _document.downloadUrl,
-          'description': _document.description,
-          'folderId': _document.folderId,
+          'selected-folder': _document.folderId,
+          'filePreviewName': _document.fileName,
           'save-text': 'BREYTA',
         };
-        fileName = _document.fileName;
-        _selectedFolder = Provider.of<DocumentsProvider>(context, listen: false)
-            .findFolderById(_document.folderId)
-            .title;
+        _oldFolderId = _document.folderId;
       }
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+  // functions which saves the form of a new file and either updates a file
+  // or adds a new one.
   void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
-    if (!isValid || fileName == '') {
+    if (!isValid) {
+      if (_document.fileName.isEmpty) {
+        setState(() {
+          _errorMessage = 'Ekki er búið að velja skjal til að bæta við!';
+        });
+      }
       return;
     }
     _form.currentState.save();
+    final documentData = Provider.of<DocumentsProvider>(context);
     setState(() {
       _isLoading = true;
     });
     if (_document.id != null) {
       try {
-        await Provider.of<DocumentsProvider>(context, listen: false)
-            .updateDocument(
-                residentAssociationId, _document, oldFileName, _path);
+        await documentData.updateDocument(
+            residentAssociationId, _document, _oldFolderId);
       } catch (error) {
-        await _printErrorDialog('Ekki tókst að breyta skjali!');
+        await _printErrorDialog('Ekki tókst að uppfæra skjal!');
       }
     } else {
       try {
-        await Provider.of<DocumentsProvider>(context, listen: false)
-            .addFile(_path, _document);
-        await Provider.of<DocumentsProvider>(context, listen: false)
-            .addDocument(residentAssociationId, _document);
+        final uniqueFileName =
+            DateTime.now().toString() + '!!' + _document.fileName;
+        final downloadUrl =
+            await documentData.getDownloadUrl(_path, uniqueFileName);
+        if (downloadUrl == '') {
+          await _printErrorDialog('Ekki tókst að hlaða upp skjali!');
+        }
+        await documentData.addDocument(
+            residentAssociationId,
+            Document(
+              id: _document.id,
+              title: _document.title,
+              fileName: uniqueFileName,
+              downloadUrl: downloadUrl,
+              folderId: _document.folderId,
+              authorId: _document.authorId,
+            ));
       } catch (error) {
         await _printErrorDialog('Ekki tókst að bæta við skjali!');
       }
@@ -108,11 +115,9 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
       _isLoading = false;
     });
     Navigator.of(context).pop();
-    // Navigator.of(context).push(MaterialPageRoute(
-    //   builder: (context) => DocumentsFolderScreen(id: _document.folderId),
-    // ));
   }
 
+  // function which prints an error dialog.
   Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
@@ -131,29 +136,37 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     );
   }
 
+  // function which opens a file explorer and chooses a file. It provides
+  // a path to the file which is to be added.
   void openFileExplorer() async {
     try {
       _path = await FilePicker.getFilePath();
-      // unique name for a file
-      fileName = DateTime.now().toString() + _path.split('/').last;
+      final fileName = _path.split('/').last;
+      setState(() {
+        _document = Document(
+          id: _document.id,
+          title: _document.id,
+          fileName: fileName,
+          downloadUrl: _document.downloadUrl,
+          folderId: _document.id,
+          authorId: _document.authorId,
+        );
+        _initValues['filePreviewName'] = fileName;
+      });
     } on PlatformException catch (e) {
-      print("Óleyfileg aðgerð" + e.toString());
-      _printErrorDialog('');
+      await _printErrorDialog('Óleyfileg aðgerð: ' + e.toString());
     }
-    setState(() {
-      _initValues['filePreviewName'] = _path.split('/').last;
-    });
     if (!mounted) return;
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentUserData =
-        Provider.of<CurrentUserProvider>(context, listen: false);
+    final currentUserData = Provider.of<CurrentUserProvider>(context);
     final residentAssociationId = currentUserData.getResidentAssociationId();
     final userId = currentUserData.getId();
-    final folder =
-        Provider.of<DocumentsProvider>(context, listen: false).getAllFolders();
+    final documentData = Provider.of<DocumentsProvider>(context);
+    final folders = documentData.getAllFolders();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_initValues['appbar-title']),
@@ -177,27 +190,55 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
               child: Form(
                 key: _form,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    OutlineButton(
-                      onPressed: () => openFileExplorer(),
-                      child: new Text("Velja skjal"),
-                    ),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    Container(
-                      child: _initValues['filePreviewName'] == ""
-                          ? Container(
-                              height: 10,
-                            )
-                          : Text(
-                              _initValues['filePreviewName'],
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                fontSize: 15,
+                    _document.id != null
+                        ? Container()
+                        : Column(
+                            children: <Widget>[
+                              OutlineButton(
+                                onPressed: () => openFileExplorer(),
+                                child: Text("Velja skjal"),
+                                borderSide: BorderSide(color: Colors.black),
+                                shape: StadiumBorder(),
                               ),
-                            ),
-                    ),
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                child: _initValues['filePreviewName'] == ""
+                                    ? _errorMessage == ''
+                                        ? Container(
+                                            height: 10,
+                                          )
+                                        : Center(
+                                            child: Text(
+                                              _errorMessage,
+                                              // textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.redAccent[700],
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          )
+                                    : Center(
+                                        child: Text(
+                                          _initValues['filePreviewName'],
+                                          style: TextStyle(
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontSize: 15,
+                                            height: 1.25,
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
                     SizedBox(
                       height: 15.0,
                     ),
@@ -207,6 +248,10 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                         hintText: "Titill...",
                         prefixIcon: Icon(CustomIcons.pencil),
                         border: OutlineInputBorder(),
+                        errorStyle: TextStyle(
+                          color: Colors.redAccent[700],
+                          fontSize: 12,
+                        ),
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
@@ -221,7 +266,6 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                         _document = Document(
                           id: _document.id,
                           title: value,
-                          description: _document.description,
                           fileName: _document.fileName,
                           downloadUrl: _document.downloadUrl,
                           folderId: _document.folderId,
@@ -232,61 +276,45 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       },
                     ),
                     SizedBox(
-                      height: 15.0,
-                    ),
-                    TextFormField(
-                      initialValue: _initValues['description'],
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        hintText: "Nánari lýsing (valfrjálst)...",
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.text,
-                      onSaved: (value) {
-                        _document = Document(
-                          id: _document.id,
-                          title: _document.title,
-                          description: value,
-                          fileName: _document.fileName,
-                          downloadUrl: _document.downloadUrl,
-                          folderId: _document.folderId,
-                          authorId: _document.authorId,
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 15.0,
+                      height: 20.0,
                     ),
                     DropdownButtonFormField(
-                      value: _selectedFolder,
-                      hint: Text("Veldu möppu"),
-                      onChanged: ((newValue) => setState(() {
-                            _selectedFolder = newValue;
-                          })),
-                      onSaved: (value) {
-                        _document = Document(
-                          id: _document.id,
-                          title: _document.title,
-                          description: _document.description,
-                          fileName: fileName,
-                          downloadUrl: _document.downloadUrl,
-                          folderId: Provider.of<DocumentsProvider>(context,
-                                  listen: false)
-                              .findFolderIdByTitle(value),
-                          authorId: _document.authorId,
-                        );
-                      },
+                      value: _initValues['selected-folder'] != ''
+                          ? _initValues['selected-folder']
+                          : null,
+                      hint: Text("Veldu möppu..."),
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.folder),
+                        border: OutlineInputBorder(),
+                        errorStyle: TextStyle(
+                          color: Colors.redAccent[700],
+                          fontSize: 12,
+                        ),
+                      ),
+                      onChanged: (value) => setState(() {
+                        _initValues['selected-folder'] = value;
+                      }),
                       validator: (value) {
-                        if (value.isEmpty) {
-                          return "Veldu möppu";
+                        if (value == null) {
+                          return "Veldu möppu!";
                         }
                         return null;
                       },
-                      items: folder.map((item) {
+                      onSaved: (value) {
+                        _document = Document(
+                          id: _document.id,
+                          title: _document.title,
+                          fileName: _document.fileName,
+                          downloadUrl: _document.downloadUrl,
+                          folderId: value,
+                          authorId: _document.authorId,
+                        );
+                      },
+                      items: folders.map((folder) {
                         return DropdownMenuItem(
-                          value: item.title,
+                          value: folder.id,
                           child: Text(
-                            item.title,
+                            folder.title,
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -295,7 +323,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       }).toList(),
                     ),
                     SizedBox(
-                      height: 15.0,
+                      height: 25.0,
                     ),
                     Platform.isAndroid
                         ? SaveButton(

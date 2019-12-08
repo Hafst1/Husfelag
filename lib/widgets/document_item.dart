@@ -8,20 +8,18 @@ import '../widgets/action_dialog.dart';
 import '../widgets/custom_icons_icons.dart';
 import '../screens/documents/add_document_screen.dart';
 
-class Document extends StatelessWidget {
+class DocumentItem extends StatelessWidget {
   final String id;
   final String title;
-  final String description;
   final String fileName;
   final String downloadUrl;
   final String folderId;
   final bool isAdmin;
   final bool isAuthor;
 
-  Document({
+  DocumentItem({
     @required this.id,
     @required this.title,
-    @required this.description,
     @required this.fileName,
     @required this.downloadUrl,
     @required this.folderId,
@@ -29,16 +27,18 @@ class Document extends StatelessWidget {
     @required this.isAuthor,
   });
 
-  _launchURL(BuildContext context) async {
-    String url = downloadUrl;
-    if(await canLaunch(url)) {
-      await launch(url);
-    } else {
-      return printErrorDialog('Ekki tókst að sækja skjal', context); //athuga, væri gott að hafa alert
+  void launchURL(BuildContext context) async {
+    try {
+      String url = downloadUrl;
+      if (await canLaunch(url)) {
+        await launch(url);
+      }
+    } catch (error) {
+      await printErrorDialog('Ekki tókst að sækja skjal', context);
     }
   }
 
-   Future<void> printErrorDialog(String errorMessage, BuildContext context) {
+  Future<void> printErrorDialog(String errorMessage, BuildContext context) {
     return showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -56,19 +56,18 @@ class Document extends StatelessWidget {
     );
   }
 
-  void _showActionDialog(BuildContext context) {
+  void showActionDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
         return ActionDialog(
-          deleteFunc: () async{
+          deleteFunc: () {
             final residentAssociationId =
-                Provider.of<CurrentUserProvider>(context, listen: false)
+                Provider.of<CurrentUserProvider>(context)
                     .getResidentAssociationId();
-            Provider.of<DocumentsProvider>(context, listen: false)
-                .deleteDocument(residentAssociationId, this.id, this.fileName);
+            Provider.of<DocumentsProvider>(context)
+                .deleteDocument(residentAssociationId, id, folderId, fileName);
           },
-          //ekki hægt að breyta skjalinu sjálfu, athuga
           editFunc: () {
             Navigator.of(ctx).pop();
             Navigator.of(context).push(
@@ -92,11 +91,20 @@ class Document extends StatelessWidget {
         horizontal: 3,
       ),
       child: ListTile(
-        onTap: () {
-          _launchURL(context);
-        },
+        contentPadding: EdgeInsets.only(
+          top: 10,
+          bottom: 15,
+          left: 10,
+          right: 10,
+        ),
+        onTap: () => launchURL(context),
         leading: CircleAvatar(
-          backgroundColor: Color.fromRGBO(125, 185, 244, 0.8),
+          backgroundColor: Color.fromRGBO(
+            125,
+            185,
+            244,
+            0.8,
+          ),
           radius: 30,
           child: Padding(
             padding: EdgeInsets.all(6),
@@ -116,13 +124,21 @@ class Document extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text(
-          description,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              fileName.split('!!').last,
+            ),
+          ],
         ),
         trailing: IconButton(
           icon: Icon(CustomIcons.dot_3),
           color: Colors.grey,
-          onPressed: () => _showActionDialog(context),
+          onPressed: () => showActionDialog(context),
         ),
       ),
     );
