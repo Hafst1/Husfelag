@@ -9,6 +9,7 @@ import '../../widgets/save_button.dart';
 import '../../providers/current_user_provider.dart';
 import '../../providers/association_provider.dart';
 import '../../shared/loading_spinner.dart';
+import '../../widgets/custom_icons_icons.dart';
 
 class CreateAssociationScreen extends StatefulWidget {
   @override
@@ -105,12 +106,73 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('Þú hefur stofnað húsfélag!'),
-        content: Text('Aðgangskóði húsfélagsins er: ' +
-            accessCode +
-            '\n\nAðrir meðlimir geta notað þennan kóða til þess að ganga í húsfélagið!'),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text('Aðgangskóði húsfélagsins er:'),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 40),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: FittedBox(
+                      child: Text(accessCode),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+                'Aðrir meðlimir geta notað þennan kóða til þess að ganga í húsfélagið!'),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+                'ATH: Hægt er að breyta aðgangskóðanum á síðunni "Mitt húsfélag".'),
+          ],
+        ),
         actions: <Widget>[
           FlatButton(
-            child: Text('Halda áfram'),
+            child: Text(
+              'Halda áfram',
+              style: TextStyle(
+                color: Colors.green[600],
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  // function which explains the purpose of apartment access code.
+  void _presentAccessCodeExplanationDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Aðgangskóði íbúðar'),
+        content: Text(
+            'Aðgangskóði íbúðar er lykilorð sem annar aðili þarf að útvega ætli hann að ganga í tiltekna íbúð.'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(
+              'Halda áfram',
+              style: TextStyle(
+                color: Colors.green[600],
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             onPressed: () {
               Navigator.of(ctx).pop();
             },
@@ -235,7 +297,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                       obscureText: true,
                       validator: (value) {
                         if (value.length < 6) {
-                          return "Lykilorð þarf að vera að minnsta kosti 6 stafir á lengd!";
+                          return "Aðgangskóði þarf að vera að minnsta kosti 6 stafir á lengd!";
                         }
                         return null;
                       },
@@ -248,8 +310,24 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                         );
                       },
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () =>
+                              _presentAccessCodeExplanationDialog(),
+                          child: Text(
+                            'Aðgangskóði íbúðar?',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(
-                      height: 15,
+                      height: 10,
                     ),
                     Platform.isAndroid
                         ? SaveButton(
