@@ -11,12 +11,27 @@ import '../widgets/custom_icons_icons.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      title: Text('Húsfélagið'),
+      centerTitle: true,
+    );
+    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Húsfélagið'),
-        centerTitle: true,
+      appBar: appBar,
+      drawer: Column(
+        children: <Widget>[
+          SizedBox(
+            height: mediaQuery.viewInsets.top + mediaQuery.padding.top,
+          ),
+          Container(
+            height: mediaQuery.size.height -
+                kBottomNavigationBarHeight -
+                mediaQuery.viewInsets.top -
+                mediaQuery.padding.top,
+            child: MainDrawer(),
+          ),
+        ],
       ),
-      drawer: MainDrawer(),
       body: GridView(
         padding: const EdgeInsets.all(25),
         children: <Widget>[
