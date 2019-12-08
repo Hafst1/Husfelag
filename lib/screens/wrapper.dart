@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'tabs_screen.dart';
@@ -18,6 +19,7 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<User>(context);
     final currentUser =
         Provider.of<CurrentUserProvider>(context);
+        
     // return Authenticate page if user has value of null
     if (user == null) {
       return Authenticate();
@@ -48,6 +50,9 @@ class Wrapper extends StatelessWidget {
                         ),
                         ChangeNotifierProvider.value(
                           value: DocumentsProvider(),
+                        ),
+                        ChangeNotifierProvider.value(
+                          value: NotificationsProvider(),
                         )
                       ],
                       child: TabsScreen(),

@@ -12,7 +12,7 @@ class UserData {
   final String email;
   final String residentAssociationId;
   final String apartmentId;
-
+  final String userToken;
   final bool isAdmin;
 
   UserData({
@@ -22,5 +22,6 @@ class UserData {
     @required this.residentAssociationId,
     @required this.apartmentId,
     @required this.isAdmin,
+    this.userToken,
   });
 }

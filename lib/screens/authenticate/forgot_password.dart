@@ -29,7 +29,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               style: TextStyle(
                 fontSize: 35,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'AlegreyaSansSC',
               ),
             ),
           ),
@@ -86,7 +85,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       onTap: () async {
         if (_formKey.currentState.validate()) {
           await _auth.sendPasswordResetEmail(_email);
-          print('Password reset email sent');
 
           _popupDialog(context);
         }
@@ -116,7 +114,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Slóð þar sem þú getur endustillt lykilorðið hefur verið sent á $_email'),
+            title: Text(
+                'Slóð þar sem þú getur endustillt lykilorðið hefur verið sent á $_email'),
             actions: <Widget>[
               FlatButton(
                   onPressed: () => Navigator.of(context).pop(),

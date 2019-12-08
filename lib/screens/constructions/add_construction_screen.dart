@@ -5,6 +5,7 @@ import 'dart:io';
 
 import '../../providers/constructions_provider.dart';
 import '../../providers/current_user_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../models/construction.dart';
 import '../../widgets/save_button.dart';
 import '../../shared/loading_spinner.dart';
@@ -124,6 +125,12 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
             .addConstruction(residentAssociationId, _construction);
       } catch (error) {
         await printErrorDialog('Ekki tókst að bæta við framkvæmd!');
+      }
+      try {
+        await Provider.of<NotificationsProvider>(context, listen: false)
+            .addNotificationConstruction(residentAssociationId, _construction);
+      } catch (error) {
+        await printErrorDialog('Ekki tókst að bæta við notification!');
       }
     }
     setState(() {
