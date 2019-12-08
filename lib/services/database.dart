@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:husfelagid/models/user.dart';
 
+import '../models/user.dart';
 import '../shared/constants.dart' as Constants;
 
 class DatabaseService {
