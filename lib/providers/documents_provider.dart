@@ -261,12 +261,16 @@ class DocumentsProvider with ChangeNotifier {
     notifyListeners();
     try {
       [..._documents].forEach((document) async {
-        await deleteDocument(
-          residentAssociationId,
-          document.id,
-          document.folderId,
-          document.fileName,
-        );
+        try {
+          await deleteDocument(
+            residentAssociationId,
+            document.id,
+            document.folderId,
+            document.fileName,
+          );
+        } catch (error) {
+          throw (error);
+        }
       });
       await _associationRef
           .document(residentAssociationId)
