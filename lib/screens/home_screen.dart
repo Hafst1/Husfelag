@@ -32,35 +32,44 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: GridView(
-        padding: const EdgeInsets.all(25),
-        children: <Widget>[
-          HomeOption(
-            optionIcon: CustomIcons.tools,
-            optionText: 'Framkvæmdir',
-            optionRoute: ConstructionsScreen.routeName,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, Color.fromRGBO(186, 203, 201, 1)]
           ),
-          HomeOption(
-            optionIcon: CustomIcons.group,
-            optionText: 'Fundir',
-            optionRoute: MeetingsScreen.routeName,
+        ),
+        child: GridView(
+          padding: const EdgeInsets.all(25),
+          children: <Widget>[
+            HomeOption(
+              optionIcon: CustomIcons.tools,
+              optionText: 'Framkvæmdir',
+              optionRoute: ConstructionsScreen.routeName,
+            ),
+            HomeOption(
+              optionIcon: CustomIcons.group,
+              optionText: 'Fundir',
+              optionRoute: MeetingsScreen.routeName,
+            ),
+            HomeOption(
+              optionIcon: CustomIcons.doc_text,
+              optionText: 'Skjöl',
+              optionRoute: DocumentsScreen.routeName,
+            ),
+            HomeOption(
+              optionIcon: CustomIcons.trash,
+              optionText: 'Þrif',
+              optionRoute: CleaningScreen.routeName,
+            ),
+          ],
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 300,
+            childAspectRatio: 2 / 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 30,
           ),
-          HomeOption(
-            optionIcon: CustomIcons.doc_text,
-            optionText: 'Skjöl',
-            optionRoute: DocumentsScreen.routeName,
-          ),
-          HomeOption(
-            optionIcon: CustomIcons.trash,
-            optionText: 'Þrif',
-            optionRoute: CleaningScreen.routeName,
-          ),
-        ],
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 300,
-          childAspectRatio: 2 / 2,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 30,
         ),
       ),
     );

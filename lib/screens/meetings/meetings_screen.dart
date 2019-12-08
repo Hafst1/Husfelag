@@ -10,27 +10,43 @@ class MeetingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final PreferredSizeWidget appBar = AppBar(
+      title: Text("Fundir"),
+      centerTitle: true,
+    );
+    final heightOfBody = mediaQuery.size.height -
+        mediaQuery.padding.top -
+        appBar.preferredSize.height -
+        kBottomNavigationBarHeight;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Fundir"),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          children: <Widget>[
-            CategoryOption(
-              optionIcon: Icons.group_add,
-              optionText: "Bóka fund",
-              optionRoute: AddMeetingScreen.routeName,
-            ),
-            SizedBox(height: 15),
-            CategoryOption(
-              optionIcon: CustomIcons.find_in_page,
-              optionText: "Yfirlit funda",
-              optionRoute: MeetingsListScreen.routeName,
-            ),
-          ],
+      appBar: appBar,
+      body: Container(
+        height: heightOfBody,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, Color.fromRGBO(186, 203, 201, 1)]
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(25),
+          child: Column(
+            children: <Widget>[
+              CategoryOption(
+                optionIcon: Icons.group_add,
+                optionText: "Bóka fund",
+                optionRoute: AddMeetingScreen.routeName,
+              ),
+              SizedBox(height: 15),
+              CategoryOption(
+                optionIcon: CustomIcons.find_in_page,
+                optionText: "Yfirlit funda",
+                optionRoute: MeetingsListScreen.routeName,
+              ),
+            ],
+          ),
         ),
       ),
     );
