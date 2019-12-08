@@ -23,8 +23,7 @@ class HomeOption extends StatelessWidget {
       onTap: () => selectOption(context),
       child: Container(
         decoration: BoxDecoration(
-          //border: Border.all(color: Colors.grey[600]),
-          boxShadow: [
+         boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
               blurRadius: 28.0, // has the effect of softening the shadow
@@ -35,9 +34,8 @@ class HomeOption extends StatelessWidget {
               ),
             )
           ],
-          //color: Color(0xffED638D),
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: LayoutBuilder(
           builder: (ctx, constraints) {
@@ -47,7 +45,7 @@ class HomeOption extends StatelessWidget {
                   height: constraints.maxHeight * 0.75,
                   child: Icon(
                     optionIcon,
-                    color: Colors.black,
+                    color: Color.fromRGBO(54, 60, 67, 1),
                     size: constraints.maxHeight * 0.4,
                   ),
                 ),
@@ -62,7 +60,7 @@ class HomeOption extends StatelessWidget {
                   child: FittedBox(
                     child: Text(
                       optionText,
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Color.fromRGBO(54, 60, 67, 1)),
                     ),
                   ),
                 ),
