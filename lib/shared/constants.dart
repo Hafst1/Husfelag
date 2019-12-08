@@ -40,6 +40,15 @@ const String RESIDENTS = 'residents';
 const String RESIDENT_ASSOCIATION_ID = 'residentAssociationId';
 const String TASK_DONE = 'taskDone';
 const String TITLE = 'title';
+const String TYPE = 'type';
+
+//constants for notification
+const String ADDED_CONSTRUCTION = 'addedConstruction';
+const String ADDED_MEETING = 'addedMeeting';
+const String DELETED_MEETING = 'deletedMeeting';
+//kick user og promoted to admin og cleaning
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // constants for months in icelandic.
 const List<String> months = [

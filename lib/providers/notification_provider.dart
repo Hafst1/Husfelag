@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:husfelagid/models/construction.dart';
-import 'package:husfelagid/models/meeting.dart';
+
 import '../models/notification.dart';
 import '../shared/constants.dart' as Constants;
-
 
 
 class NotificationsProvider with ChangeNotifier {
@@ -28,6 +26,8 @@ class NotificationsProvider with ChangeNotifier {
           title: notification.data[Constants.TITLE],
           date: DateTime.fromMillisecondsSinceEpoch(notification.data[Constants.DATE]),
           description: notification.data[Constants.DESCRIPTION],
+          authorId: notification.data[Constants.AUTHOR_ID],
+          type: notification.data[Constants.TYPE],
         ));
       });
       _notifications = loadedNotifications;
@@ -55,44 +55,25 @@ class NotificationsProvider with ChangeNotifier {
     return [..._notifications];
   }
 
-   Future<void> addNotificationMeeting(String residentAssociationId, Meeting meetingNotification) async {
+   Future<void> addNotification(String residentAssociationId, NotificationModel notification) async {
       try {
       final response = await _associationRef
           .document(residentAssociationId)
           .collection(Constants.NOTIFICATIONS_COLLECTION)
           .add({
-        Constants.TITLE: meetingNotification.title,
-        Constants.DATE: DateTime.now().millisecondsSinceEpoch,
-        Constants.DESCRIPTION: meetingNotification.description,
+        Constants.TITLE: notification.title,
+        Constants.DATE: notification.date.millisecondsSinceEpoch,
+        Constants.DESCRIPTION: notification.description,
+        Constants.AUTHOR_ID: notification.authorId,
+        Constants.TYPE: notification.type,
       });
       final newNotification = NotificationModel(
-        title: meetingNotification.title,
-        date: DateTime.now(),
-        description: meetingNotification.description,
         id: response.documentID,
-      );
-      _notifications.add(newNotification);
-      notifyListeners();
-    } catch (error) {
-      throw (error);
-    }
-  }
-
-   Future<void> addNotificationConstruction(String residentAssociationId, Construction constructionNotification) async {
-      try {
-      final response = await _associationRef
-          .document(residentAssociationId)
-          .collection(Constants.NOTIFICATIONS_COLLECTION)
-          .add({
-        Constants.TITLE: constructionNotification.title,
-        Constants.DATE: DateTime.now().millisecondsSinceEpoch,
-        Constants.DESCRIPTION: constructionNotification.description,
-      });
-      final newNotification = NotificationModel(
-        title: constructionNotification.title,
+        title: notification.title,
         date: DateTime.now(),
-        description: constructionNotification.description,
-        id: response.documentID,
+        description: notification.description,
+        authorId: notification.authorId,
+        type: notification.type,
       );
       _notifications.add(newNotification);
       notifyListeners();

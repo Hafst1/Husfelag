@@ -17,6 +17,8 @@ exports.newMeetingTrigger = functions.firestore.document(
 
     admin.firestore().doc('Users/' + authorId).get().then(userDoc => {
       const residentAssociationId = userDoc.get('residentAssociationId');
+      const authorToken = userDoc.get('userToken');
+    
 
       admin.firestore().collection('Users').where('residentAssociationId', '==', residentAssociationId).get().then((snapshots) => {
         var tokens = [];
@@ -26,34 +28,76 @@ exports.newMeetingTrigger = functions.firestore.document(
         }
         else{
           for(var token of snapshots.docs){
-            tokens.push(token.data().userToken);
-            console.log('Name');
-            console.log(token.data().name);
-            console.log('Token');
-            console.log(token.data().userToken);
+            if(token.data().userToken != authorToken){
+              tokens.push(token.data().userToken);
+            }
           }
           var payload = {
-            "notification": {
-              "title": "Nýr Fundur: " + msgData.title,
-              "body": msgData.description,
-              "sound": "default"
+            'notification': {
+              'title': 'Nýr Fundur: ' + msgData.title,
+              'body': msgData.description,
+              'sound': 'default'
             },
-            "data": {
-              "title": msgData.title,
-              "description": msgData.description,
-              "authorId": msgData.authorId,
+            'data': {
+              'residentAssociationId': residentAssociationId,
+              'type': 'addedMeeting',
             }
           }
 
           return admin.messaging().sendToDevice(tokens, payload).then((response) => {
             console.log('PUshed them alll');
             }).catch((err) =>{
-            console.log(err + "eg skrifadi tetta");
+            console.log(err);
           })
         }
       })
     })
   })
+
+  exports.deleteMeetingTrigger = functions.firestore.document(
+    'ResidentAssociations/{ResidentAssociationId}/Meetings/{MeetingId}'
+  ).onDelete((snapshot, context) => {
+      msgData = snapshot.data();
+      const authorId = msgData.authorId;
+  
+      admin.firestore().doc('Users/' + authorId).get().then(userDoc => {
+        const residentAssociationId = userDoc.get('residentAssociationId');
+        const authorToken = userDoc.get('userToken');
+      
+  
+        admin.firestore().collection('Users').where('residentAssociationId', '==', residentAssociationId).get().then((snapshots) => {
+          var tokens = [];
+  
+          if(snapshots.empty){
+            console.log('No Devices');
+          }
+          else{
+            for(var token of snapshots.docs){
+              if(token.data().userToken != authorToken){
+                tokens.push(token.data().userToken);
+              }
+            }
+            var payload = {
+              'notification': {
+                'title': 'Hætt við fund: ' + msgData.title,
+                'body': msgData.description,
+                'sound': 'default'
+              },
+              'data': {
+                'residentAssociationId': residentAssociationId,
+                'type': 'deletedMeeting',
+              }
+            }
+  
+            return admin.messaging().sendToDevice(tokens, payload).then((response) => {
+              console.log('PUshed them alll');
+              }).catch((err) =>{
+              console.log(err);
+            })
+          }
+        })
+      })
+    })
 
 
 exports.newConstructionTrigger = functions.firestore.document(
@@ -64,6 +108,7 @@ exports.newConstructionTrigger = functions.firestore.document(
 
     admin.firestore().doc('Users/' + authorId).get().then(userDoc => {
       const residentAssociationId = userDoc.get('residentAssociationId');
+      const authorToken = userDoc.get('userToken');
 
       admin.firestore().collection('Users').where('residentAssociationId', '==', residentAssociationId).get().then((snapshots) => {
         var tokens = [];
@@ -73,20 +118,18 @@ exports.newConstructionTrigger = functions.firestore.document(
         }
         else{
           for(var token of snapshots.docs){
-            tokens.push(token.data().userToken);
-            console.log('Name');
-            console.log(token.data().name);
-            console.log('Token');
-            console.log(token.data().userToken);
+            if(token.data().userToken != authorToken){
+              tokens.push(token.data().userToken);
+            }
           }
           var payload = {
-            "notification": {
-              "title": "Ný Framkvæmd: " + msgData.title,
-              "body": msgData.description,
+            'notification': {
+              'title': 'Ný Framkvæmd: ' + msgData.title,
+              'body': msgData.description,
             },
-            "data": {
-              "sendername": msgData.title,
-              "message": msgData.description,
+            'data': {
+              'residentAssociationId': residentAssociationId,
+              'type': 'addedConstruction',
             }
           }
 
