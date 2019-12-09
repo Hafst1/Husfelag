@@ -34,11 +34,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Color.fromRGBO(186, 203, 201, 1)]
-          ),
+          color: Color.fromRGBO(230, 230, 230, 1),
         ),
         child: GridView(
           padding: const EdgeInsets.all(25),

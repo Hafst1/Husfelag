@@ -50,29 +50,41 @@ class _NotificationScreenState extends State<NotificationScreen> {
         Provider.of<CurrentUserProvider>(context, listen: false);
     final notificationData = Provider.of<NotificationsProvider>(context);
     final notifications = notificationData.getAllNotifications();
-    return Scaffold(
-      appBar: AppBar(
+    final mediaQuery = MediaQuery.of(context);
+    final PreferredSizeWidget appBar = AppBar(
         title: Text('Tilkynningar'),
         centerTitle: true,
-      ),
+    );
+    final heightOfBody = mediaQuery.size.height -
+        mediaQuery.padding.top -
+        appBar.preferredSize.height -
+        kBottomNavigationBarHeight;
+    return Scaffold(
+      appBar: appBar,
       body: _isLoading
           ? LoadingSpinner()
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: notifications.length,
-                    itemBuilder: (ctx, i) => NotificationItem(
-                      id: notifications[i].id,
-                      title: notifications[i].title,
-                      description: notifications[i].description,
-                      date: notifications[i].date,
+          : Container(
+              height: heightOfBody,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(230, 230, 230, 1),
+              ),
+              child:Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: notifications.length,
+                      itemBuilder: (ctx, i) => NotificationItem(
+                        id: notifications[i].id,
+                        title: notifications[i].title,
+                        description: notifications[i].description,
+                        date: notifications[i].date,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }
