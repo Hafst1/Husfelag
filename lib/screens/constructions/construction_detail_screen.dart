@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 import '../../providers/constructions_provider.dart';
 import '../../widgets/detail_date_item.dart';
-import '../../widgets/slide_dots.dart';
-
-class DummyItem {
-  final Icon icon;
-  final String fileName;
-
-  DummyItem({
-    @required this.icon,
-    @required this.fileName,
-  });
-}
 
 class ConstructionDetailScreen extends StatefulWidget {
   @override
@@ -23,42 +11,6 @@ class ConstructionDetailScreen extends StatefulWidget {
 }
 
 class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
-  int _currentFileIndex = 0;
-
-  List<DummyItem> _dummyData = [
-    // DummyItem(
-    //   icon: Icon(CustomIcons.doc_text),
-    //   fileName: "thakvidgerd.txt",
-    // ),
-    // DummyItem(
-    //   icon: Icon(
-    //     CustomIcons.file_excel,
-    //     color: Colors.green,
-    //   ),
-    //   fileName: "kostnadur.excl",
-    // ),
-    // DummyItem(
-    //   icon: Icon(
-    //     CustomIcons.file_pdf,
-    //     color: Colors.red,
-    //   ),
-    //   fileName: "paelingar.pdf",
-    // ),
-    // DummyItem(
-    //   icon: Icon(
-    //     CustomIcons.file_word,
-    //     color: Colors.blue,
-    //   ),
-    //   fileName: "yfirlit.docx",
-    // ),
-  ];
-
-  void _currentFileTracker(int index) {
-    setState(() {
-      _currentFileIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final constructionId = ModalRoute.of(context).settings.arguments as String;
@@ -80,87 +32,26 @@ class _ConstructionDetailScreenState extends State<ConstructionDetailScreen> {
         child: Column(
           children: <Widget>[
             Container(
-              padding: _dummyData.isNotEmpty
-                  ? const EdgeInsets.only(
-                      left: 35,
-                      right: 35,
-                      top: 20,
-                      bottom: 15,
-                    )
-                  : const EdgeInsets.all(0),
               height: heightOfBody * 0.30,
               width: double.infinity,
-              child: _dummyData.isNotEmpty
-                  ? CarouselSlider(
-                      items: _dummyData.map((item) {
-                        return Column(
-                          children: <Widget>[
-                            Expanded(
-                              child: FittedBox(
-                                child: item.icon,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              item.fileName,
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                      onPageChanged: (value) => _currentFileTracker(value),
-                      enableInfiniteScroll: false,
-                    )
-                  // Tímabundin mynd í staðinn fyrir skjöl tengd framkvæmd
-                  : Container(
-                      width: double.infinity,
-                      child: Image.asset(
-                        'assets/images/construction_photo.jpg',
-                        fit: BoxFit.cover,
-                        alignment: Alignment.lerp(
-                          Alignment.topCenter,
-                          Alignment.bottomCenter,
-                          0.8,
-                        ),
-                      ),
-                    ),
+              child: Container(
+                width: double.infinity,
+                child: Image.asset(
+                  'assets/images/construction_photo.jpg',
+                  fit: BoxFit.cover,
+                  alignment: Alignment.lerp(
+                    Alignment.topCenter,
+                    Alignment.bottomCenter,
+                    0.8,
+                  ),
+                ),
+              ),
             ),
-            _dummyData.length > 1
-                ? Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        for (var i = 0; i < _dummyData.length; i++)
-                          if (i == _currentFileIndex)
-                            SlideDots(isActive: true)
-                          else
-                            SlideDots(isActive: false)
-                      ],
-                    ),
-                  )
-                : Container(),
-            _dummyData.isNotEmpty
-                ? Divider(
-                    color: Colors.grey,
-                    thickness: 1.5,
-                    indent: 20,
-                    endIndent: 20,
-                  )
-                : Container(),
             Container(
               padding: EdgeInsets.only(
                 left: 35,
                 right: 35,
-                top: _dummyData.isEmpty ? 30 : 20,
+                top: 30,
                 bottom: 20,
               ),
               child: Column(
