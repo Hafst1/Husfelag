@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class User {
   final String uid;
 
-  User({@required this.uid});
+  User({
+    @required this.uid
+  });
 }
 
 class UserData {
@@ -12,9 +14,8 @@ class UserData {
   final String email;
   final String residentAssociationId;
   final String apartmentId;
-  final String userToken;
-
   final bool isAdmin;
+  final String userToken;
 
   UserData({
     @required this.id,

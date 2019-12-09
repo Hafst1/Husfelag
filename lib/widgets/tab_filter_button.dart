@@ -7,12 +7,13 @@ class TabFilterButton extends StatelessWidget {
   final double buttonHeight;
   final int filterIndex;
 
-  TabFilterButton(
-      {@required this.buttonFilterId,
-      @required this.buttonText,
-      @required this.buttonFunc,
-      @required this.buttonHeight,
-      @required this.filterIndex});
+  TabFilterButton({
+    @required this.buttonFilterId,
+    @required this.buttonText,
+    @required this.buttonFunc,
+    @required this.buttonHeight,
+    @required this.filterIndex
+  });
 
   @override
   Widget build(BuildContext context) {

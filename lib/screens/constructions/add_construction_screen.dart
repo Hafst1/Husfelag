@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/models/notification.dart';
-import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 
 import '../../providers/constructions_provider.dart';
 import '../../providers/current_user_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../models/construction.dart';
+import '../../models/notification.dart';
 import '../../widgets/save_button.dart';
 import '../../shared/loading_spinner.dart';
 import '../../shared/constants.dart' as Constants;
