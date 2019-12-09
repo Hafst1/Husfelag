@@ -514,10 +514,10 @@ class MapScreenState extends State<ProfilePage> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 100,
-                    ),
-                    deleteButton(),
+                    // SizedBox(
+                    //   height: 100,
+                    // ),
+                    // deleteButton(),
                   ],
                 ),
               ),
@@ -612,8 +612,7 @@ class MapScreenState extends State<ProfilePage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(
-                'Ert þú viss um að þú viljir eyða aðganginum þínum?'),
+            title: Text('Ert þú viss um að þú viljir eyða aðganginum þínum?'),
             actions: <Widget>[
               FlatButton(
                   onPressed: () {
