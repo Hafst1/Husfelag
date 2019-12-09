@@ -258,7 +258,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             ),
           ),
           SizedBox(
-            width: isAdmin ? 20 : 0,
+            width: (isAdmin && documentData.numberOfFolders() > 0) ? 15 : 0,
           ),
           (isAdmin && documentData.numberOfFolders() > 0)
               ? Align(
@@ -275,7 +275,6 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
               : Container(),
         ],
       ),
-      resizeToAvoidBottomPadding: false,
     );
   }
 }

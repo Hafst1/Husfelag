@@ -186,156 +186,173 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<CurrentUserProvider>(context).getUser();
     final associationsData = Provider.of<AssociationsProvider>(context);
+    final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text('Stofna húsfélag'),
+      centerTitle: true,
+      actions: <Widget>[
+        Platform.isIOS
+            ? IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  _saveForm(currentUser);
+                })
+            : Container(),
+      ],
+    );
+    final heightOfBody = mediaQuery.size.height -
+        mediaQuery.padding.top -
+        appBar.preferredSize.height;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Stofna húsfélag'),
-        centerTitle: true,
-        actions: <Widget>[
-          Platform.isIOS
-              ? IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm(currentUser);
-                  })
-              : Container(),
-        ],
-      ),
+      appBar: appBar,
       body: _isLoading
           ? LoadingSpinner()
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _form,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Heimilisfang húsfélags...',
-                        prefixIcon: Icon(Icons.location_on),
-                        border: OutlineInputBorder(),
+          : Container(
+              height: heightOfBody,
+              color: Color.fromRGBO(230, 230, 230, 1),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _form,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Heimilisfang húsfélags...',
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          prefixIcon: Icon(Icons.location_on),
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Fylla þarft út heimilisfang!';
+                          }
+                          if (value.length > 30) {
+                            return 'Heimilisfang getur ekki verið meira en 30 stafir á lengd!';
+                          }
+                          if (!associationsData
+                              .associationAddressIsAvailable(value)) {
+                            return 'Viðkomandi heimilisfang er nú þegar frátekið!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _newAssociation = ResidentAssociation(
+                            id: _newAssociation.id,
+                            address:
+                                '${value[0].toUpperCase()}${value.substring(1).toLowerCase()}',
+                            description: _newAssociation.description,
+                            accessCode: _newAssociation.accessCode,
+                          );
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Fylla þarft út heimilisfang!';
-                        }
-                        if (value.length > 30) {
-                          return 'Heimilisfang getur ekki verið meira en 30 stafir á lengd!';
-                        }
-                        if (!associationsData
-                            .associationAddressIsAvailable(value)) {
-                          return 'Viðkomandi heimilisfang er nú þegar frátekið!';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _newAssociation = ResidentAssociation(
-                          id: _newAssociation.id,
-                          address:
-                              '${value[0].toUpperCase()}${value.substring(1).toLowerCase()}',
-                          description: _newAssociation.description,
-                          accessCode: _newAssociation.accessCode,
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      maxLines: 10,
-                      decoration: InputDecoration(
-                        hintText: 'Nánari lýsing (valfrjálst)...',
-                        border: OutlineInputBorder(),
+                      SizedBox(
+                        height: 15,
                       ),
-                      keyboardType: TextInputType.text,
-                      onSaved: (value) {
-                        _newAssociation = ResidentAssociation(
-                          id: _newAssociation.id,
-                          address: _newAssociation.address,
-                          description: value,
-                          accessCode: _newAssociation.accessCode,
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Þitt íbúðarnúmer...',
-                        prefixIcon: Icon(Icons.home),
-                        border: OutlineInputBorder(),
+                      TextFormField(
+                        maxLines: 10,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Nánari lýsing (valfrjálst)...',
+                        ),
+                        keyboardType: TextInputType.text,
+                        onSaved: (value) {
+                          _newAssociation = ResidentAssociation(
+                            id: _newAssociation.id,
+                            address: _newAssociation.address,
+                            description: value,
+                            accessCode: _newAssociation.accessCode,
+                          );
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Fylla þarf út íbúðarnúmer!';
-                        }
-                        if (value.length > 4) {
-                          return 'Íbúðarnúmer getur ekki verið lengra en 4 stafir á lengd!';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _newApartment = Apartment(
-                          id: _newApartment.id,
-                          apartmentNumber: value,
-                          accessCode: _newApartment.accessCode,
-                          residents: [currentUser.id],
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Aðgangskóði íbúðar...',
-                        prefixIcon: Icon(Icons.lock),
-                        suffixIcon: Icon(Icons.visibility_off),
-                        border: OutlineInputBorder(),
+                      SizedBox(
+                        height: 15,
                       ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value.length < 6) {
-                          return 'Aðgangskóði þarf að vera að minnsta kosti 6 stafir á lengd!';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _newApartment = Apartment(
-                          id: _newApartment.id,
-                          apartmentNumber: _newApartment.apartmentNumber,
-                          accessCode: value,
-                          residents: [currentUser.id],
-                        );
-                      },
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        FlatButton(
-                          onPressed: () =>
-                              _presentAccessCodeExplanationDialog(),
-                          child: Text(
-                            'Aðgangskóði íbúðar?',
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 15,
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Þitt íbúðarnúmer...',
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          prefixIcon: Icon(Icons.home),
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Fylla þarf út íbúðarnúmer!';
+                          }
+                          if (value.length > 4) {
+                            return 'Íbúðarnúmer getur ekki verið lengra en 4 stafir á lengd!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _newApartment = Apartment(
+                            id: _newApartment.id,
+                            apartmentNumber: value,
+                            accessCode: _newApartment.accessCode,
+                            residents: [currentUser.id],
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Aðgangskóði íbúðar...',
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: Icon(Icons.visibility_off),
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value.length < 6) {
+                            return 'Aðgangskóði þarf að vera að minnsta kosti 6 stafir á lengd!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _newApartment = Apartment(
+                            id: _newApartment.id,
+                            apartmentNumber: _newApartment.apartmentNumber,
+                            accessCode: value,
+                            residents: [currentUser.id],
+                          );
+                        },
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          FlatButton(
+                            onPressed: () =>
+                                _presentAccessCodeExplanationDialog(),
+                            child: Text(
+                              'Aðgangskóði íbúðar?',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 15,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Platform.isAndroid
-                        ? SaveButton(
-                            text: 'STOFNA',
-                            saveFunc: () => _saveForm(currentUser),
-                          )
-                        : Container(),
-                  ],
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Platform.isAndroid
+                          ? SaveButton(
+                              text: 'STOFNA',
+                              saveFunc: () => _saveForm(currentUser),
+                            )
+                          : Container(),
+                    ],
+                  ),
                 ),
               ),
             ),
