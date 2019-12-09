@@ -316,90 +316,97 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
   Widget _buildForm(AssociationsProvider associationsData) {
     final currentUserData = Provider.of<CurrentUserProvider>(context);
     return Expanded(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _form,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Íbúðarnúmer...',
-                  prefixIcon: Icon(Icons.home),
-                  border: OutlineInputBorder(),
+      child: Container(
+        color: Color.fromRGBO(230, 230, 230, 1),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _form,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Íbúðarnúmer...',
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.home),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Fylla þarf út íbúðarnúmer!';
+                    }
+                    if (value.length > 4) {
+                      return 'Íbúðarnúmer getur ekki verið lengra en 4 stafir á lengd!';
+                    }
+                    if (!associationsData.apartmentIsAvailable(value)) {
+                      return 'Viðkomandi íbúðarnúmer er nú þegar skráð!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _newApartment = Apartment(
+                      id: _newApartment.id,
+                      apartmentNumber: value,
+                      accessCode: _newApartment.accessCode,
+                      residents: [currentUserData.getId()],
+                    );
+                  },
                 ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Fylla þarf út íbúðarnúmer!';
-                  }
-                  if (value.length > 4) {
-                    return 'Íbúðarnúmer getur ekki verið lengra en 4 stafir á lengd!';
-                  }
-                  if (!associationsData.apartmentIsAvailable(value)) {
-                    return 'Viðkomandi íbúðarnúmer er nú þegar skráð!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _newApartment = Apartment(
-                    id: _newApartment.id,
-                    apartmentNumber: value,
-                    accessCode: _newApartment.accessCode,
-                    residents: [currentUserData.getId()],
-                  );
-                },
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Aðgangskóði íbúðar...',
-                  prefixIcon: Icon(Icons.lock),
-                  suffixIcon: Icon(Icons.visibility_off),
-                  border: OutlineInputBorder(),
+                SizedBox(
+                  height: 15,
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value.length < 6) {
-                    return 'Lykilorð þarf að vera að minnsta kosti 6 stafir á lengd!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _newApartment = Apartment(
-                    id: _newApartment.id,
-                    apartmentNumber: _newApartment.apartmentNumber,
-                    accessCode: value,
-                    residents: [currentUserData.getId()],
-                  );
-                },
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  FlatButton(
-                    onPressed: () => _presentAccessCodeExplanationDialog(),
-                    child: Text(
-                      'Aðgangskóði íbúðar?',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 15,
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Aðgangskóði íbúðar...',
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: Icon(Icons.visibility_off),
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value.length < 6) {
+                      return 'Lykilorð þarf að vera að minnsta kosti 6 stafir á lengd!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _newApartment = Apartment(
+                      id: _newApartment.id,
+                      apartmentNumber: _newApartment.apartmentNumber,
+                      accessCode: value,
+                      residents: [currentUserData.getId()],
+                    );
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    FlatButton(
+                      onPressed: () => _presentAccessCodeExplanationDialog(),
+                      child: Text(
+                        'Aðgangskóði íbúðar?',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Platform.isAndroid
-                  ? SaveButton(
-                      text: 'BÆTA VIÐ',
-                      saveFunc: _validateForm,
-                    )
-                  : Container(),
-            ],
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Platform.isAndroid
+                    ? SaveButton(
+                        text: 'BÆTA VIÐ',
+                        saveFunc: _validateForm,
+                      )
+                    : Container(),
+              ],
+            ),
           ),
         ),
       ),
