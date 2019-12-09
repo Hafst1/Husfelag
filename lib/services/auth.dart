@@ -94,6 +94,7 @@ class AuthService {
 
     try {
       user.delete();
+      
     } catch (error) {
       print(error.toString());
     }
