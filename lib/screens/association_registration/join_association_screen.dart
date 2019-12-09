@@ -126,7 +126,6 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
   void _validateForm() async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
-      print('went in here');
       return;
     }
     _form.currentState.save();
@@ -196,7 +195,39 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
         content: Text(message),
         actions: <Widget>[
           FlatButton(
-            child: Text('Halda áfram'),
+            child: Text(
+              'Halda áfram',
+              style: TextStyle(
+                color: Colors.green[600],
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  // function which explains the purpose of apartment access code.
+  void _presentAccessCodeExplanationDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Aðgangskóði íbúðar'),
+        content: Text(
+            'Aðgangskóði íbúðar er lykilorð sem annar aðili þarf að útvega ætli hann að ganga í tiltekna íbúð.'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(
+              'Halda áfram',
+              style: TextStyle(
+                color: Colors.green[600],
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             onPressed: () {
               Navigator.of(ctx).pop();
             },
@@ -344,8 +375,23 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
                   );
                 },
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: () => _presentAccessCodeExplanationDialog(),
+                    child: Text(
+                      'Aðgangskóði íbúðar?',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Platform.isAndroid
                   ? SaveButton(
