@@ -174,181 +174,193 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
         Provider.of<CurrentUserProvider>(context, listen: false);
     final residentAssociationId = currentUserData.getResidentAssociationId();
     final userId = currentUserData.getId();
+    final mediaQuery = MediaQuery.of(context);
+    final PreferredSizeWidget appBar = AppBar(
+      title: Text(_initValues['appbar-title']),
+      centerTitle: true,
+      actions: <Widget>[
+        Platform.isIOS
+            ? IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  _saveForm(residentAssociationId);
+                },
+              )
+            : Container(),
+      ],
+    );
+    final heightOfBody = mediaQuery.size.height -
+        mediaQuery.padding.top -
+        appBar.preferredSize.height -
+        kBottomNavigationBarHeight;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_initValues['appbar-title']),
-        centerTitle: true,
-        actions: <Widget>[
-          Platform.isIOS
-              ? IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm(residentAssociationId);
-                  },
-                )
-              : Container(),
-        ],
-      ),
+      appBar: appBar,
       body: _isLoading
           ? LoadingSpinner()
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _form,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      initialValue: _initValues['title'],
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: "Titill...",
+          : Container(
+              height: heightOfBody,
+              decoration: new BoxDecoration(
+                color: Color.fromRGBO(230, 230, 230, 1),
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _form,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        initialValue: _initValues['title'],
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: "Titill...",
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Fylla þarf út titil framkvæmdar!";
+                          }
+                          if (value.length > 40) {
+                            return "Titill framkvæmdar getur ekki verið meira en 40 stafir á lengd!";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _construction = Construction(
+                            id: _construction.id,
+                            title: value,
+                            dateFrom: _construction.dateFrom,
+                            dateTo: _construction.dateTo,
+                            description: _construction.description,
+                            authorId: _construction.authorId != ''
+                                ? _construction.authorId
+                                : userId,
+                          );
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Fylla þarf út titil framkvæmdar!";
-                        }
-                        if (value.length > 40) {
-                          return "Titill framkvæmdar getur ekki verið meira en 40 stafir á lengd!";
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _construction = Construction(
-                          id: _construction.id,
-                          title: value,
-                          dateFrom: _construction.dateFrom,
-                          dateTo: _construction.dateTo,
-                          description: _construction.description,
-                          authorId: _construction.authorId != ''
-                              ? _construction.authorId
-                              : userId,
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    GestureDetector(
-                      onTap: () => _presentDatePicker(_dateFromController),
-                      child: AbsorbPointer(
-                        child: TextFormField(
-                          controller: _dateFromController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: "Frá...",
-                            prefixText:
-                                _dateFromController.text != "" ? "Frá: " : "",
-                            prefixIcon: Icon(Icons.date_range),
-                            errorMaxLines: 2,
-                          ),
-                          textInputAction: TextInputAction.next,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Fylla þarf út upphafsdagsetningu framkvæmdar!";
-                            }
-                            if (_dateToController.text.isNotEmpty) {
-                              if (convertToDate(value).isAfter(
-                                  convertToDate(_dateToController.text))) {
-                                return "Valin dagsetning á sér stað á eftir lokadagsetningu framkvæmdar!";
+                      SizedBox(
+                        height: 15,
+                      ),
+                      GestureDetector(
+                        onTap: () => _presentDatePicker(_dateFromController),
+                        child: AbsorbPointer(
+                          child: TextFormField(
+                            controller: _dateFromController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: "Frá...",
+                              prefixText:
+                                  _dateFromController.text != "" ? "Frá: " : "",
+                              prefixIcon: Icon(Icons.date_range),
+                              errorMaxLines: 2,
+                            ),
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Fylla þarf út upphafsdagsetningu framkvæmdar!";
                               }
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _construction = Construction(
-                              id: _construction.id,
-                              title: _construction.title,
-                              dateFrom: convertToDate(value),
-                              dateTo: _construction.dateTo,
-                              description: _construction.description,
-                              authorId: _construction.authorId,
-                            );
-                          },
+                              if (_dateToController.text.isNotEmpty) {
+                                if (convertToDate(value).isAfter(
+                                    convertToDate(_dateToController.text))) {
+                                  return "Valin dagsetning á sér stað á eftir lokadagsetningu framkvæmdar!";
+                                }
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _construction = Construction(
+                                id: _construction.id,
+                                title: _construction.title,
+                                dateFrom: convertToDate(value),
+                                dateTo: _construction.dateTo,
+                                description: _construction.description,
+                                authorId: _construction.authorId,
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    GestureDetector(
-                      onTap: () => _presentDatePicker(_dateToController),
-                      child: AbsorbPointer(
-                        child: TextFormField(
-                          controller: _dateToController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: "Til...",
-                            prefixText:
-                                _dateToController.text != "" ? "Til: " : "",
-                            prefixIcon: Icon(Icons.date_range),
-                            errorMaxLines: 2,
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Fylla þarf út lokadagsetningu framkvæmdar!";
-                            }
-                            if (_dateFromController.text.isNotEmpty) {
-                              if (convertToDate(value).isBefore(
-                                  convertToDate(_dateFromController.text))) {
-                                return "Valin dagsetning á sér stað á undan upphafsdagsetningu framkvæmdar!";
+                      SizedBox(
+                        height: 15,
+                      ),
+                      GestureDetector(
+                        onTap: () => _presentDatePicker(_dateToController),
+                        child: AbsorbPointer(
+                          child: TextFormField(
+                            controller: _dateToController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: "Til...",
+                              prefixText:
+                                  _dateToController.text != "" ? "Til: " : "",
+                              prefixIcon: Icon(Icons.date_range),
+                              errorMaxLines: 2,
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Fylla þarf út lokadagsetningu framkvæmdar!";
                               }
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _construction = Construction(
-                              id: _construction.id,
-                              title: _construction.title,
-                              dateFrom: _construction.dateFrom,
-                              dateTo: convertToDate(value),
-                              description: _construction.description,
-                              authorId: _construction.authorId,
-                            );
-                          },
+                              if (_dateFromController.text.isNotEmpty) {
+                                if (convertToDate(value).isBefore(
+                                    convertToDate(_dateFromController.text))) {
+                                  return "Valin dagsetning á sér stað á undan upphafsdagsetningu framkvæmdar!";
+                                }
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _construction = Construction(
+                                id: _construction.id,
+                                title: _construction.title,
+                                dateFrom: _construction.dateFrom,
+                                dateTo: convertToDate(value),
+                                description: _construction.description,
+                                authorId: _construction.authorId,
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      initialValue: _initValues['description'],
-                      maxLines: 10,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: "Nánari lýsing (valfrjálst)...",
+                      SizedBox(
+                        height: 15,
                       ),
-                      keyboardType: TextInputType.text,
-                      onSaved: (value) {
-                        _construction = Construction(
-                          id: _construction.id,
-                          title: _construction.title,
-                          dateFrom: _construction.dateFrom,
-                          dateTo: _construction.dateTo,
-                          description: value,
-                          authorId: _construction.authorId,
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Platform.isAndroid
-                        ? SaveButton(
-                            text: _initValues['save-text'],
-                            saveFunc: () => _saveForm(residentAssociationId),
-                          )
-                        : Container(),
-                  ],
+                      TextFormField(
+                        initialValue: _initValues['description'],
+                        maxLines: 10,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: "Nánari lýsing (valfrjálst)...",
+                        ),
+                        keyboardType: TextInputType.text,
+                        onSaved: (value) {
+                          _construction = Construction(
+                            id: _construction.id,
+                            title: _construction.title,
+                            dateFrom: _construction.dateFrom,
+                            dateTo: _construction.dateTo,
+                            description: value,
+                            authorId: _construction.authorId,
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Platform.isAndroid
+                          ? SaveButton(
+                              text: _initValues['save-text'],
+                              saveFunc: () => _saveForm(residentAssociationId),
+                            )
+                          : Container(),
+                    ],
+                  ),
                 ),
               ),
             ),
