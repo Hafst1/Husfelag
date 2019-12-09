@@ -21,6 +21,21 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+Map<int, Color> colorMap = {
+  50: Color.fromRGBO(58, 100, 124, 1),
+  100: Color.fromRGBO(58, 100, 124, 0.2),
+  200: Color.fromRGBO(58, 100, 124, 0.3),
+  300: Color.fromRGBO(58, 100, 124, 0.4),
+  400: Color.fromRGBO(58, 100, 124, 0.5),
+  500: Color.fromRGBO(58, 100, 124, 0.4),
+  600: Color.fromRGBO(58, 100, 124, 0.3),
+  700: Color.fromRGBO(58, 100, 124, 0.2),
+  800: Color.fromRGBO(58, 100, 124, 0.1),
+  900: Color.fromRGBO(58, 100, 124, 1),
+};
+
+MaterialColor customColor = MaterialColor(0xFF3A647C, colorMap); 
+
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
@@ -38,7 +53,7 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
           title: 'Húsfélagið',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: customColor, 
             accentColor: Colors.pink[400],
           ),
           home: Wrapper(),
