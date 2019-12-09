@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 
 import '../../models/meeting.dart';
-
-import '../../models/notification.dart';
 import '../../providers/meetings_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../widgets/save_button.dart';

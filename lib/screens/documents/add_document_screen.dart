@@ -165,172 +165,192 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
     final userId = currentUserData.getId();
     final documentData = Provider.of<DocumentsProvider>(context);
     final folders = documentData.getAllFolders();
-
+    final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text(_initValues['appbar-title']),
+      centerTitle: true,
+      actions: <Widget>[
+        Platform.isIOS
+            ? IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  _saveForm(residentAssociationId);
+                },
+              )
+            : Container(),
+      ],
+    );
+    final heightOfBody = mediaQuery.size.height -
+        mediaQuery.padding.top -
+        appBar.preferredSize.height -
+        kBottomNavigationBarHeight;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_initValues['appbar-title']),
-        centerTitle: true,
-        actions: <Widget>[
-          Platform.isIOS
-              ? IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm(residentAssociationId);
-                  },
-                )
-              : Container(),
-        ],
-      ),
+      appBar: appBar,
       body: _isLoading
           ? LoadingSpinner()
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _form,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _document.id != null
-                        ? Container()
-                        : Column(
-                            children: <Widget>[
-                              OutlineButton(
-                                onPressed: () => openFileExplorer(),
-                                child: Text('Velja skjal'),
-                                borderSide: BorderSide(color: Colors.black),
-                                shape: StadiumBorder(),
-                              ),
-                              SizedBox(
-                                height: 15.0,
-                              ),
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20,
+          : Container(
+              height: heightOfBody,
+              color: Color.fromRGBO(230, 230, 230, 1),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _form,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      _document.id != null
+                          ? Container()
+                          : Column(
+                              children: <Widget>[
+                                FlatButton(
+                                  onPressed: () => openFileExplorer(),
+                                  child: Text('Velja skjal'),
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      color: Colors.black,
+                                      width: 1,
+                                      style: BorderStyle.solid,
+                                    ),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  color: Colors.white,
                                 ),
-                                child: _initValues['filePreviewName'] == ''
-                                    ? _errorMessage == ''
-                                        ? Container(
-                                            height: 10,
-                                          )
-                                        : Center(
-                                            child: Text(
-                                              _errorMessage,
-                                              // textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Colors.redAccent[700],
-                                                fontSize: 12,
+                                SizedBox(
+                                  height: 15.0,
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  child: _initValues['filePreviewName'] == ''
+                                      ? _errorMessage == ''
+                                          ? Container(
+                                              height: 10,
+                                            )
+                                          : Center(
+                                              child: Text(
+                                                _errorMessage,
+                                                // textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors.redAccent[700],
+                                                  fontSize: 12,
+                                                ),
                                               ),
+                                            )
+                                      : Center(
+                                          child: Text(
+                                            _initValues['filePreviewName'],
+                                            style: TextStyle(
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              fontSize: 15,
+                                              height: 1.25,
                                             ),
-                                          )
-                                    : Center(
-                                        child: Text(
-                                          _initValues['filePreviewName'],
-                                          style: TextStyle(
-                                            decoration:
-                                                TextDecoration.underline,
-                                            fontSize: 15,
-                                            height: 1.25,
                                           ),
                                         ),
-                                      ),
-                              ),
-                            ],
-                          ),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    TextFormField(
-                      initialValue: _initValues['title'],
-                      decoration: InputDecoration(
-                        hintText: 'Titill...',
-                        prefixIcon: Icon(CustomIcons.pencil),
-                        border: OutlineInputBorder(),
-                        errorStyle: TextStyle(
-                          color: Colors.redAccent[700],
-                          fontSize: 12,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Fylla þarf út titil skjals!';
-                        }
-                        if (value.length > 40) {
-                          return 'Titill skjals getur ekki verið meira en 40 stafir á lengd!';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _document = Document(
-                          id: _document.id,
-                          title: value,
-                          fileName: _document.fileName,
-                          downloadUrl: _document.downloadUrl,
-                          folderId: _document.folderId,
-                          authorId: _document.authorId != ''
-                              ? _document.authorId
-                              : userId,
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    DropdownButtonFormField(
-                      value: _initValues['selected-folder'] != ''
-                          ? _initValues['selected-folder']
-                          : null,
-                      hint: Text('Veldu möppu...'),
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.folder),
-                        border: OutlineInputBorder(),
-                        errorStyle: TextStyle(
-                          color: Colors.redAccent[700],
-                          fontSize: 12,
-                        ),
-                      ),
-                      onChanged: (value) => setState(() {
-                        _initValues['selected-folder'] = value;
-                      }),
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Veldu möppu!';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _document = Document(
-                          id: _document.id,
-                          title: _document.title,
-                          fileName: _document.fileName,
-                          downloadUrl: _document.downloadUrl,
-                          folderId: value,
-                          authorId: _document.authorId,
-                        );
-                      },
-                      items: folders.map((folder) {
-                        return DropdownMenuItem(
-                          value: folder.id,
-                          child: Text(
-                            folder.title,
-                            style: TextStyle(
-                              color: Colors.black,
+                                ),
+                              ],
                             ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      TextFormField(
+                        initialValue: _initValues['title'],
+                        decoration: InputDecoration(
+                          hintText: 'Titill...',
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          prefixIcon: Icon(CustomIcons.pencil),
+                          errorStyle: TextStyle(
+                            color: Colors.redAccent[700],
+                            fontSize: 12,
                           ),
-                        );
-                      }).toList(),
-                    ),
-                    SizedBox(
-                      height: 25.0,
-                    ),
-                    Platform.isAndroid
-                        ? SaveButton(
-                            text: _initValues['save-text'],
-                            saveFunc: () => _saveForm(residentAssociationId),
-                          )
-                        : Container(),
-                  ],
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Fylla þarf út titil skjals!';
+                          }
+                          if (value.length > 40) {
+                            return 'Titill skjals getur ekki verið meira en 40 stafir á lengd!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _document = Document(
+                            id: _document.id,
+                            title: value,
+                            fileName: _document.fileName,
+                            downloadUrl: _document.downloadUrl,
+                            folderId: _document.folderId,
+                            authorId: _document.authorId != ''
+                                ? _document.authorId
+                                : userId,
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      DropdownButtonFormField(
+                        value: _initValues['selected-folder'] != ''
+                            ? _initValues['selected-folder']
+                            : null,
+                        hint: Text('Veldu möppu...'),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.folder),
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          errorStyle: TextStyle(
+                            color: Colors.redAccent[700],
+                            fontSize: 12,
+                          ),
+                        ),
+                        onChanged: (value) => setState(() {
+                          _initValues['selected-folder'] = value;
+                        }),
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Veldu möppu!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _document = Document(
+                            id: _document.id,
+                            title: _document.title,
+                            fileName: _document.fileName,
+                            downloadUrl: _document.downloadUrl,
+                            folderId: value,
+                            authorId: _document.authorId,
+                          );
+                        },
+                        items: folders.map((folder) {
+                          return DropdownMenuItem(
+                            value: folder.id,
+                            child: Text(
+                              folder.title,
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      SizedBox(
+                        height: 25.0,
+                      ),
+                      Platform.isAndroid
+                          ? SaveButton(
+                              text: _initValues['save-text'],
+                              saveFunc: () => _saveForm(residentAssociationId),
+                            )
+                          : Container(),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 import '../../models/cleaning_task.dart';
 import '../../providers/cleaning_provider.dart';
@@ -110,6 +111,17 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
     final appBar = AppBar(
       title: Text(_initValues['appbar-title']),
       centerTitle: true,
+      actions: <Widget>[
+        Platform.isIOS
+            ? IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  _saveForm();
+                },
+              )
+            : Container(),
+      ],
     );
     final heightOfBody = mediaQuery.size.height -
         mediaQuery.padding.top -
