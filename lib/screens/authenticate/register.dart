@@ -49,7 +49,6 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'AlegreyaSansSC',
                       ),
                     ),
                   ),

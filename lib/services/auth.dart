@@ -15,7 +15,7 @@ class AuthService {
     return _auth.onAuthStateChanged.map(_userFromFirebaseUser);
   }
 
-  // sign in with email and password
+  // sign in with email and password from firebase
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(
@@ -29,7 +29,7 @@ class AuthService {
     }
   }
 
-  // register with email and password
+  // register with email and password from firebase
   Future registerWithEmailAndPassword(String email, String password) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
@@ -43,6 +43,7 @@ class AuthService {
     }
   }
 
+  // change email function for user profile
   Future changeEmail(String email) async {
     //Create an instance of the current user.
     FirebaseUser user = await _auth.currentUser();
@@ -54,6 +55,7 @@ class AuthService {
     }
   }
 
+  // change password function for user profile
   Future<void> changePassword(String password) async {
     //Create an instance of the current user.
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
@@ -67,6 +69,7 @@ class AuthService {
     }
   }
 
+  // firebase function that sends email to user for password reset
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -76,7 +79,7 @@ class AuthService {
     }
   }
   
-  // sign out
+  // sign out function
   Future signOut() async {
     try {
       return await _auth.signOut();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:husfelagid/providers/current_user_provider.dart';
-import 'package:husfelagid/screens/my_association_screen.dart';
 
+import '../providers/current_user_provider.dart';
+import '../screens/my_association_screen.dart';
 import '../screens/profile_page.dart';
 import '../services/auth.dart';
 
@@ -39,7 +39,6 @@ class MainDrawer extends StatelessWidget {
             title: Text(
               'Mín síða',
               style: TextStyle(
-                //fontFamily: '',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -59,7 +58,6 @@ class MainDrawer extends StatelessWidget {
             title: Text(
               'Mitt húsfélag',
               style: TextStyle(
-                //fontFamily: '',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -79,7 +77,6 @@ class MainDrawer extends StatelessWidget {
             title: Text(
               'Skrá út',
               style: TextStyle(
-                //fontFamily: '',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
