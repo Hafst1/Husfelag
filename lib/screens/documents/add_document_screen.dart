@@ -11,8 +11,6 @@ import '../../providers/documents_provider.dart';
 import '../../widgets/custom_icons_icons.dart';
 import '../../widgets/save_button.dart';
 
-// //ath vantar að setja í android manifest use permission og ios/Runner/Info.plist
-
 class AddDocumentScreen extends StatefulWidget {
   static const routeName = '/add-document';
 
@@ -69,7 +67,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
   // or adds a new one.
   void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
-    if (!isValid) {
+    if (!isValid || _document.fileName.isEmpty) {
       if (_document.fileName.isEmpty) {
         setState(() {
           _errorMessage = 'Ekki er búið að velja skjal til að bæta við!';
