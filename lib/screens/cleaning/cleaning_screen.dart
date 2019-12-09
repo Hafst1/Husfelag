@@ -16,7 +16,7 @@ class CleaningScreen extends StatelessWidget {
     final isAdmin = Provider.of<CurrentUserProvider>(context).isAdmin();
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
-      title: Text("Þrif á sameign"),
+      title: Text('Þrif á sameign'),
       centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
@@ -27,9 +27,7 @@ class CleaningScreen extends StatelessWidget {
       appBar: appBar,
       body: Container(
         height: heightOfBody,
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(230, 230, 230, 1),
-        ),
+        color: Color.fromRGBO(230, 230, 230, 1),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(25),
           child: Column(
@@ -37,7 +35,7 @@ class CleaningScreen extends StatelessWidget {
               isAdmin
                   ? CategoryOption(
                       optionIcon: Icons.add,
-                      optionText: "Bæta við þrif",
+                      optionText: 'Bæta við þrif',
                       optionRoute: AddCleaningScreen.routeName,
                     )
                   : Container(),
@@ -48,13 +46,13 @@ class CleaningScreen extends StatelessWidget {
                   : Container(),
               CategoryOption(
                 optionIcon: Icons.find_in_page,
-                optionText: "Yfirlit þrifa",
+                optionText: 'Yfirlit þrifa',
                 optionRoute: CleaningListScreen.routeName,
               ),
               SizedBox(height: 15),
               CategoryOption(
                 optionIcon: CustomIcons.check,
-                optionText: "Verkefnalisti",
+                optionText: 'Verkefnalisti',
                 optionRoute: CleaningTasksScreen.routeName,
               ),
             ],

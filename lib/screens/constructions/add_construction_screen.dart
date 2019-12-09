@@ -189,9 +189,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
           ? LoadingSpinner()
           : Container(
               height: heightOfBody,
-              decoration: new BoxDecoration(
-                color: Color.fromRGBO(230, 230, 230, 1),
-              ),
+              color: Color.fromRGBO(230, 230, 230, 1),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
@@ -204,14 +202,14 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: "Titill...",
+                          hintText: 'Titill...',
                         ),
                         validator: (value) {
                           if (value.isEmpty) {
-                            return "Fylla þarf út titil framkvæmdar!";
+                            return 'Fylla þarf út titil framkvæmdar!';
                           }
                           if (value.length > 40) {
-                            return "Titill framkvæmdar getur ekki verið meira en 40 stafir á lengd!";
+                            return 'Titill framkvæmdar getur ekki verið meira en 40 stafir á lengd!';
                           }
                           return null;
                         },
@@ -240,21 +238,21 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                               border: InputBorder.none,
                               filled: true,
                               fillColor: Colors.white,
-                              hintText: "Frá...",
+                              hintText: 'Frá...',
                               prefixText:
-                                  _dateFromController.text != "" ? "Frá: " : "",
+                                  _dateFromController.text != '' ? 'Frá: ' : '',
                               prefixIcon: Icon(Icons.date_range),
                               errorMaxLines: 2,
                             ),
                             textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Fylla þarf út upphafsdagsetningu framkvæmdar!";
+                                return 'Fylla þarf út upphafsdagsetningu framkvæmdar!';
                               }
                               if (_dateToController.text.isNotEmpty) {
                                 if (convertToDate(value).isAfter(
                                     convertToDate(_dateToController.text))) {
-                                  return "Valin dagsetning á sér stað á eftir lokadagsetningu framkvæmdar!";
+                                  return 'Valin dagsetning á sér stað á eftir lokadagsetningu framkvæmdar!';
                                 }
                               }
                               return null;
@@ -284,20 +282,20 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                               border: InputBorder.none,
                               filled: true,
                               fillColor: Colors.white,
-                              hintText: "Til...",
+                              hintText: 'Til...',
                               prefixText:
-                                  _dateToController.text != "" ? "Til: " : "",
+                                  _dateToController.text != '' ? 'Til: ' : '',
                               prefixIcon: Icon(Icons.date_range),
                               errorMaxLines: 2,
                             ),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Fylla þarf út lokadagsetningu framkvæmdar!";
+                                return 'Fylla þarf út lokadagsetningu framkvæmdar!';
                               }
                               if (_dateFromController.text.isNotEmpty) {
                                 if (convertToDate(value).isBefore(
                                     convertToDate(_dateFromController.text))) {
-                                  return "Valin dagsetning á sér stað á undan upphafsdagsetningu framkvæmdar!";
+                                  return 'Valin dagsetning á sér stað á undan upphafsdagsetningu framkvæmdar!';
                                 }
                               }
                               return null;
@@ -325,7 +323,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: "Nánari lýsing (valfrjálst)...",
+                          hintText: 'Nánari lýsing (valfrjálst)...',
                         ),
                         keyboardType: TextInputType.text,
                         onSaved: (value) {

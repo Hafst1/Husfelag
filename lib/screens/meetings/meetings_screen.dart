@@ -12,7 +12,7 @@ class MeetingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
-      title: Text("Fundir"),
+      title: Text('Fundir'),
       centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
@@ -23,22 +23,20 @@ class MeetingsScreen extends StatelessWidget {
       appBar: appBar,
       body: Container(
         height: heightOfBody,
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(230, 230, 230, 1),
-        ),
+        color: Color.fromRGBO(230, 230, 230, 1),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(25),
           child: Column(
             children: <Widget>[
               CategoryOption(
                 optionIcon: Icons.group_add,
-                optionText: "Bóka fund",
+                optionText: 'Bóka fund',
                 optionRoute: AddMeetingScreen.routeName,
               ),
               SizedBox(height: 15),
               CategoryOption(
                 optionIcon: CustomIcons.find_in_page,
-                optionText: "Yfirlit funda",
+                optionText: 'Yfirlit funda',
                 optionRoute: MeetingsListScreen.routeName,
               ),
             ],
