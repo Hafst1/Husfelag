@@ -88,4 +88,14 @@ class AuthService {
       return null;
     }
   }
+
+  Future deleteUser() async{
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+    try {
+      user.delete();
+    } catch (error) {
+      print(error.toString());
+    }
+  }
 }
