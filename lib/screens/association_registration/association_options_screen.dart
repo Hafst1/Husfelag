@@ -34,6 +34,7 @@ class AssociationOptionsScreen extends StatelessWidget {
     return Scaffold(
       appBar: appBar,
       body: Container(
+        color: Color.fromRGBO(230, 230, 230, 1),
         width: mediaQuery.size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
