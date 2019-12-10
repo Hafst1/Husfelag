@@ -50,6 +50,7 @@ class AssociationsProvider with ChangeNotifier {
     }
   }
 
+  // function which makes another user in the resident association an admin.
   Future<void> makeUserAdmin(UserData user) async {
     print('make user admin fall, usertoke: ');
     print(user.userToken);
@@ -128,6 +129,7 @@ class AssociationsProvider with ChangeNotifier {
     return [..._residents];
   }
 
+  // function which returns a resident with the id taken in as parameter.
   UserData getResident(String userId) {
     final residentIndex =
         _residents.indexWhere((resident) => resident.id == userId);

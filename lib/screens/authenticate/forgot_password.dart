@@ -29,7 +29,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               style: TextStyle(
                 fontSize: 35,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'AlegreyaSansSC',
               ),
             ),
           ),
@@ -38,43 +37,44 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
           Expanded(
             child: SingleChildScrollView(
-                padding: EdgeInsets.only(
-                  left: 30,
-                  right: 30,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                          decoration: InputDecoration(
-                            hintText: 'Netfang',
-                            prefixIcon: Icon(Icons.email),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+              padding: EdgeInsets.only(
+                left: 30,
+                right: 30,
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Netfang',
+                          prefixIcon: Icon(Icons.email),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          validator: (val) =>
-                              val.isEmpty ? 'Sláðu inn netfang' : null,
-                          onChanged: (val) {
-                            setState(() => _email = val);
-                          }),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      buildButton(),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text('Til baka'),
-                      ),
-                    ],
-                  ),
-                )),
+                        ),
+                        validator: (val) =>
+                            val.isEmpty ? 'Sláðu inn netfang' : null,
+                        onChanged: (val) {
+                          setState(() => _email = val);
+                        }),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    buildButton(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Til baka'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           )
         ],
       )),
@@ -86,7 +86,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       onTap: () async {
         if (_formKey.currentState.validate()) {
           await _auth.sendPasswordResetEmail(_email);
-          print('Password reset email sent');
 
           _popupDialog(context);
         }
@@ -116,7 +115,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Slóð þar sem þú getur endustillt lykilorðið hefur verið sent á $_email'),
+            title: Text(
+                'Slóð þar sem þú getur endustillt lykilorðið hefur verið sent á $_email'),
             actions: <Widget>[
               FlatButton(
                   onPressed: () => Navigator.of(context).pop(),

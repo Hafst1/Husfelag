@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/user.dart';
 import '../models/apartment.dart';
@@ -22,6 +23,7 @@ class CurrentUserProvider with ChangeNotifier {
       Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
   CollectionReference _userRef =
       Firestore.instance.collection(Constants.USERS_COLLECTION);
+  StorageReference _storageRef = FirebaseStorage.instance.ref();
 
   // fetch user when starting application and store in the _currentUser object.
   Future<void> fetchCurrentUser(String id) async {
@@ -69,6 +71,137 @@ class CurrentUserProvider with ChangeNotifier {
       }
       await DatabaseService(uid: _currentUser.id)
           .updateUserData(_currentUser.name, _currentUser.email, '', '', false, null);
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  // function which deletes a resident association.
+  Future<void> deleteResidentAssociation() async {
+    try {
+      // delete own apartment which is the only apartment left.
+      await _associationsRef
+          .document(_currentUser.residentAssociationId)
+          .collection(Constants.APARTMENTS_COLLECTION)
+          .document(_currentUser.apartmentId)
+          .delete();
+
+      // fetch and delete all constructions.
+      final constructions = await _associationsRef
+          .document(_currentUser.residentAssociationId)
+          .collection(Constants.CONSTRUCTIONS_COLLECTION)
+          .getDocuments();
+      constructions.documents.forEach((document) async {
+        await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.CONSTRUCTIONS_COLLECTION)
+            .document(document.documentID)
+            .delete();
+      });
+
+      // fetch and delete all meetings.
+      final meetings = await _associationsRef
+          .document(_currentUser.residentAssociationId)
+          .collection(Constants.MEETINGS_COLLECTION)
+          .getDocuments();
+      meetings.documents.forEach((meeting) async {
+        await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.MEETINGS_COLLECTION)
+            .document(meeting.documentID)
+            .delete();
+      });
+
+      // fetch and delete all cleaning items.
+      final cleanings = await _associationsRef
+          .document(_currentUser.residentAssociationId)
+          .collection(Constants.CLEANING_ITEMS_COLLECTION)
+          .getDocuments();
+      cleanings.documents.forEach((cleaning) async {
+        await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.CLEANING_ITEMS_COLLECTION)
+            .document(cleaning.documentID)
+            .delete();
+      });
+
+      // fetch and delete all cleaning tasks.
+      final cleaningTasks = await _associationsRef
+          .document(_currentUser.residentAssociationId)
+          .collection(Constants.CLEANING_TASKS_COLLECTION)
+          .getDocuments();
+      cleaningTasks.documents.forEach((cleaningTask) async {
+        await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.CLEANING_TASKS_COLLECTION)
+            .document(cleaningTask.documentID)
+            .delete();
+      });
+
+      // fetch all folders.
+      final folders = await _associationsRef
+          .document(_currentUser.residentAssociationId)
+          .collection(Constants.FOLDERS_COLLECTION)
+          .getDocuments();
+
+      // iterate through the list of folders.
+      folders.documents.forEach((folder) async {
+        // fetch all documents of folder.
+        final documentsOfFolder = await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.FOLDERS_COLLECTION)
+            .document(folder.documentID)
+            .collection(Constants.DOCUMENTS_COLLECTION)
+            .getDocuments();
+
+        // delete each document of folder in firebase storage and database.
+        documentsOfFolder.documents.forEach((document) async {
+          await _storageRef.child(document.data[Constants.FILE_NAME]).delete();
+          await _associationsRef
+              .document(_currentUser.residentAssociationId)
+              .collection(Constants.FOLDERS_COLLECTION)
+              .document(folder.documentID)
+              .collection(Constants.DOCUMENTS_COLLECTION)
+              .document(document.documentID)
+              .delete();
+        });
+
+        // delete empty folder.
+        await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.FOLDERS_COLLECTION)
+            .document(folder.documentID)
+            .delete();
+      });
+
+      // fetch delete all notifications.
+      final notifications = await _associationsRef
+          .document(_currentUser.residentAssociationId)
+          .collection(Constants.NOTIFICATIONS_COLLECTION)
+          .getDocuments();
+      notifications.documents.forEach((notification) async {
+        await _associationsRef
+            .document(_currentUser.residentAssociationId)
+            .collection(Constants.NOTIFICATIONS_COLLECTION)
+            .document(notification.documentID)
+            .delete();
+      });
+
+      // delete empty resident association.
+      await _associationsRef
+          .document(_currentUser.residentAssociationId)
+          .delete();
+
+      // update user information.
+      await DatabaseService(uid: _currentUser.id).updateUserData(
+        _currentUser.name,
+        _currentUser.email,
+        '',
+        '',
+        false,
+        null,
+      );
       notifyListeners();
     } catch (error) {
       throw (error);
