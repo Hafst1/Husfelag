@@ -201,6 +201,7 @@ class _RegisterState extends State<Register> {
                 _user.residentAssociationId,
                 _user.apartmentId,
                 _user.isAdmin,
+                _user.userToken,
               );
             }
             if (this.mounted) {

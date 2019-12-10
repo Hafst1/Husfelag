@@ -33,7 +33,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     description: '',
     authorId: '',
   );
-  
+
   var _initValues = {
     'appbar-title': 'Bóka fund',
     'title': '',
@@ -186,18 +186,19 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       }
       try {
         await Provider.of<NotificationsProvider>(context, listen: false)
-            .addNotification(residentAssociationId, NotificationModel(
-              id: null,
-              title: _meeting.title,
-              description: _meeting.description,
-              date: DateTime.now(),
-              authorId: _meeting.authorId,
-              type: Constants.ADDED_MEETING,
-            ));
+            .addNotification(
+                residentAssociationId,
+                NotificationModel(
+                  id: null,
+                  title: _meeting.title,
+                  description: _meeting.description,
+                  date: DateTime.now(),
+                  authorId: _meeting.authorId,
+                  type: Constants.ADDED_MEETING,
+                ));
       } catch (error) {
         await printErrorDialog(error);
       }
-
     }
     setState(() {
       _isLoading = false;
@@ -255,10 +256,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
           ? LoadingSpinner()
           : Container(
               height: heightOfBody,
-              decoration: new BoxDecoration(
-                color: Color.fromRGBO(230, 230, 230, 1),
-              ),
-              child:SingleChildScrollView(
+              color: Color.fromRGBO(230, 230, 230, 1),
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
                   key: _form,
@@ -270,14 +269,14 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: "Titill...",
+                          hintText: 'Titill...',
                         ),
                         validator: (value) {
                           if (value.isEmpty) {
-                            return "Fylla þarf út titil fundar!";
+                            return 'Fylla þarf út titil fundar!';
                           }
                           if (value.length > 40) {
-                            return "Titill fundar getur ekki verið meira en 40 stafir á lengd!";
+                            return 'Titill fundar getur ekki verið meira en 40 stafir á lengd!';
                           }
                           return null;
                         },
@@ -307,12 +306,12 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                               border: InputBorder.none,
                               filled: true,
                               fillColor: Colors.white,
-                              hintText: "Dagsetning...",
+                              hintText: 'Dagsetning...',
                               errorMaxLines: 2,
                             ),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Útvega þarf dagsetningu fundar!";
+                                return 'Útvega þarf dagsetningu fundar!';
                               }
                               return null;
                             },
@@ -356,22 +355,22 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                     border: InputBorder.none,
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintText: "Frá...",
-                                    prefixText: _timeFromController.text != ""
-                                        ? "Frá: "
-                                        : "",
+                                    hintText: 'Frá...',
+                                    prefixText: _timeFromController.text != ''
+                                        ? 'Frá: '
+                                        : '',
                                     prefixIcon: Icon(Icons.access_time),
                                   ),
                                   validator: (value) {
                                     if (value.isEmpty) {
-                                      return "Útvega þarf tímasetningu!";
+                                      return 'Útvega þarf tímasetningu!';
                                     }
                                     if (_timeToController.text.isNotEmpty) {
                                       if (_isInvalidTime(
                                         value,
                                         _timeToController.text,
                                       )) {
-                                        return "Ógild tímasetning!";
+                                        return 'Ógild tímasetning!';
                                       }
                                     }
                                     return null;
@@ -385,7 +384,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           ),
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => _presentTimePicker(_timeToController),
+                              onTap: () =>
+                                  _presentTimePicker(_timeToController),
                               child: AbsorbPointer(
                                 child: TextFormField(
                                   controller: _timeToController,
@@ -393,22 +393,22 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                     border: InputBorder.none,
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintText: "Til...",
-                                    prefixText: _timeToController.text != ""
-                                        ? "Til: "
-                                        : "",
+                                    hintText: 'Til...',
+                                    prefixText: _timeToController.text != ''
+                                        ? 'Til: '
+                                        : '',
                                     prefixIcon: Icon(Icons.access_time),
                                   ),
                                   validator: (value) {
                                     if (value.isEmpty) {
-                                      return "Útvega þarf tímasetningu!";
+                                      return 'Útvega þarf tímasetningu!';
                                     }
                                     if (_timeFromController.text.isNotEmpty) {
                                       if (_isInvalidTime(
                                         _timeFromController.text,
                                         value,
                                       )) {
-                                        return "Ógild tímasetning!";
+                                        return 'Ógild tímasetning!';
                                       }
                                     }
                                     return null;
@@ -440,15 +440,15 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: "Staðsetning...",
+                          hintText: 'Staðsetning...',
                           prefixIcon: Icon(Icons.location_on),
                         ),
                         validator: (value) {
                           if (value.isEmpty) {
-                            return "Fylla þarf út staðsetningu fundar!";
+                            return 'Fylla þarf út staðsetningu fundar!';
                           }
                           if (value.length > 40) {
-                            return "Staðsetning fundar getur ekki verið meira en 40 stafir á lengd!";
+                            return 'Staðsetning fundar getur ekki verið meira en 40 stafir á lengd!';
                           }
                           return null;
                         },
@@ -474,7 +474,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: "Nánari lýsing (valfrjálst)...",
+                          hintText: 'Nánari lýsing (valfrjálst)...',
                         ),
                         keyboardType: TextInputType.text,
                         onSaved: (value) {

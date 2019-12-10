@@ -12,7 +12,7 @@ class ConstructionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
-      title: Text("Framkvæmdir"),
+      title: Text('Framkvæmdir'),
       centerTitle: true,
     );
     final heightOfBody = mediaQuery.size.height -
@@ -23,26 +23,20 @@ class ConstructionsScreen extends StatelessWidget {
       appBar: appBar,
       body: Container(
         height: heightOfBody,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Color.fromRGBO(186, 203, 201, 1)]
-          ),
-        ),
+        color: Color.fromRGBO(230, 230, 230, 1),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(25),
           child: Column(
             children: <Widget>[
               CategoryOption(
                 optionIcon: CustomIcons.file_add,
-                optionText: "Bæta við framkvæmd",
+                optionText: 'Bæta við framkvæmd',
                 optionRoute: AddConstructionScreen.routeName,
               ),
               SizedBox(height: 15),
               CategoryOption(
                 optionIcon: CustomIcons.find_in_page,
-                optionText: "Yfirlit framkvæmda",
+                optionText: 'Yfirlit framkvæmda',
                 optionRoute: ConstructionsListScreen.routeName,
               ),
             ],

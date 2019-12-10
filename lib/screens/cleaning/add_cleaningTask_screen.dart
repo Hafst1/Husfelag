@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 import '../../models/cleaning_task.dart';
 import '../../providers/cleaning_provider.dart';
@@ -106,75 +107,96 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text(_initValues['appbar-title']),
+      centerTitle: true,
+      actions: <Widget>[
+        Platform.isIOS
+            ? IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  _saveForm();
+                },
+              )
+            : Container(),
+      ],
+    );
+    final heightOfBody = mediaQuery.size.height -
+        mediaQuery.padding.top -
+        appBar.preferredSize.height -
+        kBottomNavigationBarHeight;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_initValues['appbar-title']),
-        centerTitle: true,
-      ),
+      appBar: appBar,
       body: _isLoading
           ? LoadingSpinner()
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _form,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      initialValue: _initValues['title'],
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: "Titill...",
+          : Container(
+              height: heightOfBody,
+              color: Color.fromRGBO(230, 230, 230, 1),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _form,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        initialValue: _initValues['title'],
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Titill...',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Fylla þarf út titil verkefnis!';
+                          }
+                          if (value.length > 40) {
+                            return 'Titill verkefnis getur ekki verið meira en 40 stafir á lengd!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _cleaningTaskItem = CleaningTask(
+                            id: _cleaningTaskItem.id,
+                            title: value,
+                            description: _cleaningTaskItem.description,
+                            taskDone: _cleaningTaskItem.taskDone,
+                          );
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Fylla þarf út titil verkefnis!";
-                        }
-                        if (value.length > 40) {
-                          return "Titill verkefnis getur ekki verið meira en 40 stafir á lengd!";
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _cleaningTaskItem = CleaningTask(
-                          id: _cleaningTaskItem.id,
-                          title: value,
-                          description: _cleaningTaskItem.description,
-                          taskDone: _cleaningTaskItem.taskDone,
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      initialValue: _initValues['description'],
-                      maxLines: 10,
-                      decoration: InputDecoration.collapsed(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: "Nánari lýsing (valfrjálst)...",
+                      SizedBox(
+                        height: 15,
                       ),
-                      keyboardType: TextInputType.text,
-                      onSaved: (value) {
-                        _cleaningTaskItem = CleaningTask(
-                          id: _cleaningTaskItem.id,
-                          title: _cleaningTaskItem.title,
-                          description: value,
-                          taskDone: _cleaningTaskItem.taskDone,
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    SaveButton(
-                      text: _initValues['save-text'],
-                      saveFunc: _saveForm,
-                    ),
-                  ],
+                      TextFormField(
+                        initialValue: _initValues['description'],
+                        maxLines: 10,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Nánari lýsing (valfrjálst)...',
+                        ),
+                        keyboardType: TextInputType.text,
+                        onSaved: (value) {
+                          _cleaningTaskItem = CleaningTask(
+                            id: _cleaningTaskItem.id,
+                            title: _cleaningTaskItem.title,
+                            description: value,
+                            taskDone: _cleaningTaskItem.taskDone,
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      SaveButton(
+                        text: _initValues['save-text'],
+                        saveFunc: _saveForm,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

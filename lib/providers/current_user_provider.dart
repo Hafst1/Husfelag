@@ -68,7 +68,7 @@ class CurrentUserProvider with ChangeNotifier {
         });
       }
       await DatabaseService(uid: _currentUser.id)
-          .updateUserData(_currentUser.name, _currentUser.email, '', '', false);
+          .updateUserData(_currentUser.name, _currentUser.email, '', '', false, null);
       notifyListeners();
     } catch (error) {
       throw (error);
