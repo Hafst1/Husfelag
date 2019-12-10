@@ -47,7 +47,7 @@ class NotificationItem extends StatelessWidget {
           children: <Widget>[
             Text(description, style: TextStyle(fontSize: 15),),
             Text('Tilkynning sett inn: ' + date.day.toString() + '.' + 
-                  date.month.toString() + '.' + date.year.toString() + ' ' + date.hour.toString() + ':' +date.minute.toString()),
+                  date.month.toString() + '.' + date.year.toString() + ' ' + date.hour.toString() + ':' +date.minute.toString().padLeft(2,'0')),
           ],
         )
     /*    Padding(

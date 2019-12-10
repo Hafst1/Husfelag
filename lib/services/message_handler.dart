@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart'; //þessi tvö kannski í main?
 import 'package:flutter/material.dart';
+import 'package:husfelagid/models/notification.dart';
 import 'package:provider/provider.dart';
 import './../providers/current_user_provider.dart';
 import 'dart:async';
@@ -56,7 +57,8 @@ class _MessageHandlerState extends State<MessageHandler> {
           onPressed: () => null,
         ),
       );
-
+      Counter.notificationCounter++;
+      Counter.itemCounter++;
       print("MESSAGESSSSS");
       print(message['notification']['title']);
       print(message['notification']['body']);
@@ -74,12 +76,12 @@ class _MessageHandlerState extends State<MessageHandler> {
   @override
   Widget build(BuildContext context) {
     //_handleMessages(context);
-    return Scaffold(
+   return Scaffold(
     //  appBar: AppBar(
     //    backgroundColor: Colors.deepOrange,
     //    title: Text('FCM push Notifications'),
       //),
-    );
+   );
   }
 
   // individual device notifications

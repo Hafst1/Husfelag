@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/models/notification.dart';
+import 'package:husfelagid/providers/notification_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/navigators/home_navigator.dart';
 import '../widgets/navigators/calendar_navigator.dart';
@@ -26,6 +29,9 @@ class _TabsScreenState extends State<TabsScreen> {
     }
     setState(() {
       _selectedPageIndex = index;
+      if(_selectedPageIndex == 2) {
+        Counter.notificationCounter = 0;
+      }
     });
   }
 
@@ -78,7 +84,35 @@ class _TabsScreenState extends State<TabsScreen> {
             ),
             BottomNavigationBarItem(
               backgroundColor: Theme.of(context).primaryColor,
-              icon: Icon(Icons.notifications),
+              icon: Stack(
+                children: <Widget>[
+                  Icon(Icons.notifications),
+                  (Counter.notificationCounter > 0) 
+                  ? Positioned(
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 12,
+                          minHeight: 12,
+                        ),
+                        child: Text(
+                          '${Counter.notificationCounter}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : Container(height: 0, width: 0),
+                ],
+              ),
               title: Text('Tilkynningar'),
             ),
           ],

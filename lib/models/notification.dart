@@ -14,3 +14,8 @@ class NotificationModel {
     @required this.description,
   });
 }
+
+class Counter {
+  static int notificationCounter = 0;
+  static int itemCounter = 0;
+}

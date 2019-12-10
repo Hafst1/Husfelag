@@ -30,6 +30,7 @@ class NotificationsProvider with ChangeNotifier {
           description: notification.data[Constants.DESCRIPTION],
         ));
       });
+      loadedNotifications.sort((b, a) => a.date.compareTo(b.date));
       _notifications = loadedNotifications;
       notifyListeners();
     } catch (error) {
@@ -55,8 +56,8 @@ class NotificationsProvider with ChangeNotifier {
     return [..._notifications];
   }
 
-   Future<void> addNotificationMeeting(String residentAssociationId, Meeting meetingNotification) async {
-      try {
+  Future<void> addNotificationMeeting(String residentAssociationId, Meeting meetingNotification) async {
+    try {
       final response = await _associationRef
           .document(residentAssociationId)
           .collection(Constants.NOTIFICATIONS_COLLECTION)

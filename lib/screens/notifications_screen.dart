@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart'; //þessi tvö kannski í main?
+import 'package:husfelagid/models/notification.dart';
 import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:husfelagid/shared/loading_spinner.dart';
 import 'package:husfelagid/widgets/notification_list_item.dart';
@@ -73,7 +74,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: ListView.builder(
+                   child: ListView.builder(
+                      itemCount: notifications.length,
+                      itemBuilder: (BuildContext context, int i) {
+                        return Container(
+                          color: (i < Counter.itemCounter) ? Colors.blue[100] : Color.fromRGBO(230, 230, 230, 1),
+                          child: NotificationItem(
+                            id: notifications[i].id,
+                            title: notifications[i].title,
+                            description: notifications[i].description,
+                            date: notifications[i].date,
+                          ),
+                        );
+                      },
+                    ),
+                    /*child: ListView.builder(
                       itemCount: notifications.length,
                       itemBuilder: (ctx, i) => NotificationItem(
                         id: notifications[i].id,
@@ -81,7 +96,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         description: notifications[i].description,
                         date: notifications[i].date,
                       ),
-                    ),
+                  ),*/
                   ),
                 ],
               ),
