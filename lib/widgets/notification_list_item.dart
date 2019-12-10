@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/providers/notification_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:circular_check_box/circular_check_box.dart';
+import '../models/notification.dart';
+//import 'package:husfelagid/providers/notification_provider.dart';
+//import 'package:provider/provider.dart';
+//import 'package:circular_check_box/circular_check_box.dart';
 
-import '../providers/current_user_provider.dart';
-import '../widgets/action_dialog.dart';
-import 'custom_icons_icons.dart';
+//import '../providers/current_user_provider.dart';
+//import '../widgets/action_dialog.dart';
+//import 'custom_icons_icons.dart';
 
 class NotificationItem extends StatelessWidget {
   final String id;
@@ -31,6 +32,7 @@ class NotificationItem extends StatelessWidget {
       child: ListTile(
         isThreeLine: true,
         onTap: () {
+          Counter.itemCounter = 0;
           Navigator.of(context).push(
             MaterialPageRoute(
              // builder: (context) => ConstructionDetailScreen(),

@@ -75,26 +75,6 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     );
   }
 
-  // function which makes the current user leave the resident association he is
-  // registered in.
-  void _leaveResidentAssociation(Apartment apartment) async {
-    setState(() {
-      _isLoadingAssociation = true;
-    });
-    if (apartment.id == '') {
-      await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
-    }
-    try {
-      await Provider.of<CurrentUserProvider>(context)
-          .leaveResidentAssociation(apartment);
-    } catch (error) {
-      await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
-    }
-    setState(() {
-      _isLoadingAssociation = false;
-    });
-  }
-
   // function which presents an action dialog when user wants to leave the
   // resident association.
   void _presentLeaveAssociationDialog(bool userIsAdmin, Apartment apartment) {
@@ -118,12 +98,19 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
               'Staðfesta',
             ),
             onPressed: () {
-              final moreThanOneAdmin =
-                  Provider.of<AssociationsProvider>(context).moreThanOneAdmin();
+              final associationData =
+                  Provider.of<AssociationsProvider>(context);
+              final moreThanOneAdmin = associationData.moreThanOneAdmin();
+              final numberOfResidents =
+                  associationData.getResidentsOfAssociation().length;
               if (userIsAdmin && !moreThanOneAdmin) {
                 Navigator.of(ctx).pop();
-                _printErrorDialog(
-                    'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini meðlimur húsfélagins með admin réttindi!\n\nVeittu öðrum meðlimi admin réttindi og reyndu aftur.');
+                if (numberOfResidents <= 1) {
+                  _deleteResidentAssociation();
+                } else {
+                  _printErrorDialog(
+                      'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini meðlimur húsfélagins með admin réttindi!\n\nVeittu öðrum meðlimi admin réttindi og reyndu aftur.');
+                }
               } else {
                 _leaveResidentAssociation(apartment);
                 Navigator.of(ctx).pop();
@@ -133,6 +120,41 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
         ],
       ),
     );
+  }
+
+  // function which makes the current user leave the resident association he is
+  // registered in.
+  void _leaveResidentAssociation(Apartment apartment) async {
+    setState(() {
+      _isLoadingAssociation = true;
+    });
+    if (apartment.id == '') {
+      await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
+    }
+    try {
+      await Provider.of<CurrentUserProvider>(context)
+          .leaveResidentAssociation(apartment);
+    } catch (error) {
+      await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
+    }
+    setState(() {
+      _isLoadingAssociation = false;
+    });
+  }
+
+  void _deleteResidentAssociation() async {
+    setState(() {
+      _isLoadingAssociation = true;
+    });
+    try {
+      await Provider.of<CurrentUserProvider>(context)
+          .deleteResidentAssociation();
+    } catch (error) {
+      await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
+    }
+    setState(() {
+      _isLoadingAssociation = false;
+    });
   }
 
   // function which sends user to a page where he can change the access

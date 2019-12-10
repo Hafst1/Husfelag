@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:husfelagid/models/user.dart';
 
+import '../models/user.dart';
 import '../shared/constants.dart' as Constants;
 
 class DatabaseService {
@@ -11,19 +11,24 @@ class DatabaseService {
   final CollectionReference residentCollection =
       Firestore.instance.collection(Constants.USERS_COLLECTION);
 
+
   Future<void> updateUserData(
     String name,
     String email,
     String residentAssociationNumber,
     String apartmentId,
     bool isAdmin,
+    String userToken,
   ) async {
+    print('updateuser database: ');
+    print(userToken);
     return await residentCollection.document(uid).setData({
       Constants.NAME: name,
       Constants.EMAIL: email,
       Constants.RESIDENT_ASSOCIATION_ID: residentAssociationNumber,
       Constants.APARTMENT_ID: apartmentId,
       Constants.IS_ADMIN: isAdmin,
+      Constants.USER_TOKEN: userToken,
     });
   }
 
@@ -36,6 +41,7 @@ class DatabaseService {
       residentAssociationId: snapshot.data[Constants.RESIDENT_ASSOCIATION_ID],
       apartmentId: snapshot.data[Constants.APARTMENT_ID],
       isAdmin: snapshot.data[Constants.IS_ADMIN],
+      userToken: snapshot.data[Constants.USER_TOKEN],
     );
   }
 

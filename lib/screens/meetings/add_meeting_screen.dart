@@ -4,11 +4,13 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 
 import '../../models/meeting.dart';
+import '../../models/notification.dart';
 import '../../providers/meetings_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../widgets/save_button.dart';
 import '../../shared/loading_spinner.dart';
 import '../../providers/notification_provider.dart';
+import '../../shared/constants.dart' as Constants;
 
 class AddMeetingScreen extends StatefulWidget {
   static const routeName = '/add-meeting';
@@ -31,7 +33,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     description: '',
     authorId: '',
   );
-  
+
   var _initValues = {
     'appbar-title': 'Bóka fund',
     'title': '',
@@ -184,11 +186,19 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       }
       try {
         await Provider.of<NotificationsProvider>(context, listen: false)
-            .addNotificationMeeting(residentAssociationId, _meeting);
+            .addNotification(
+                residentAssociationId,
+                NotificationModel(
+                  id: null,
+                  title: _meeting.title,
+                  description: _meeting.description,
+                  date: DateTime.now(),
+                  authorId: _meeting.authorId,
+                  type: Constants.ADDED_MEETING,
+                ));
       } catch (error) {
-        await printErrorDialog('Ekki tókst að bæta við notification');
+        await printErrorDialog(error);
       }
-
     }
     setState(() {
       _isLoading = false;
@@ -247,7 +257,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
           : Container(
               height: heightOfBody,
               color: Color.fromRGBO(230, 230, 230, 1),
-              child:SingleChildScrollView(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
                   key: _form,
@@ -374,7 +384,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           ),
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => _presentTimePicker(_timeToController),
+                              onTap: () =>
+                                  _presentTimePicker(_timeToController),
                               child: AbsorbPointer(
                                 child: TextFormField(
                                   controller: _timeToController,

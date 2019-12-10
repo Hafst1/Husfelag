@@ -49,7 +49,6 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'AlegreyaSansSC',
                       ),
                     ),
                   ),
@@ -201,6 +200,7 @@ class _RegisterState extends State<Register> {
                 _user.residentAssociationId,
                 _user.apartmentId,
                 _user.isAdmin,
+                _user.userToken,
               );
             }
             if (this.mounted) {
