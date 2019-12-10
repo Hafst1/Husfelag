@@ -163,6 +163,7 @@ class MapScreenState extends State<ProfilePage> {
                                                               userData
                                                                   .apartmentId,
                                                               userData.isAdmin,
+                                                              userData.userToken
                                                             );
                                                             setState(() {
                                                               _nameStatus =
@@ -310,14 +311,11 @@ class MapScreenState extends State<ProfilePage> {
                                                                     .updateUserData(
                                                                   userData.name,
                                                                   _currentEmail ??
-                                                                      userData
-                                                                          .email,
-                                                                  userData
-                                                                      .residentAssociationId,
-                                                                  userData
-                                                                      .apartmentId,
-                                                                  userData
-                                                                      .isAdmin,
+                                                                      userData.email,
+                                                                  userData.residentAssociationId,
+                                                                  userData.apartmentId,
+                                                                  userData.isAdmin,
+                                                                  userData.userToken
                                                                 );
                                                                 setState(() {
                                                                   _emailStatus =

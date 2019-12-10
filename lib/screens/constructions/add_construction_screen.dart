@@ -7,8 +7,10 @@ import '../../providers/constructions_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../models/construction.dart';
+import '../../models/notification.dart';
 import '../../widgets/save_button.dart';
 import '../../shared/loading_spinner.dart';
+import '../../shared/constants.dart' as Constants;
 
 class AddConstructionScreen extends StatefulWidget {
   static const routeName = '/add-construction';
@@ -29,6 +31,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     description: '',
     authorId: '',
   );
+
   var _initValues = {
     'appbar-title': 'Bæta við framkvæmd',
     'title': '',
@@ -128,9 +131,18 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
       }
       try {
         await Provider.of<NotificationsProvider>(context, listen: false)
-            .addNotificationConstruction(residentAssociationId, _construction);
+            .addNotification(
+                residentAssociationId,
+                NotificationModel(
+                  id: null,
+                  title: _construction.title,
+                  description: _construction.description,
+                  date: DateTime.now(),
+                  authorId: _construction.authorId,
+                  type: Constants.ADDED_CONSTRUCTION,
+                ));
       } catch (error) {
-        await printErrorDialog('Ekki tókst að bæta við notification!');
+        print(error);
       }
     }
     setState(() {
