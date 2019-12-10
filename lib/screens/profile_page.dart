@@ -165,6 +165,8 @@ class MapScreenState extends State<ProfilePage> {
                                                                     .apartmentId,
                                                                 userData
                                                                     .isAdmin,
+                                                                userData
+                                                                    .userToken,
                                                               );
                                                               setState(() {
                                                                 _nameStatus =
@@ -296,6 +298,7 @@ class MapScreenState extends State<ProfilePage> {
                                                             .residentAssociationId,
                                                         userData.apartmentId,
                                                         userData.isAdmin,
+                                                        userData.userToken,
                                                       );
                                                       setState(() {
                                                         _emailStatus = true;

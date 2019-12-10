@@ -4,7 +4,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/user.dart';
 import '../models/apartment.dart';
-import '../models/notification.dart';
 import '../services/database.dart';
 import '../shared/constants.dart' as Constants;
 
@@ -71,7 +70,7 @@ class CurrentUserProvider with ChangeNotifier {
         });
       }
       await DatabaseService(uid: _currentUser.id)
-          .updateUserData(_currentUser.name, _currentUser.email, '', '', false);
+          .updateUserData(_currentUser.name, _currentUser.email, '', '', false, null);
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -201,6 +200,7 @@ class CurrentUserProvider with ChangeNotifier {
         '',
         '',
         false,
+        null,
       );
       notifyListeners();
     } catch (error) {

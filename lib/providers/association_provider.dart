@@ -40,6 +40,7 @@ class AssociationsProvider with ChangeNotifier {
               resident.data[Constants.RESIDENT_ASSOCIATION_ID],
           apartmentId: resident.data[Constants.APARTMENT_ID],
           isAdmin: resident.data[Constants.IS_ADMIN],
+          userToken: resident.data[Constants.USER_TOKEN],
         ));
       });
       loadedResidents.sort((a, b) => a.name.compareTo(b.name));
@@ -51,6 +52,8 @@ class AssociationsProvider with ChangeNotifier {
 
   // function which makes another user in the resident association an admin.
   Future<void> makeUserAdmin(UserData user) async {
+    print('make user admin fall, usertoke: ');
+    print(user.userToken);
     try {
       await DatabaseService(uid: user.id).updateUserData(
         user.name,
@@ -58,6 +61,7 @@ class AssociationsProvider with ChangeNotifier {
         user.residentAssociationId,
         user.apartmentId,
         true,
+        user.userToken,
       );
       final residentIndex =
           _residents.indexWhere((resident) => resident.id == user.id);
@@ -69,6 +73,7 @@ class AssociationsProvider with ChangeNotifier {
           residentAssociationId: user.residentAssociationId,
           apartmentId: user.apartmentId,
           isAdmin: true,
+          userToken: user.userToken,
         );
       }
       notifyListeners();
@@ -110,6 +115,7 @@ class AssociationsProvider with ChangeNotifier {
         '',
         '',
         false,
+        user.userToken,
       );
     } catch (error) {
       _residents.insert(deleteIndex, deletedResident);
@@ -190,6 +196,7 @@ class AssociationsProvider with ChangeNotifier {
         response.documentID,
         apartmentId.documentID,
         true,
+        user.userToken,
       );
       return response.documentID;
     } catch (error) {
@@ -323,6 +330,7 @@ class AssociationsProvider with ChangeNotifier {
         residentAssociationId,
         response.documentID,
         user.isAdmin,
+        user.userToken,
       );
     } catch (error) {
       throw (error);
@@ -355,6 +363,7 @@ class AssociationsProvider with ChangeNotifier {
         residentAssociationId,
         apartmentId,
         user.isAdmin,
+        user.userToken,
       );
     } catch (error) {
       throw (error);
