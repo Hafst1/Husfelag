@@ -392,7 +392,7 @@ class MapScreenState extends State<ProfilePage> {
                       SizedBox(
                         height: 100,
                       ),
-                      deleteButton(),
+                      _deleteButton(),
                     ],
                   ),
                 ),
@@ -458,7 +458,7 @@ class MapScreenState extends State<ProfilePage> {
         });
   }
 
-  Widget deleteButton() {
+  Widget _deleteButton() {
     return GestureDetector(
       onTap: () async {
         _popupDialog(context);
