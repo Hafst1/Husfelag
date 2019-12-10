@@ -27,6 +27,83 @@ class MapScreenState extends State<ProfilePage> {
   String _currentEmail;
   String _currentPassword;
 
+  Widget buildPadding(String name) {
+    return Padding(
+        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+        child: Row(
+          children: <Widget>[
+            Text(
+              name,
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ));
+  }
+
+  Widget buildInputField(var value, String textHint, Function valCheck,
+      Function changed, bool currStatus, var editIcon) {
+    return Padding(
+        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 2.0),
+        child: Row(
+          children: <Widget>[
+            Flexible(
+              child: TextFormField(
+                initialValue: value,
+                decoration: InputDecoration(
+                  hintText: textHint,
+                ),
+                validator: valCheck,
+                onChanged: changed,
+                enabled: !currStatus,
+                autofocus: !currStatus,
+              ),
+            ),
+            Column(
+              children: <Widget>[
+                currStatus ? editIcon : Container(),
+              ],
+            )
+          ],
+        ));
+  }
+
+  Widget buildSaveButton(Function updateData) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(right: 10.0),
+        child: Container(
+            child: RaisedButton(
+          child: Text('Vista'),
+          textColor: Colors.white,
+          color: Colors.green,
+          onPressed: updateData,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        )),
+      ),
+      flex: 2,
+    );
+  }
+
+  Widget buildStopButton(Function stateChange) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(left: 10.0),
+        child: Container(
+          child: RaisedButton(
+            child: Text('Hætta við'),
+            textColor: Colors.white,
+            color: Colors.red,
+            onPressed: stateChange,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+          ),
+        ),
+      ),
+      flex: 2,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
@@ -44,90 +121,51 @@ class MapScreenState extends State<ProfilePage> {
               ),
               body: Container(
                 color: Colors.white,
-                child: ListView(
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Container(
-                          height: 50.0,
-                          color: Colors.white,
-                        ),
-                        Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 25.0),
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 25.0, right: 25.0, top: 0.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Mínar upplýsingar',
-                                          style: TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    )),
-                                Container(
-                                    child: Form(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      ListView(
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                height: 50.0,
+                                color: Colors.white,
+                              ),
+                              Container(
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 25.0, right: 25.0, top: 0.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(
+                                            'Mínar upplýsingar',
+                                            style: TextStyle(
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      child: Form(
                                         key: _nameKey,
                                         child: Column(
                                           children: <Widget>[
-                                            Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 25.0,
-                                                    right: 25.0,
-                                                    top: 25.0),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Nafn',
-                                                      style: TextStyle(
-                                                          fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                )),
-                                            Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 25.0,
-                                                    right: 25.0,
-                                                    top: 2.0),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Flexible(
-                                                      child: TextFormField(
-                                                        initialValue:
-                                                            userData.name,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          hintText:
-                                                              'Skráðu nafnið þitt',
-                                                        ),
-                                                        validator: (val) => val
-                                                                .isEmpty
-                                                            ? 'Vinsamlegast skráðu nafn'
-                                                            : null,
-                                                        onChanged: (val) =>
-                                                            setState(() =>
-                                                                _currentName =
-                                                                    val),
-                                                        enabled: !_nameStatus,
-                                                        autofocus: !_nameStatus,
-                                                      ),
-                                                    ),
-                                                    Column(
-                                                      children: <Widget>[
-                                                        _nameStatus
-                                                            ? _getNameEditIcon()
-                                                            : Container(),
-                                                      ],
-                                                    )
-                                                  ],
-                                                )),
+                                            buildPadding('Nafn'),
+                                            buildInputField(
+                                                userData.name,
+                                                'Skráðu nafnið þitt',
+                                                (val) => val.isEmpty
+                                                    ? 'Vinsamlegast skráðu nafn'
+                                                    : null,
+                                                (val) => setState(
+                                                    () => _currentName = val),
+                                                _nameStatus,
+                                                _getNameEditIcon()),
                                             if (!_nameStatus)
                                               Padding(
                                                 padding: EdgeInsets.only(
@@ -136,25 +174,12 @@ class MapScreenState extends State<ProfilePage> {
                                                     top: 20.0),
                                                 child: Row(
                                                   children: <Widget>[
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                right: 10.0),
-                                                        child: Container(
-                                                            child: RaisedButton(
-                                                          child: Text('Vista'),
-                                                          textColor:
-                                                              Colors.white,
-                                                          color: Colors.green,
-                                                          onPressed: () async {
-                                                            if (_nameKey
-                                                                .currentState
-                                                                .validate()) {
-                                                              await DatabaseService(
-                                                                      uid: user
-                                                                          .uid)
-                                                                  .updateUserData(
+                                                    buildSaveButton(() async {
+                                                      if (_nameKey.currentState
+                                                          .validate()) {
+                                                        await DatabaseService(
+                                                                uid: user.uid)
+                                                            .updateUserData(
                                                                 _currentName ??
                                                                     userData
                                                                         .name,
@@ -166,354 +191,210 @@ class MapScreenState extends State<ProfilePage> {
                                                                 userData
                                                                     .isAdmin,
                                                                 userData
-                                                                    .userToken,
-                                                              );
-                                                              setState(() {
-                                                                _nameStatus =
-                                                                    true;
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .requestFocus(
-                                                                        FocusNode());
-                                                              });
-                                                            }
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0)),
-                                                        )),
-                                                      ),
-                                                      flex: 2,
-                                                    ),
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 10.0),
-                                                        child: Container(
-                                                            child: RaisedButton(
-                                                          child:
-                                                              Text('Hætta við'),
-                                                          textColor:
-                                                              Colors.white,
-                                                          color: Colors.red,
-                                                          onPressed: () {
+                                                                    .userToken);
+                                                        setState(() {
+                                                          _nameStatus = true;
+                                                          FocusScope.of(context)
+                                                              .requestFocus(
+                                                                  FocusNode());
+                                                        });
+                                                      }
+                                                    }),
+                                                    buildStopButton(() {
+                                                      setState(() {
+                                                        _nameStatus = true;
+                                                        FocusScope.of(context)
+                                                            .requestFocus(
+                                                                FocusNode());
+                                                      });
+                                                    }),
+                                                  ],
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      child: Form(
+                                        key: _emailKey,
+                                        child: Column(
+                                          children: <Widget>[
+                                            buildPadding('Netfang'),
+                                            buildInputField(
+                                                userData.email,
+                                                'Skráðu netfangið þitt',
+                                                (val) => val.isEmpty
+                                                    ? 'Vinsamlegast sláðu inn netfang'
+                                                    : null,
+                                                (val) => setState(
+                                                    () => _currentEmail = val),
+                                                _emailStatus,
+                                                _getEmailEditIcon()),
+                                            if (!_emailStatus)
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 25.0,
+                                                    right: 25.0,
+                                                    top: 20.0),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    buildSaveButton(
+                                                      () async {
+                                                        if (_emailKey
+                                                            .currentState
+                                                            .validate()) {
+                                                          try {
+                                                            await _auth
+                                                                .changeEmail(
+                                                                    _currentEmail);
+                                                            await DatabaseService(
+                                                                    uid: user
+                                                                        .uid)
+                                                                .updateUserData(
+                                                                    userData
+                                                                        .name,
+                                                                    _currentEmail ??
+                                                                        userData
+                                                                            .email,
+                                                                    userData
+                                                                        .residentAssociationId,
+                                                                    userData
+                                                                        .apartmentId,
+                                                                    userData
+                                                                        .isAdmin,
+                                                                    userData
+                                                                        .userToken);
                                                             setState(() {
-                                                              _nameStatus =
+                                                              _emailStatus =
                                                                   true;
                                                               FocusScope.of(
                                                                       context)
                                                                   .requestFocus(
                                                                       FocusNode());
                                                             });
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0)),
-                                                        )),
-                                                      ),
-                                                      flex: 2,
+                                                          } on Exception catch (error) {
+                                                            print('email can\'t be changed' +
+                                                                error
+                                                                    .toString());
+                                                          }
+                                                        }
+                                                      },
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                          ],
-                                        ))),
-                                Container(
-                                    child: Form(
-                                  key: _emailKey,
-                                  child: Column(children: <Widget>[
-                                    Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 25.0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              'Netfang',
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        )),
-                                    Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 2.0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: TextFormField(
-                                                initialValue: userData.email,
-                                                decoration: InputDecoration(
-                                                    hintText:
-                                                        'Skráðu netfangið þitt'),
-                                                validator: (val) => val.isEmpty
-                                                    ? 'Sláðu inn netfang'
-                                                    : null,
-                                                onChanged: (val) => setState(
-                                                    () => _currentEmail = val),
-                                                enabled: !_emailStatus,
-                                              ),
-                                            ),
-                                            Column(
-                                              children: <Widget>[
-                                                _emailStatus
-                                                    ? _getEmailEditIcon()
-                                                    : Container(),
-                                              ],
-                                            )
-                                          ],
-                                        )),
-                                    if (!_emailStatus)
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25.0, right: 25.0, top: 20.0),
-                                        child: Row(children: <Widget>[
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 10.0),
-                                              child: Container(
-                                                  child: RaisedButton(
-                                                child: Text('Vista'),
-                                                textColor: Colors.white,
-                                                color: Colors.green,
-                                                onPressed: () async {
-                                                  if (_emailKey.currentState
-                                                      .validate()) {
-                                                    try {
-                                                      await _auth.changeEmail(
-                                                          _currentEmail);
-                                                      await DatabaseService(
-                                                              uid: user.uid)
-                                                          .updateUserData(
-                                                        userData.name,
-                                                        _currentEmail ??
-                                                            userData.email,
-                                                        userData
-                                                            .residentAssociationId,
-                                                        userData.apartmentId,
-                                                        userData.isAdmin,
-                                                        userData.userToken,
-                                                      );
+                                                    buildStopButton(() {
                                                       setState(() {
                                                         _emailStatus = true;
                                                         FocusScope.of(context)
                                                             .requestFocus(
                                                                 FocusNode());
                                                       });
-                                                    } on Exception catch (error) {
-                                                      print(
-                                                          'email can\'t be changed' +
-                                                              error.toString());
-                                                    }
-                                                  }
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0)),
-                                              )),
-                                            ),
-                                            flex: 2,
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 10.0),
-                                              child: Container(
-                                                  child: RaisedButton(
-                                                child: Text('Hætta við'),
-                                                textColor: Colors.white,
-                                                color: Colors.red,
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _emailStatus = true;
-                                                    FocusScope.of(context)
-                                                        .requestFocus(
-                                                            FocusNode());
-                                                  });
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0)),
-                                              )),
-                                            ),
-                                            flex: 2,
-                                          )
-                                        ]),
-                                      )
-                                  ]),
-                                )),
-                                Container(
-                                  child: Form(
-                                    key: _passwordKey,
-                                    child: Column(
-                                      children: <Widget>[
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0,
-                                                right: 25.0,
-                                                top: 25.0),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Nýtt lykilorð',
-                                                      style: TextStyle(
-                                                          fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
+                                                    }),
                                                   ],
                                                 ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0,
-                                                right: 25.0,
-                                                top: 2.0),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                Flexible(
-                                                  child: TextFormField(
-                                                    obscureText: true,
-                                                    decoration: InputDecoration(
-                                                        hintText:
-                                                            'Skráðu inn nýtt lykilorð'),
-                                                    validator: (value) => value
-                                                                .length <
-                                                            6
-                                                        ? 'Lykilorð þarf að innihalda 6+ stafi'
-                                                        : null,
-                                                    onChanged: (value) =>
-                                                        setState(() =>
-                                                            _currentPassword =
-                                                                value),
-                                                    enabled: !_passwordStatus,
-                                                  ),
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    _passwordStatus
-                                                        ? _getPasswordEditIcon()
-                                                        : Container(),
-                                                  ],
-                                                )
-                                              ],
-                                            )),
-                                        if (!_passwordStatus)
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0,
-                                                right: 25.0,
-                                                top: 20.0),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 10.0),
-                                                    child: Container(
-                                                        child: RaisedButton(
-                                                      child: Text('Vista'),
-                                                      textColor: Colors.white,
-                                                      color: Colors.green,
-                                                      onPressed: () async {
-                                                        if (_passwordKey
-                                                            .currentState
-                                                            .validate()) {
-                                                          try {
-                                                            await _auth
-                                                                .changePassword(
-                                                                    _currentPassword);
-                                                            setState(() {
-                                                              _passwordStatus =
-                                                                  true;
-                                                              FocusScope.of(
-                                                                      context)
-                                                                  .requestFocus(
-                                                                      FocusNode());
-                                                            });
-                                                          } catch (error) {
-                                                            print('Password can\'t be changed' +
-                                                                error
-                                                                    .toString());
-                                                          }
-                                                        }
-                                                      },
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0)),
-                                                    )),
-                                                  ),
-                                                  flex: 2,
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10.0),
-                                                    child: Container(
-                                                        child: RaisedButton(
-                                                      child: Text('Hætta við'),
-                                                      textColor: Colors.white,
-                                                      color: Colors.red,
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          _passwordStatus =
-                                                              true;
-                                                          FocusScope.of(context)
-                                                              .requestFocus(
-                                                                  FocusNode());
-                                                        });
-                                                      },
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0)),
-                                                    )),
-                                                  ),
-                                                  flex: 2,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
+                                              )
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    Container(
+                                      child: Form(
+                                        key: _passwordKey,
+                                        child: Column(
+                                          children: <Widget>[
+                                            buildPadding('Nýtt lykilorð'),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0,
+                                                  right: 25.0,
+                                                  top: 2.0),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    child: TextFormField(
+                                                      obscureText: true,
+                                                      decoration: InputDecoration(
+                                                          hintText:
+                                                              'Skráðu inn nýtt lykilorð'),
+                                                      validator: (value) => value
+                                                                  .length <
+                                                              6
+                                                          ? 'Lykilorð þarf að innihalda 6+ stafi'
+                                                          : null,
+                                                      onChanged: (value) =>
+                                                          setState(() =>
+                                                              _currentPassword =
+                                                                  value),
+                                                      enabled: !_passwordStatus,
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: <Widget>[
+                                                      _passwordStatus
+                                                          ? _getPasswordEditIcon()
+                                                          : Container(),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            if (!_passwordStatus)
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 25.0,
+                                                    right: 25.0,
+                                                    top: 20.0),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    buildSaveButton(() async {
+                                                      if (_passwordKey
+                                                          .currentState
+                                                          .validate()) {
+                                                        try {
+                                                          await _auth
+                                                              .changePassword(
+                                                                  _currentPassword);
+                                                          setState(() {
+                                                            _passwordStatus =
+                                                                true;
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .requestFocus(
+                                                                    FocusNode());
+                                                          });
+                                                        } catch (error) {
+                                                          print('Password can\'t be changed' +
+                                                              error.toString());
+                                                        }
+                                                      }
+                                                    }),
+                                                    buildStopButton(() {
+                                                      setState(() {
+                                                        _passwordStatus = true;
+                                                        FocusScope.of(context)
+                                                            .requestFocus(
+                                                                FocusNode());
+                                                      });
+                                                    }),
+                                                  ],
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                      SizedBox(
+                        height: 100,
+                      ),
+                      deleteButton(),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -574,6 +455,59 @@ class MapScreenState extends State<ProfilePage> {
           setState(() {
             _passwordStatus = false;
           });
+        });
+  }
+
+  Widget deleteButton() {
+    return GestureDetector(
+      onTap: () async {
+        _popupDialog(context);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 30,
+        ),
+        height: 50,
+        width: MediaQuery.of(context).size.width * 0.5,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(23),
+          color: Colors.red,
+        ),
+        child: Center(
+          child: Text(
+            'Eyða Aðgangi',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _popupDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Ert þú viss um að þú viljir eyða aðganginum þínum?'),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    try {
+                      _auth.deleteUser();
+                    } catch (error) {
+                      print(error.toString());
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Já')),
+              FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Nei')),
+            ],
+          );
         });
   }
 }
