@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:husfelagid/providers/notification_provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/current_user_provider.dart';
@@ -9,6 +11,8 @@ import '../widgets/user_list_item.dart';
 import '../models/apartment.dart';
 import '../models/resident_association.dart';
 import '../screens/edit_association_screen.dart';
+import '../models/notification.dart';
+import '../shared/constants.dart' as Constants;
 
 class MyAssociationScreen extends StatefulWidget {
   @override
@@ -19,6 +23,17 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
   var _isInit = true;
   var _isLoadingAssociation = false;
   var _isLoadingResidents = false;
+
+  ///oddny
+  var _notification = NotificationModel(
+    id: null,
+    title: '',
+    date: DateTime.now(),
+    description: '',
+    authorId: '',
+    type: '',
+  );
+  ////
 
   @override
   // fetch the current association, apartments and residents before widget is built.
@@ -186,6 +201,23 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
       await userData.makeUserAdmin(user);
     } catch (error) {
       await _printErrorDialog('Ekki tókst að veita meðlimi admin réttindi!');
+    }
+    try {
+      final userData = Provider.of<AssociationsProvider>(context);
+      final user = userData.getResident(userId);
+      await Provider.of<NotificationsProvider>(context, listen: false)
+          .addNotification(
+              user.residentAssociationId,
+              NotificationModel(
+                id: null,
+                title: user.name + ' er núna stjórnandi',
+                description: '',
+                date: DateTime.now(),
+                authorId: user.id,
+                type: Constants.ADDED_MEETING,
+              ));
+    } catch (error) {
+      await _printErrorDialog(error);
     }
     setState(() {
       _isLoadingAssociation = false;

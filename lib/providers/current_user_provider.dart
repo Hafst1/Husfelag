@@ -27,6 +27,7 @@ class CurrentUserProvider with ChangeNotifier {
 
   // fetch user when starting application and store in the _currentUser object.
   Future<void> fetchCurrentUser(String id) async {
+
     try {
       final fetchedUser = await _userRef.document(id).get();
       _currentUser = UserData(
