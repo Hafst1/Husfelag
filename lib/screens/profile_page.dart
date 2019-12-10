@@ -266,7 +266,8 @@ class MapScreenState extends State<ProfilePage> {
                                                                     userData
                                                                         .userToken);
                                                             setState(() {
-                                                              _emailStatus = true;
+                                                              _emailStatus =
+                                                                  true;
                                                               FocusScope.of(
                                                                       context)
                                                                   .requestFocus(
@@ -280,18 +281,14 @@ class MapScreenState extends State<ProfilePage> {
                                                         }
                                                       },
                                                     ),
-                                                    buildStopButton(
-                                                      () {
-                                                        setState(() {
-                                                          _emailStatus =
-                                                              true;
-                                                          FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(
-                                                                  FocusNode());
-                                                        });
-                                                      }
-                                                    ),
+                                                    buildStopButton(() {
+                                                      setState(() {
+                                                        _emailStatus = true;
+                                                        FocusScope.of(context)
+                                                            .requestFocus(
+                                                                FocusNode());
+                                                      });
+                                                    }),
                                                   ],
                                                 ),
                                               )
@@ -311,7 +308,6 @@ class MapScreenState extends State<ProfilePage> {
                                                   right: 25.0,
                                                   top: 2.0),
                                               child: Row(
-                                                mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
@@ -349,43 +345,36 @@ class MapScreenState extends State<ProfilePage> {
                                                     top: 20.0),
                                                 child: Row(
                                                   children: <Widget>[
-                                                    buildSaveButton(
-                                                      () async{
-                                                         if (_passwordKey
-                                                            .currentState
-                                                            .validate()) {
-                                                          try {
-                                                            await _auth
-                                                                .changePassword(
-                                                                    _currentPassword);
-                                                            setState(() {
-                                                              _passwordStatus =
-                                                                  true;
-                                                              FocusScope.of(
-                                                                      context)
-                                                                  .requestFocus(
-                                                                      FocusNode());
-                                                            });
-                                                          } catch (error) {
-                                                            print('Password can\'t be changed' +
-                                                                error
-                                                                    .toString());
-                                                          }
+                                                    buildSaveButton(() async {
+                                                      if (_passwordKey
+                                                          .currentState
+                                                          .validate()) {
+                                                        try {
+                                                          await _auth
+                                                              .changePassword(
+                                                                  _currentPassword);
+                                                          setState(() {
+                                                            _passwordStatus =
+                                                                true;
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .requestFocus(
+                                                                    FocusNode());
+                                                          });
+                                                        } catch (error) {
+                                                          print('Password can\'t be changed' +
+                                                              error.toString());
                                                         }
                                                       }
-                                                    ),
-                                                    buildStopButton(
-                                                      () {
-                                                        setState(() {
-                                                          _passwordStatus =
-                                                              true;
-                                                          FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(
-                                                                  FocusNode());
-                                                        });
-                                                      }
-                                                    ),
+                                                    }),
+                                                    buildStopButton(() {
+                                                      setState(() {
+                                                        _passwordStatus = true;
+                                                        FocusScope.of(context)
+                                                            .requestFocus(
+                                                                FocusNode());
+                                                      });
+                                                    }),
                                                   ],
                                                 ),
                                               ),
