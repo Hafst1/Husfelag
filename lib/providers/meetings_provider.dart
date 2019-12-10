@@ -7,7 +7,9 @@ import '../shared/constants.dart' as Constants;
 enum MeetingStatus { ahead, old }
 
 class MeetingsProvider with ChangeNotifier {
-  List<Meeting> _meetings = [];
+  // list of meetings for a resident association.
+  @visibleForTesting
+  List<Meeting> meetings = [];
 
   // collection reference to the resident associations.
   CollectionReference _associationRef =
@@ -35,7 +37,7 @@ class MeetingsProvider with ChangeNotifier {
           authorId: meeting.data[Constants.AUTHOR_ID],
         ));
       });
-      _meetings = loadedMeetings;
+      meetings = loadedMeetings;
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -65,7 +67,7 @@ class MeetingsProvider with ChangeNotifier {
         authorId: meeting.authorId,
         id: response.documentID,
       );
-      _meetings.add(newMeeting);
+      meetings.add(newMeeting);
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -76,9 +78,9 @@ class MeetingsProvider with ChangeNotifier {
   Future<void> deleteMeeting(
       String residentAssociationId, String meetingId) async {
     final deleteIndex =
-        _meetings.indexWhere((meeting) => meeting.id == meetingId);
-    var deletedMeeting = _meetings[deleteIndex];
-    _meetings.removeAt(deleteIndex);
+        meetings.indexWhere((meeting) => meeting.id == meetingId);
+    var deletedMeeting = meetings[deleteIndex];
+    meetings.removeAt(deleteIndex);
     notifyListeners();
     try {
       await _associationRef
@@ -88,14 +90,14 @@ class MeetingsProvider with ChangeNotifier {
           .delete();
       deletedMeeting = null;
     } catch (error) {
-      _meetings.insert(deleteIndex, deletedMeeting);
+      meetings.insert(deleteIndex, deletedMeeting);
       notifyListeners();
     }
   }
 
   // function whichs returns a meeting which has the id taken in as parameter, if found.
   Meeting findById(String id) {
-    return _meetings.firstWhere((meeting) => meeting.id == id);
+    return meetings.firstWhere((meeting) => meeting.id == id);
   }
 
   // function which updates a meeting in a resident association.
@@ -115,14 +117,14 @@ class MeetingsProvider with ChangeNotifier {
         Constants.AUTHOR_ID: editedMeeting.authorId,
       });
       final meetingIndex =
-          _meetings.indexWhere((meeting) => meeting.id == editedMeeting.id);
+          meetings.indexWhere((meeting) => meeting.id == editedMeeting.id);
       if (meetingIndex >= 0) {
-        final dateOfOldObject = _meetings[meetingIndex].date;
-        _meetings[meetingIndex] = editedMeeting;
+        final dateOfOldObject = meetings[meetingIndex].date;
+        meetings[meetingIndex] = editedMeeting;
 
         // if date has changed the meetings list has to be sorted again.
         if (dateOfOldObject != editedMeeting.date) {
-          _meetings.sort((a, b) => a.date.compareTo(b.date));
+          meetings.sort((a, b) => a.date.compareTo(b.date));
         }
       }
       notifyListeners();
@@ -148,11 +150,11 @@ class MeetingsProvider with ChangeNotifier {
   // functions which returns a list of meetings which satisfies the query string and
   // a given status filter (ahead or old).
   List<Meeting> filteredItems(String query, int filterIndex) {
-    List<Meeting> constructions = [..._meetings];
+    List<Meeting> meetingsList = [...meetings];
     String searchQuery = query.toLowerCase();
     List<Meeting> displayList = [];
     if (query.isNotEmpty) {
-      constructions.forEach((item) {
+      meetingsList.forEach((item) {
         if (item.title.toLowerCase().contains(searchQuery) &&
             _meetingStatusFilter(
               filterIndex,
@@ -162,7 +164,7 @@ class MeetingsProvider with ChangeNotifier {
         }
       });
     } else {
-      constructions.forEach((item) {
+      meetingsList.forEach((item) {
         if (_meetingStatusFilter(
           filterIndex,
           item.date,
@@ -189,6 +191,6 @@ class MeetingsProvider with ChangeNotifier {
 
   // function which returns all meeting items.
   List<Meeting> getAllMeetings() {
-    return [..._meetings];
+    return [...meetings];
   }
 }
