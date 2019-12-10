@@ -22,7 +22,7 @@ class _DocumentsListScreenState extends State<DocumentsListScreen> {
     title: '',
   );
 
-  // get folder which has the id passed in through arguments and fetch it's 
+  // get folder which has the id passed in through arguments and fetch it's
   // documents.
   @override
   void didChangeDependencies() {
@@ -126,10 +126,7 @@ class _DocumentsListScreenState extends State<DocumentsListScreen> {
         Provider.of<CurrentUserProvider>(context, listen: false)
             .getResidentAssociationId();
     final documentData = Provider.of<DocumentsProvider>(context);
-    final documents = documentData.filteredItems(
-      _searchQuery,
-      _folder.id,
-    );
+    final documents = documentData.filteredItems(_searchQuery);
     return Scaffold(
       appBar: appBar,
       body: _isLoading
