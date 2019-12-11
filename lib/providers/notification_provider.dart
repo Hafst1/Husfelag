@@ -31,7 +31,16 @@ class NotificationsProvider with ChangeNotifier {
         ));
       });
       loadedNotifications.sort((b, a) => a.date.compareTo(b.date));
+      // get count of new notifications
+      if(Counter.prevCounter != null) {
+      Counter.notificationCounter =
+         loadedNotifications.length - Counter.prevCounter; 
+      } else {
+        Counter.notificationCounter = loadedNotifications.length;
+      }
       _notifications = loadedNotifications;
+      Counter.listItemCounter = Counter.notificationCounter;
+      Counter.prevCounter = loadedNotifications.length;
       notifyListeners();
     } catch (error) {
       showDialog(

@@ -32,7 +32,6 @@ class NotificationItem extends StatelessWidget {
       child: ListTile(
         isThreeLine: true,
         onTap: () {
-          Counter.itemCounter = 0;
           Navigator.of(context).push(
             MaterialPageRoute(
              // builder: (context) => ConstructionDetailScreen(),

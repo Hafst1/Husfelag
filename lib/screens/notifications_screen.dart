@@ -66,11 +66,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                   /*child: ListView.builder(
+                   child: ListView.builder(
                       itemCount: notifications.length,
                       itemBuilder: (BuildContext context, int i) {
                         return Container(
-                          color: (i < Counter.itemCounter) ? Colors.blue[100] : Color.fromRGBO(230, 230, 230, 1),
+                          color: (i < Counter.listItemCounter) ? Colors.blue[100] : Color.fromRGBO(230, 230, 230, 1),
                           child: NotificationItem(
                             id: notifications[i].id,
                             title: notifications[i].title,
@@ -79,8 +79,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           ),
                         );
                       },
-                    ),*/
-                    child: ListView.builder(
+                    ),
+                    /*child: ListView.builder(
                       itemCount: notifications.length,
                       itemBuilder: (ctx, i) => NotificationItem(
                         id: notifications[i].id,
@@ -88,7 +88,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         description: notifications[i].description,
                         date: notifications[i].date,
                       ),
-                  ),
+                  ),*/
                   ),
                 ],
               ),

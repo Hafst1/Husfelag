@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:husfelagid/models/notification.dart';
-import 'package:husfelagid/providers/notification_provider.dart';
-import 'package:provider/provider.dart';
 
 import '../widgets/navigators/home_navigator.dart';
 import '../widgets/navigators/calendar_navigator.dart';
@@ -15,6 +13,7 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
+  int _counter = 0;
 
   Map<int, GlobalKey<NavigatorState>> navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
@@ -28,6 +27,9 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
     setState(() {
+      if(Counter.notificationCounter != null) {
+      _counter = Counter.notificationCounter;
+      }
       _selectedPageIndex = index;
       if(_selectedPageIndex == 2) {
         Counter.notificationCounter = 0;
@@ -87,7 +89,7 @@ class _TabsScreenState extends State<TabsScreen> {
               icon: Stack(
                 children: <Widget>[
                   Icon(Icons.notifications),
-                  (Counter.notificationCounter > 0) 
+                  (_counter> 0) 
                   ? Positioned(
                       right: 0,
                       child: Container(
@@ -101,7 +103,7 @@ class _TabsScreenState extends State<TabsScreen> {
                           minHeight: 12,
                         ),
                         child: Text(
-                          '${Counter.notificationCounter}',
+                          '$_counter',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 8,

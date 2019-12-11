@@ -20,6 +20,7 @@ class NotificationModel {
 }
 
 class Counter {
-  static int notificationCounter = 0;
-  static int itemCounter = 0;
+  static int notificationCounter;
+  static int prevCounter;
+  static int listItemCounter;
 }

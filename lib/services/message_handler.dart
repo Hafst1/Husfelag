@@ -1,6 +1,9 @@
 //import 'dart:async';
 //import 'dart:io';
+import 'package:husfelagid/models/cleaning.dart';
 import 'package:husfelagid/providers/cleaning_provider.dart';
+import 'package:husfelagid/providers/current_user_provider.dart';
+import 'package:husfelagid/providers/documents_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +27,7 @@ class _MessageHandlerState extends State<MessageHandler> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<String> notificationMessages;
   String residentAssociationId;
+  
 
   @override
   void initState() {
@@ -50,8 +54,6 @@ class _MessageHandlerState extends State<MessageHandler> {
       ),*/
         );
         Scaffold.of(context).showSnackBar(snackbar);
-        Counter.notificationCounter++;
-        Counter.itemCounter++;
         residentAssociationId = message['data']['residentAssociationId'];
         switch (message['data']['type']) {
           case (Constants.ADDED_MEETING):
@@ -83,10 +85,10 @@ class _MessageHandlerState extends State<MessageHandler> {
               var userId = Provider.of<CurrentUserProvider>(context).getId();
               Provider.of<CurrentUserProvider>(context)
                   .fetchCurrentUser(userId);
-              Provider.of<CleaningProvider>(context)
-                  .fetchCleaningTasks(residentAssociationId);
-              Provider.of<CleaningProvider>(context)
-                  .fetchCleaningItems(residentAssociationId);
+              Provider.of<CleaningProvider>(context).fetchCleaningTasks(residentAssociationId);
+              Provider.of<CleaningProvider>(context).fetchCleaningItems(residentAssociationId);
+              Provider.of<DocumentsProvider>(context).fetchFolders(residentAssociationId);
+              
             }
             break;
         }
@@ -108,6 +110,7 @@ class _MessageHandlerState extends State<MessageHandler> {
       },
     );
   }
+
 
   /*
   @override
