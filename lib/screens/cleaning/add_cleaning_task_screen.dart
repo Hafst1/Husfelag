@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 
 import '../../models/cleaning_task.dart';
 import '../../providers/cleaning_provider.dart';
@@ -107,12 +106,13 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final platform = Theme.of(context).platform;
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
       title: Text(_initValues['appbar-title']),
       centerTitle: true,
       actions: <Widget>[
-        Platform.isIOS
+        platform == TargetPlatform.iOS
             ? IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
@@ -191,10 +191,12 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
                       SizedBox(
                         height: 15,
                       ),
-                      SaveButton(
-                        text: _initValues['save-text'],
-                        saveFunc: _saveForm,
-                      ),
+                      platform == TargetPlatform.android
+                          ? SaveButton(
+                              text: _initValues['save-text'],
+                              saveFunc: _saveForm,
+                            )
+                          : Container(),
                     ],
                   ),
                 ),
