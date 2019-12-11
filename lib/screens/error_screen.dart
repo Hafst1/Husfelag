@@ -7,7 +7,7 @@ class ErrorScreen extends StatelessWidget {
         body: Center(
             child: Column(
       children: <Widget>[
-        SizedBox(height: 150),
+        SizedBox(height: 170),
         Icon(
           Icons.error_outline,
           color: Colors.red,
