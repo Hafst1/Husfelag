@@ -11,6 +11,7 @@ final user1 = UserData(
   apartmentId: 'apartment_id_2',
   residentAssociationId: 'res_id_2',
   isAdmin: false,
+  userToken: 'user_token_1',
 );
 
 final user2 = UserData(
@@ -20,6 +21,7 @@ final user2 = UserData(
   apartmentId: 'apartment_id_2',
   residentAssociationId: 'res_id_2',
   isAdmin: true,
+  userToken: 'user_token_2',
 );
 
 final user3 = UserData(
@@ -29,6 +31,7 @@ final user3 = UserData(
   apartmentId: 'apartment_id_1',
   residentAssociationId: 'res_id_1',
   isAdmin: true,
+  userToken: 'user_token_3',
 );
 
 final residentAssociation1 = ResidentAssociation(

@@ -11,7 +11,7 @@ class DatabaseService {
   final CollectionReference residentCollection =
       Firestore.instance.collection(Constants.USERS_COLLECTION);
 
-
+  // update user data in firebase
   Future<void> updateUserData(
     String name,
     String email,
@@ -20,8 +20,6 @@ class DatabaseService {
     bool isAdmin,
     String userToken,
   ) async {
-    print('updateuser database: ');
-    print(userToken);
     return await residentCollection.document(uid).setData({
       Constants.NAME: name,
       Constants.EMAIL: email,
