@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
 
 import '../../providers/constructions_provider.dart';
 import '../../providers/current_user_provider.dart';
@@ -169,6 +168,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final platform = Theme.of(context).platform;
     final currentUserData =
         Provider.of<CurrentUserProvider>(context, listen: false);
     final residentAssociationId = currentUserData.getResidentAssociationId();
@@ -178,7 +178,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
       title: Text(_initValues['appbar-title']),
       centerTitle: true,
       actions: <Widget>[
-        Platform.isIOS
+        platform == TargetPlatform.iOS
             ? IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
@@ -350,7 +350,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                       SizedBox(
                         height: 15,
                       ),
-                      Platform.isAndroid
+                      platform == TargetPlatform.android
                           ? SaveButton(
                               text: _initValues['save-text'],
                               saveFunc: () => _saveForm(residentAssociationId),

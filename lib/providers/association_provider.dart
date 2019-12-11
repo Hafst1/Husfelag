@@ -9,11 +9,14 @@ import '../shared/constants.dart' as Constants;
 
 class AssociationsProvider with ChangeNotifier {
   // list of all resident associations.
-  List<ResidentAssociation> _residentAssociations = [];
+  @visibleForTesting
+  List<ResidentAssociation> residentAssociations = [];
   // list of apartments to pick from when joining an association.
-  List<Apartment> _apartments = [];
+  @visibleForTesting
+  List<Apartment> apartments = [];
   // residents of logged in user's association.
-  List<UserData> _residents = [];
+  @visibleForTesting
+  List<UserData> residents = [];
 
   // references to the resident associations and users collections.
   CollectionReference _associationRef =
@@ -44,7 +47,7 @@ class AssociationsProvider with ChangeNotifier {
         ));
       });
       loadedResidents.sort((a, b) => a.name.compareTo(b.name));
-      _residents = loadedResidents;
+      residents = loadedResidents;
     } catch (error) {
       throw (error);
     }
@@ -62,9 +65,9 @@ class AssociationsProvider with ChangeNotifier {
         user.userToken,
       );
       final residentIndex =
-          _residents.indexWhere((resident) => resident.id == user.id);
+          residents.indexWhere((resident) => resident.id == user.id);
       if (residentIndex >= 0) {
-        _residents[residentIndex] = UserData(
+        residents[residentIndex] = UserData(
           id: user.id,
           name: user.name,
           email: user.email,
@@ -83,9 +86,9 @@ class AssociationsProvider with ChangeNotifier {
   // functions which kicks user out of the resident association.
   Future<void> kickUser(UserData user, Apartment apartment) async {
     final deleteIndex =
-        _residents.indexWhere((resident) => resident.id == user.id);
-    var deletedResident = _residents[deleteIndex];
-    _residents.removeAt(deleteIndex);
+        residents.indexWhere((resident) => resident.id == user.id);
+    var deletedResident = residents[deleteIndex];
+    residents.removeAt(deleteIndex);
     notifyListeners();
     try {
       if (apartment.residents.length <= 1) {
@@ -115,24 +118,24 @@ class AssociationsProvider with ChangeNotifier {
         false,
         user.userToken,
       );
-      notifyListeners();
     } catch (error) {
-      _residents.insert(deleteIndex, deletedResident);
+      residents.insert(deleteIndex, deletedResident);
+      notifyListeners();
       throw (error);
     }
   }
 
   // function which returns the residents of the association.
   List<UserData> getResidentsOfAssociation() {
-    return [..._residents];
+    return [...residents];
   }
 
   // function which returns a resident with the id taken in as parameter.
   UserData getResident(String userId) {
     final residentIndex =
-        _residents.indexWhere((resident) => resident.id == userId);
+        residents.indexWhere((resident) => resident.id == userId);
     if (residentIndex >= 0) {
-      return _residents[residentIndex];
+      return residents[residentIndex];
     }
     return UserData(
       id: '',
@@ -141,6 +144,7 @@ class AssociationsProvider with ChangeNotifier {
       residentAssociationId: '',
       apartmentId: '',
       isAdmin: false,
+      userToken: '',
     );
   }
 
@@ -158,7 +162,7 @@ class AssociationsProvider with ChangeNotifier {
           accessCode: association.data[Constants.ACCESS_CODE],
         ));
       });
-      _residentAssociations = loadedAssociations;
+      residentAssociations = loadedAssociations;
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -213,7 +217,7 @@ class AssociationsProvider with ChangeNotifier {
         description: response.data[Constants.DESCRIPTION],
         accessCode: response.data[Constants.ACCESS_CODE],
       );
-      _residentAssociations = [association];
+      residentAssociations = [association];
     } catch (error) {
       throw (error);
     }
@@ -227,10 +231,10 @@ class AssociationsProvider with ChangeNotifier {
         Constants.ACCESS_CODE: association.accessCode,
         Constants.DESCRIPTION: association.description,
       });
-      final associationIndex = _residentAssociations
+      final associationIndex = residentAssociations
           .indexWhere((resAssociation) => resAssociation.id == association.id);
       if (associationIndex >= 0) {
-        _residentAssociations[associationIndex] = association;
+        residentAssociations[associationIndex] = association;
       }
       notifyListeners();
     } catch (error) {
@@ -240,10 +244,10 @@ class AssociationsProvider with ChangeNotifier {
 
   // function which returns the resident association of a user.
   ResidentAssociation getAssociationOfUser(String residentAssociationId) {
-    final associationIndex = _residentAssociations
+    final associationIndex = residentAssociations
         .indexWhere((association) => association.id == residentAssociationId);
     if (associationIndex >= 0) {
-      return _residentAssociations[associationIndex];
+      return residentAssociations[associationIndex];
     }
     return ResidentAssociation(
       id: '',
@@ -256,7 +260,7 @@ class AssociationsProvider with ChangeNotifier {
   // function which returns an association list filtered by the search query
   // taken in as parameter.
   List<ResidentAssociation> filteredItems(String query) {
-    List<ResidentAssociation> associations = [..._residentAssociations];
+    List<ResidentAssociation> associations = [...residentAssociations];
     String searchQuery = query.toLowerCase();
     List<ResidentAssociation> displayList = [];
     if (query.isEmpty) {
@@ -274,7 +278,7 @@ class AssociationsProvider with ChangeNotifier {
   bool associationAddressIsAvailable(String query) {
     String searchQuery = query.toLowerCase();
     bool retVal = true;
-    for (final association in [..._residentAssociations]) {
+    for (final association in [...residentAssociations]) {
       if (association.address.toLowerCase().compareTo(searchQuery) == 0) {
         retVal = false;
         break;
@@ -300,7 +304,7 @@ class AssociationsProvider with ChangeNotifier {
           residents: List.from(apartment.data[Constants.RESIDENTS]),
         ));
       });
-      _apartments = loadedApartments;
+      apartments = loadedApartments;
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -343,7 +347,7 @@ class AssociationsProvider with ChangeNotifier {
     UserData user,
   ) async {
     final apartment =
-        _apartments.firstWhere((apartment) => apartment.id == apartmentId);
+        apartments.firstWhere((apartment) => apartment.id == apartmentId);
     apartment.residents.add(user.id);
     try {
       await _associationRef
@@ -370,15 +374,15 @@ class AssociationsProvider with ChangeNotifier {
 
   // getter for the apartments list.
   List<Apartment> getApartments() {
-    return [..._apartments];
+    return [...apartments];
   }
 
   // function which returns a single apartment with the id taken as parameter.
   Apartment getApartmentById(String apartmentId) {
     final apartmentIndex =
-        _apartments.indexWhere((apartment) => apartment.id == apartmentId);
+        apartments.indexWhere((apartment) => apartment.id == apartmentId);
     if (apartmentIndex >= 0) {
-      return _apartments[apartmentIndex];
+      return apartments[apartmentIndex];
     }
     return Apartment(
       id: '',
@@ -390,10 +394,10 @@ class AssociationsProvider with ChangeNotifier {
 
   // function which returns a single apartment with the id taken as parameter.
   Apartment getApartmentByNumber(String apartmentNumber) {
-    final apartmentIndex = _apartments.indexWhere(
+    final apartmentIndex = apartments.indexWhere(
         (apartment) => apartment.apartmentNumber == apartmentNumber);
     if (apartmentIndex >= 0) {
-      return _apartments[apartmentIndex];
+      return apartments[apartmentIndex];
     }
     return Apartment(
       id: '',
@@ -405,14 +409,14 @@ class AssociationsProvider with ChangeNotifier {
 
   // function which gets the apartment number of the logged in user.
   String getApartmentNumber(String apartmentId) {
-    if (_apartments.isEmpty) {
+    if (apartments.isEmpty) {
       return '';
     }
     var retVal = '';
     final apartmentIndex =
-        _apartments.indexWhere((apartment) => apartment.id == apartmentId);
+        apartments.indexWhere((apartment) => apartment.id == apartmentId);
     if (apartmentIndex >= 0) {
-      retVal = _apartments[apartmentIndex].apartmentNumber;
+      retVal = apartments[apartmentIndex].apartmentNumber;
     }
     return retVal;
   }
@@ -421,7 +425,7 @@ class AssociationsProvider with ChangeNotifier {
   bool apartmentIsAvailable(String query) {
     String searchQuery = query.toLowerCase();
     bool retVal = true;
-    for (final apartment in [..._apartments]) {
+    for (final apartment in [...apartments]) {
       if (apartment.apartmentNumber.toLowerCase().compareTo(searchQuery) == 0) {
         retVal = false;
         break;
@@ -434,7 +438,7 @@ class AssociationsProvider with ChangeNotifier {
   // association, false otherwise.
   bool moreThanOneAdmin() {
     var numberOfAdmins = 0;
-    for (final resident in _residents) {
+    for (final resident in residents) {
       if (resident.isAdmin) {
         numberOfAdmins++;
       }

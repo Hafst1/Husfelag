@@ -8,8 +8,12 @@ import '../shared/constants.dart' as Constants;
 enum CleaningStatus { current, ahead, old }
 
 class CleaningProvider with ChangeNotifier {
-  List<Cleaning> _cleaningItems = [];
-  List<CleaningTask> _cleaningTasks = [];
+  // list of cleaning items of a resident association.
+  @visibleForTesting
+  List<Cleaning> cleaningItems = [];
+  // list of cleanings tasks of a resident association.
+  @visibleForTesting
+  List<CleaningTask> cleaningTasks = [];
 
   // collection reference to resident associations.
   CollectionReference _associationsRef =
@@ -36,7 +40,7 @@ class CleaningProvider with ChangeNotifier {
           authorId: cleaningItem.data[Constants.AUTHOR_ID],
         ));
       });
-      _cleaningItems = loadedCleaningItems;
+      cleaningItems = loadedCleaningItems;
       sortCleaningItems();
       notifyListeners();
     } catch (error) {
@@ -64,7 +68,7 @@ class CleaningProvider with ChangeNotifier {
         authorId: cleaningItem.authorId,
         id: response.documentID,
       );
-      _cleaningItems.add(newCleaningItem);
+      cleaningItems.add(newCleaningItem);
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -74,10 +78,10 @@ class CleaningProvider with ChangeNotifier {
   // function which deletes a cleaning item in a resident association.
   Future<void> deleteCleaningItem(
       String residentAssociationId, String cleaningId) async {
-    final deleteIndex = _cleaningItems
+    final deleteIndex = cleaningItems
         .indexWhere((cleaningItem) => cleaningItem.id == cleaningId);
-    var deletedCleaningItem = _cleaningItems[deleteIndex];
-    _cleaningItems.removeAt(deleteIndex);
+    var deletedCleaningItem = cleaningItems[deleteIndex];
+    cleaningItems.removeAt(deleteIndex);
     notifyListeners();
     try {
       await _associationsRef
@@ -87,7 +91,7 @@ class CleaningProvider with ChangeNotifier {
           .delete();
       deletedCleaningItem = null;
     } catch (error) {
-      _cleaningItems.insert(deleteIndex, deletedCleaningItem);
+      cleaningItems.insert(deleteIndex, deletedCleaningItem);
       notifyListeners();
     }
   }
@@ -95,7 +99,7 @@ class CleaningProvider with ChangeNotifier {
   // function which returns the cleaning item which has the id taken in as
   // parameter, if found.
   Cleaning findById(String id) {
-    return _cleaningItems.firstWhere((cleaning) => cleaning.id == id);
+    return cleaningItems.firstWhere((cleaning) => cleaning.id == id);
   }
 
   // functions which updates a cleaning item in a resident association.
@@ -112,11 +116,11 @@ class CleaningProvider with ChangeNotifier {
         Constants.DATE_TO: editedCleaning.dateTo.millisecondsSinceEpoch,
         Constants.AUTHOR_ID: editedCleaning.authorId,
       });
-      final cleaningIndex = _cleaningItems
+      final cleaningIndex = cleaningItems
           .indexWhere((cleaning) => cleaning.id == editedCleaning.id);
       if (cleaningIndex >= 0) {
-        final oldCleaningItem = _cleaningItems[cleaningIndex];
-        _cleaningItems[cleaningIndex] = editedCleaning;
+        final oldCleaningItem = cleaningItems[cleaningIndex];
+        cleaningItems[cleaningIndex] = editedCleaning;
 
         // if dates have changed we have to sort the list of cleaning items again.
         if (oldCleaningItem.dateFrom != editedCleaning.dateFrom ||
@@ -157,11 +161,11 @@ class CleaningProvider with ChangeNotifier {
   // function which returns a list of cleaning items which contain the the search
   // query and match a given status filter (ahead, old or current).
   List<Cleaning> filteredItems(String query, int filterIndex) {
-    List<Cleaning> constructions = [..._cleaningItems];
+    List<Cleaning> cleaningItemsList = [...cleaningItems];
     String searchQuery = query.toLowerCase();
     List<Cleaning> displayList = [];
     if (query.isNotEmpty) {
-      constructions.forEach((item) {
+      cleaningItemsList.forEach((item) {
         if (item.apartmentNumber.toLowerCase().contains(searchQuery) &&
             _cleaningStatusFilter(
               filterIndex,
@@ -172,7 +176,7 @@ class CleaningProvider with ChangeNotifier {
         }
       });
     } else {
-      constructions.forEach((item) {
+      cleaningItemsList.forEach((item) {
         if (_cleaningStatusFilter(
           filterIndex,
           item.dateFrom,
@@ -189,7 +193,7 @@ class CleaningProvider with ChangeNotifier {
   // the function returns true he will be able to check the boxes of
   // the cleaning task list.
   bool isUsersTurnToClean(String apartment) {
-    if (_cleaningItems.isEmpty) {
+    if (cleaningItems.isEmpty) {
       return false;
     }
     DateTime exactDate = DateTime.now();
@@ -198,7 +202,7 @@ class CleaningProvider with ChangeNotifier {
     DateTime endOfCurrentDate = DateTime(
         exactDate.year, exactDate.month, exactDate.day, 23, 59, 59, 999);
     var retVal = false;
-    for (final cleaningItem in _cleaningItems) {
+    for (final cleaningItem in cleaningItems) {
       if (cleaningItem.dateFrom.isAfter(endOfCurrentDate)) {
         break;
       }
@@ -218,7 +222,7 @@ class CleaningProvider with ChangeNotifier {
   // functions which sorts the cleaning item list by the dateFrom property,
   // if equal it is ordered by the dateTo property.
   void sortCleaningItems() {
-    _cleaningItems.sort(
+    cleaningItems.sort(
       (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
           ? a.dateTo.compareTo(b.dateTo)
           : a.dateFrom.compareTo(b.dateFrom),
@@ -242,7 +246,7 @@ class CleaningProvider with ChangeNotifier {
           taskDone: cleaningTask.data[Constants.TASK_DONE],
         ));
       });
-      _cleaningTasks = loadedCleaningTask;
+      cleaningTasks = loadedCleaningTask;
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -267,7 +271,7 @@ class CleaningProvider with ChangeNotifier {
         taskDone: cleaningTaskItem.taskDone,
         id: response.documentID,
       );
-      _cleaningTasks.add(newCleaningTaskItem);
+      cleaningTasks.add(newCleaningTaskItem);
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -277,10 +281,10 @@ class CleaningProvider with ChangeNotifier {
   // function which updates a cleaning task item in a resident association.
   Future<void> updateCleaningTaskItem(
       String residentAssociationId, CleaningTask editedCleaningTask) async {
-    final cleaningTaskIndex = _cleaningTasks
+    final cleaningTaskIndex = cleaningTasks
         .indexWhere((cleaningTask) => cleaningTask.id == editedCleaningTask.id);
     if (cleaningTaskIndex >= 0) {
-      _cleaningTasks[cleaningTaskIndex] = editedCleaningTask;
+      cleaningTasks[cleaningTaskIndex] = editedCleaningTask;
     }
     try {
       await _associationsRef
@@ -301,16 +305,16 @@ class CleaningProvider with ChangeNotifier {
   // functions which returns a cleaning task which has the id taken in as
   // parameter, if found.
   CleaningTask findCleaningTaskById(String id) {
-    return _cleaningTasks.firstWhere((cleaningTask) => cleaningTask.id == id);
+    return cleaningTasks.firstWhere((cleaningTask) => cleaningTask.id == id);
   }
 
   // function which deletes a cleaning task item of a resident association.
   Future<void> deleteCleaningTaskItem(
       String residentAssociationId, String cleaningTaskId) async {
-    final deleteIndex = _cleaningTasks
+    final deleteIndex = cleaningTasks
         .indexWhere((cleaningTask) => cleaningTask.id == cleaningTaskId);
-    var deletedCleaningItem = _cleaningTasks[deleteIndex];
-    _cleaningTasks.removeAt(deleteIndex);
+    var deletedCleaningItem = cleaningTasks[deleteIndex];
+    cleaningTasks.removeAt(deleteIndex);
     notifyListeners();
     try {
       await _associationsRef
@@ -320,18 +324,18 @@ class CleaningProvider with ChangeNotifier {
           .delete();
       deletedCleaningItem = null;
     } catch (error) {
-      _cleaningTasks.insert(deleteIndex, deletedCleaningItem);
+      cleaningTasks.insert(deleteIndex, deletedCleaningItem);
       notifyListeners();
     }
   }
 
   // function which returns all cleaning tasks of a given resident assocation.
   List<CleaningTask> getAllTasks() {
-    return [..._cleaningTasks];
+    return [...cleaningTasks];
   }
 
   // function which returns all cleaning items.
   List<Cleaning> getAllCleaningItems() {
-    return [..._cleaningItems];
+    return [...cleaningItems];
   }
 }
