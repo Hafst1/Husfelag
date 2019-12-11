@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../providers/notification_provider.dart';
 import '../providers/current_user_provider.dart';
 import '../providers/association_provider.dart';
-import '../providers/notification_provider.dart';
 import '../shared/loading_spinner.dart';
 import '../widgets/custom_icons_icons.dart';
 import '../widgets/user_list_item.dart';
@@ -180,7 +179,6 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     setState(() {
       _isLoadingAssociation = true;
     });
-
     final userData = Provider.of<AssociationsProvider>(context);
     final user = userData.getResident(userId);
     try {
