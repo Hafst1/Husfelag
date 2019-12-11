@@ -20,6 +20,7 @@ class _MessageHandlerState extends State<MessageHandler> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<String> notificationMessages;
   String residentAssociationId;
+  String userId;
 
   @override
   void initState() {
@@ -29,21 +30,21 @@ class _MessageHandlerState extends State<MessageHandler> {
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-
         print('onmessage: $message');
 
         final snackbar = SnackBar(
-          duration: const Duration(seconds: 10),
+          duration: const Duration(seconds: 5),
           content: Text(
             message['notification']['title'],
             style: TextStyle(color: Colors.black),
           ),
-          backgroundColor: Colors.yellow[200],
+          backgroundColor: Colors.grey[200],
         );
         Scaffold.of(context).showSnackBar(snackbar);
 
-       residentAssociationId = message['data']['residentAssociationId'];
-       switch (message['data']['type']) {
+        residentAssociationId = message['data']['residentAssociationId'];
+        userId = message['data']['id'];
+        switch (message['data']['type']) {
           case (Constants.ADDED_MEETING):
             {
               Provider.of<MeetingsProvider>(context)
@@ -70,12 +71,17 @@ class _MessageHandlerState extends State<MessageHandler> {
             break;
           case (Constants.MADE_ADMIN):
             {
-             Provider.of<CurrentUserProvider>(context).triggerCurrentUserRefresh();
+              FirebaseUser user = await _auth.currentUser();
+              if (user.uid == userId) {
+                Provider.of<CurrentUserProvider>(context)
+                    .triggerCurrentUserRefresh();
+              }
             }
             break;
           case (Constants.REMOVED_RESIDENT):
             {
-              Provider.of<CurrentUserProvider>(context).triggerCurrentUserRefresh();
+              Provider.of<CurrentUserProvider>(context)
+                  .triggerCurrentUserRefresh();
             }
             break;
         }
