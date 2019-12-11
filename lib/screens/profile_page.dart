@@ -104,6 +104,24 @@ class MapScreenState extends State<ProfilePage> {
     );
   }
 
+  Future<void> printErrorDialog(String errorMessage) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text(errorMessage),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
@@ -273,10 +291,9 @@ class MapScreenState extends State<ProfilePage> {
                                                                   .requestFocus(
                                                                       FocusNode());
                                                             });
-                                                          } on Exception catch (error) {
-                                                            print('email can\'t be changed' +
-                                                                error
-                                                                    .toString());
+                                                          } catch (error) {
+                                                            await printErrorDialog(
+                                                                'Þú þarft að vera nýskráð/ur inn til að breyta þessum upplýsingum');
                                                           }
                                                         }
                                                       },
@@ -362,9 +379,9 @@ class MapScreenState extends State<ProfilePage> {
                                                                     FocusNode());
                                                           });
                                                         } catch (error) {
-                                                          print('Password can\'t be changed' +
-                                                              error.toString());
-                                                        }
+                                                            await printErrorDialog(
+                                                                'Þú þarft að vera nýskráð/ur inn til að breyta þessum upplýsingum');
+                                                          }
                                                       }
                                                     }),
                                                     buildStopButton(() {
