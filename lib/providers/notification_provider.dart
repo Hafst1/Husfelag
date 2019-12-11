@@ -33,7 +33,7 @@ class NotificationsProvider with ChangeNotifier {
       loadedNotifications.sort((b, a) => a.date.compareTo(b.date));
       // get count of new notifications
       if(Counter.prevCounter != null) {
-      Counter.notificationCounter =
+      Counter.notificationCounter = Counter.notificationCounter +
          loadedNotifications.length - Counter.prevCounter; 
       } else {
         Counter.notificationCounter = loadedNotifications.length;

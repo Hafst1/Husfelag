@@ -13,8 +13,8 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
-  int _counter = 0;
-
+  int _counter = Counter.notificationCounter;
+  
   Map<int, GlobalKey<NavigatorState>> navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
     1: GlobalKey<NavigatorState>(),
@@ -27,9 +27,7 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
     setState(() {
-      if(Counter.notificationCounter != null) {
       _counter = Counter.notificationCounter;
-      }
       _selectedPageIndex = index;
       if(_selectedPageIndex == 2) {
         Counter.notificationCounter = 0;
@@ -89,7 +87,7 @@ class _TabsScreenState extends State<TabsScreen> {
               icon: Stack(
                 children: <Widget>[
                   Icon(Icons.notifications),
-                  (_counter> 0) 
+                  (_counter > 0) 
                   ? Positioned(
                       right: 0,
                       child: Container(
