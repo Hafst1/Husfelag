@@ -40,10 +40,16 @@ class CurrentUserProvider with ChangeNotifier {
         isAdmin: fetchedUser[Constants.IS_ADMIN],
         userToken: fetchedUser[Constants.USER_TOKEN],
       );
+    
     } catch (error) {
       //error handling vantar
       print(error);
     }
+  }
+
+  // let functions that listens to current user update current user
+  triggerCurrentUserRefresh(){
+    notifyListeners();
   }
 
   // functions which makes the current user leave the resident association

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/notification_provider.dart';
 import '../providers/current_user_provider.dart';
 import '../providers/association_provider.dart';
 import '../providers/notification_provider.dart';
@@ -22,17 +23,6 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
   var _isInit = true;
   var _isLoadingAssociation = false;
   var _isLoadingResidents = false;
-
-  ///oddny
-  var _notification = NotificationModel(
-    id: null,
-    title: '',
-    date: DateTime.now(),
-    description: '',
-    authorId: '',
-    type: '',
-  );
-  ////
 
   @override
   // fetch the current association, apartments and residents before widget is built.
@@ -190,9 +180,10 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     setState(() {
       _isLoadingAssociation = true;
     });
+
+    final userData = Provider.of<AssociationsProvider>(context);
+    final user = userData.getResident(userId);
     try {
-      final userData = Provider.of<AssociationsProvider>(context);
-      final user = userData.getResident(userId);
       if (user.id.isEmpty) {
         await _printErrorDialog('Ekki tókst að veita meðlimi admin réttindi!');
         return;
@@ -202,8 +193,6 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
       await _printErrorDialog('Ekki tókst að veita meðlimi admin réttindi!');
     }
     try {
-      final userData = Provider.of<AssociationsProvider>(context);
-      final user = userData.getResident(userId);
       await Provider.of<NotificationsProvider>(context, listen: false)
           .addNotification(
               user.residentAssociationId,
@@ -213,11 +202,9 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
                 description: '',
                 date: DateTime.now(),
                 authorId: user.id,
-                type: Constants.ADDED_MEETING,
+                type: Constants.MADE_ADMIN,
               ));
-    } catch (error) {
-      await _printErrorDialog(error);
-    }
+    } catch (error) {}
     setState(() {
       _isLoadingAssociation = false;
     });

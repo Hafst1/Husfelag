@@ -195,9 +195,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                   authorId: _meeting.authorId,
                   type: Constants.ADDED_MEETING,
                 ));
-      } catch (error) {
-        await printErrorDialog(error);
-      }
+      } catch (error) {}
     }
     setState(() {
       _isLoading = false;

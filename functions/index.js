@@ -3,11 +3,7 @@ const admin = require('firebase-admin');
 
 admin.initializeApp(functions.config().firebase);
 
-//const db = admin.firestore();
-//const fcm = admin.messaging();
-
 var msgData;
-var today = new Date();
 
 exports.newMeetingTrigger = functions.firestore.document(
   'ResidentAssociations/{ResidentAssociationId}/Meetings/{MeetingId}'
@@ -30,10 +26,6 @@ exports.newMeetingTrigger = functions.firestore.document(
         for (var token of snapshots.docs) {
           if (token.data().userToken != authorToken) {
             tokens.push(token.data().userToken);
-            console.log("User: ");
-            console.log(token.data().name);
-            console.log("UserToken: ");
-            console.log(token.data().userToken);
           }
         }
         var payload = {
@@ -49,7 +41,7 @@ exports.newMeetingTrigger = functions.firestore.document(
         }
 
         return admin.messaging().sendToDevice(tokens, payload).then((response) => {
-          console.log('PUshed them alll');
+          console.log('Pushed them all');
         }).catch((err) => {
           console.log(err);
         })
@@ -94,7 +86,7 @@ exports.deleteMeetingTrigger = functions.firestore.document(
         }
 
         return admin.messaging().sendToDevice(tokens, payload).then((response) => {
-          console.log('PUshed them alll');
+          console.log('Pushed them all');
         }).catch((err) => {
           console.log(err);
         })
@@ -138,7 +130,7 @@ exports.newConstructionTrigger = functions.firestore.document(
         }
 
         return admin.messaging().sendToDevice(tokens, payload).then((response) => {
-          console.log('PUshed them alll');
+          console.log('Pushed them all');
         }).catch((err) => {
           console.log(err);
         })
@@ -183,7 +175,7 @@ exports.deleteConstructionTrigger = functions.firestore.document(
         }
 
         return admin.messaging().sendToDevice(tokens, payload).then((response) => {
-          console.log('PUshed them alll');
+          console.log('Pushed them all');
         }).catch((err) => {
           console.log(err);
         })
@@ -195,17 +187,11 @@ exports.deleteConstructionTrigger = functions.firestore.document(
 exports.updateAdminTrigger = functions.firestore.document(
   'Users/{UsersId}'
 ).onUpdate((change, context) => {
-  // msgData = snapshot.data();
   const before = change.before.data();
   const after = change.after.data();
   const residentAssociationId = before.residentAssociationId;
 
-  console.log("before is ADMIN: " + before.isAdmin);
-  console.log("after is ADMIN: " + after.isAdmin);
-  console.log("Resident associtaion: " + before.residentAssociationId );
-
   if (before.isAdmin == false && after.isAdmin == true) {
-    console.log(before.name + ' is now Admin');
 
     admin.firestore().collection('Users').where('residentAssociationId', '==', residentAssociationId).get().then((snapshots) => {
       var tokens = [];
@@ -215,12 +201,9 @@ exports.updateAdminTrigger = functions.firestore.document(
       }
       else {
         for (var token of snapshots.docs) {
-          console.log("name: " + token.data().name);
-          console.log("token: " + token.data().userToken);
           tokens.push(token.data().userToken);
         }
         var payload = {
-
           'notification': {
             'title': before.name + ' var gerð/ur að stjórnanda',
             'body': 'Nýr stjórnandi!',
@@ -228,12 +211,12 @@ exports.updateAdminTrigger = functions.firestore.document(
           },
           'data': {
             'residentAssociationId': residentAssociationId,
-            'type': 'newAdmin',
+            'type': 'madeAdmin',
           }
         }
 
         return admin.messaging().sendToDevice(tokens, payload).then((response) => {
-          console.log('PUshed them alll');
+          console.log('Pushed them all');
         }).catch((err) => {
           console.log(err);
         })
@@ -241,5 +224,31 @@ exports.updateAdminTrigger = functions.firestore.document(
     })
   }
   else return null;
+})
+
+exports.removeResidentTrigger = functions.firestore.document(
+  'Users/{UsersId}'
+).onUpdate((change, context) => {
+  const after = change.after.data();
+  const token = after.userToken;
+
+  if (after.residentAssociationId == '') {
+
+    var payload = {
+      'notification': {
+        'title': '',
+        'body': '',
+      },
+      'data': {
+        'type': 'removedResident',
+      }
+    }
+
+    return admin.messaging().sendToDevice(token, payload).then((response) => {
+      console.log('Pushed them all');
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
 })
 

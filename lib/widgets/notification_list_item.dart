@@ -1,11 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:husfelagid/providers/notification_provider.dart';
-//import 'package:provider/provider.dart';
-//import 'package:circular_check_box/circular_check_box.dart';
-
-//import '../providers/current_user_provider.dart';
-//import '../widgets/action_dialog.dart';
-//import 'custom_icons_icons.dart';
 
 class NotificationItem extends StatelessWidget {
   final String id;
@@ -33,7 +26,6 @@ class NotificationItem extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-             // builder: (context) => ConstructionDetailScreen(),
               settings: RouteSettings(arguments: id),
             ),
           );
@@ -50,19 +42,6 @@ class NotificationItem extends StatelessWidget {
                   date.month.toString() + '.' + date.year.toString() + ' ' + date.hour.toString() + ':' +date.minute.toString()),
           ],
         )
-    /*    Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  description,
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-            ],
-          ),
-        ),*/
       ),
     );
   }

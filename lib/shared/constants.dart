@@ -37,14 +37,13 @@ const String TITLE = 'title';
 const String TYPE = 'type';
 const String USER_TOKEN = 'userToken';
 
-//constants for notification
+// constants for notification
 const String ADDED_CONSTRUCTION = 'addedConstruction';
 const String ADDED_MEETING = 'addedMeeting';
 const String DELETED_MEETING = 'deletedMeeting';
 const String DELETED_CONSTRUCTION = 'deletedConstruction';
-const String NEW_ADMIN = 'newAdmin';
-//kick user og promoted to admin og cleaning
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+const String MADE_ADMIN = 'madeAdmin';
+const String REMOVED_RESIDENT = 'removedResident';
 
 
 // constants for months in icelandic.
