@@ -25,6 +25,7 @@ class _RegisterState extends State<Register> {
     residentAssociationId: '',
     apartmentId: '',
     isAdmin: false,
+    userToken: '',
   );
 
   var _userPassword = '';
@@ -84,6 +85,7 @@ class _RegisterState extends State<Register> {
                                       _user.residentAssociationId,
                                   apartmentId: _user.apartmentId,
                                   isAdmin: _user.isAdmin,
+                                  userToken: _user.userToken,
                                 );
                               },
                             ),
@@ -109,6 +111,7 @@ class _RegisterState extends State<Register> {
                                       _user.residentAssociationId,
                                   apartmentId: _user.apartmentId,
                                   isAdmin: _user.isAdmin,
+                                  userToken: _user.userToken,
                                 );
                               },
                             ),

@@ -16,6 +16,7 @@ class CurrentUserProvider with ChangeNotifier {
     residentAssociationId: '',
     apartmentId: '',
     isAdmin: false,
+    userToken: '',
   );
 
   // reference to the resident associations and users collections.
@@ -27,7 +28,6 @@ class CurrentUserProvider with ChangeNotifier {
 
   // fetch user when starting application and store in the _currentUser object.
   Future<void> fetchCurrentUser(String id) async {
-
     try {
       final fetchedUser = await _userRef.document(id).get();
       _currentUser = UserData(
@@ -38,6 +38,7 @@ class CurrentUserProvider with ChangeNotifier {
             fetchedUser.data[Constants.RESIDENT_ASSOCIATION_ID],
         apartmentId: fetchedUser[Constants.APARTMENT_ID],
         isAdmin: fetchedUser[Constants.IS_ADMIN],
+        userToken: fetchedUser[Constants.USER_TOKEN],
       );
     } catch (error) {
       //error handling vantar
@@ -70,8 +71,14 @@ class CurrentUserProvider with ChangeNotifier {
           Constants.RESIDENTS: updatedResidentsList,
         });
       }
-      await DatabaseService(uid: _currentUser.id)
-          .updateUserData(_currentUser.name, _currentUser.email, '', '', false, null);
+      await DatabaseService(uid: _currentUser.id).updateUserData(
+        _currentUser.name,
+        _currentUser.email,
+        '',
+        '',
+        false,
+        _currentUser.userToken,
+      );
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -201,7 +208,7 @@ class CurrentUserProvider with ChangeNotifier {
         '',
         '',
         false,
-        null,
+        _currentUser.userToken,
       );
       notifyListeners();
     } catch (error) {
@@ -218,6 +225,7 @@ class CurrentUserProvider with ChangeNotifier {
       residentAssociationId: _currentUser.residentAssociationId,
       apartmentId: _currentUser.apartmentId,
       isAdmin: _currentUser.isAdmin,
+      userToken: _currentUser.userToken,
     );
   }
 
@@ -265,6 +273,7 @@ class CurrentUserProvider with ChangeNotifier {
       residentAssociationId: residentAssociationId,
       apartmentId: _currentUser.apartmentId,
       isAdmin: _currentUser.isAdmin,
+      userToken: _currentUser.userToken,
     );
   }
 
@@ -277,6 +286,7 @@ class CurrentUserProvider with ChangeNotifier {
       residentAssociationId: _currentUser.residentAssociationId,
       apartmentId: apartmentId,
       isAdmin: _currentUser.isAdmin,
+      userToken: _currentUser.userToken,
     );
   }
 }
