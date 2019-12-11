@@ -57,12 +57,12 @@ class _MessageHandlerState extends State<MessageHandler> {
             break;
           case (Constants.MADE_ADMIN):
             {
-             Provider.of<CurrentUserProvider>(context).currentUserNotifyListeners();
+             Provider.of<CurrentUserProvider>(context).triggerCurrentUserRefresh();
             }
             break;
           case (Constants.REMOVED_RESIDENT):
             {
-              Provider.of<CurrentUserProvider>(context).currentUserNotifyListeners();
+              Provider.of<CurrentUserProvider>(context).triggerCurrentUserRefresh();
             }
             break;
         }

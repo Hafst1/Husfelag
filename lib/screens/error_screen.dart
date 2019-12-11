@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/current_user_provider.dart';
 
 class ErrorScreen extends StatelessWidget {
   @override
@@ -21,7 +24,7 @@ class ErrorScreen extends StatelessWidget {
         SizedBox(height: 50),
         RaisedButton(
           onPressed: () {
-            print('þú ýttir á takkann');
+            Provider.of<CurrentUserProvider>(context).triggerCurrentUserRefresh();
           },
           child: Text('Reyna aftur'),
         ),
