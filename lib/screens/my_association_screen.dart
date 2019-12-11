@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/providers/notification_provider.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/current_user_provider.dart';
 import '../providers/association_provider.dart';
+import '../providers/notification_provider.dart';
 import '../shared/loading_spinner.dart';
 import '../widgets/custom_icons_icons.dart';
 import '../widgets/user_list_item.dart';

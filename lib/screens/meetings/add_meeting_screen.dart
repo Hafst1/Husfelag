@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
 
 import '../../models/meeting.dart';
 import '../../models/notification.dart';
@@ -226,6 +225,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final platform = Theme.of(context).platform;
     final currentUserData =
         Provider.of<CurrentUserProvider>(context, listen: false);
     final residentAssociationId = currentUserData.getResidentAssociationId();
@@ -235,7 +235,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       title: Text(_initValues['appbar-title']),
       centerTitle: true,
       actions: <Widget>[
-        Platform.isIOS
+        platform == TargetPlatform.iOS
             ? IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
@@ -492,7 +492,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                       SizedBox(
                         height: 15,
                       ),
-                      Platform.isAndroid
+                      platform == TargetPlatform.android
                           ? SaveButton(
                               text: _initValues['save-text'],
                               saveFunc: () => _saveForm(residentAssociationId),
