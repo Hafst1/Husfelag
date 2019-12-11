@@ -9,7 +9,6 @@ import '../../widgets/save_button.dart';
 import '../../providers/current_user_provider.dart';
 import '../../providers/association_provider.dart';
 import '../../shared/loading_spinner.dart';
-import '../../widgets/custom_icons_icons.dart';
 
 class CreateAssociationScreen extends StatefulWidget {
   @override

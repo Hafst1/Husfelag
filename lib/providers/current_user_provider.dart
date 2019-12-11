@@ -30,6 +30,8 @@ class CurrentUserProvider with ChangeNotifier {
 
     try {
       final fetchedUser = await _userRef.document(id).get();
+      print("resident id");
+      print(fetchedUser.data[Constants.RESIDENT_ASSOCIATION_ID]);
       _currentUser = UserData(
         id: fetchedUser.documentID,
         email: fetchedUser.data[Constants.EMAIL],
@@ -39,10 +41,16 @@ class CurrentUserProvider with ChangeNotifier {
         apartmentId: fetchedUser[Constants.APARTMENT_ID],
         isAdmin: fetchedUser[Constants.IS_ADMIN],
       );
+    
     } catch (error) {
       //error handling vantar
       print(error);
     }
+  }
+
+  // let functions that listens to current user update current user
+  currentUserNotifyListeners(){
+    notifyListeners();
   }
 
   // functions which makes the current user leave the resident association
@@ -201,7 +209,7 @@ class CurrentUserProvider with ChangeNotifier {
         '',
         '',
         false,
-        null,
+        '',
       );
       notifyListeners();
     } catch (error) {

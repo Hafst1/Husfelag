@@ -52,8 +52,6 @@ class AssociationsProvider with ChangeNotifier {
 
   // function which makes another user in the resident association an admin.
   Future<void> makeUserAdmin(UserData user) async {
-    print('make user admin fall, usertoke: ');
-    print(user.userToken);
     try {
       await DatabaseService(uid: user.id).updateUserData(
         user.name,
@@ -117,9 +115,9 @@ class AssociationsProvider with ChangeNotifier {
         false,
         user.userToken,
       );
+      notifyListeners();
     } catch (error) {
       _residents.insert(deleteIndex, deletedResident);
-      notifyListeners();
       throw (error);
     }
   }

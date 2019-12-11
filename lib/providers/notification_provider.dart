@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/notification.dart';
 import '../shared/constants.dart' as Constants;
 
-
 class NotificationsProvider with ChangeNotifier {
   List<NotificationModel> _notifications = [];
 
@@ -12,7 +11,9 @@ class NotificationsProvider with ChangeNotifier {
   CollectionReference _associationRef =
       Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
 
-    Future<void> fetchNotifications(
+  // function which fetches notifications from a resident association and stores
+  // them in the _notifications list.
+  Future<void> fetchNotifications(
       String residentAssociationId, BuildContext context) async {
     try {
       final response = await _associationRef
@@ -24,7 +25,8 @@ class NotificationsProvider with ChangeNotifier {
         loadedNotifications.add(NotificationModel(
           id: notification.documentID,
           title: notification.data[Constants.TITLE],
-          date: DateTime.fromMillisecondsSinceEpoch(notification.data[Constants.DATE]),
+          date: DateTime.fromMillisecondsSinceEpoch(
+              notification.data[Constants.DATE]),
           description: notification.data[Constants.DESCRIPTION],
           authorId: notification.data[Constants.AUTHOR_ID],
           type: notification.data[Constants.TYPE],
@@ -51,12 +53,15 @@ class NotificationsProvider with ChangeNotifier {
     }
   }
 
+  // function whichs returns lists of notifications.
   List<NotificationModel> getAllNotifications() {
     return [..._notifications];
   }
 
-   Future<void> addNotification(String residentAssociationId, NotificationModel notification) async {
-      try {
+  // function whichs adds notification to a resident association.
+  Future<void> addNotification(
+      String residentAssociationId, NotificationModel notification) async {
+    try {
       final response = await _associationRef
           .document(residentAssociationId)
           .collection(Constants.NOTIFICATIONS_COLLECTION)
@@ -81,5 +86,4 @@ class NotificationsProvider with ChangeNotifier {
       throw (error);
     }
   }
-
 }
