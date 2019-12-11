@@ -29,8 +29,21 @@ class _MessageHandlerState extends State<MessageHandler> {
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-        residentAssociationId = message['data']['residentAssociationId'];
-        switch (message['data']['type']) {
+
+        print('onmessage: $message');
+
+        final snackbar = SnackBar(
+          duration: const Duration(seconds: 10),
+          content: Text(
+            message['notification']['title'],
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.yellow[200],
+        );
+        Scaffold.of(context).showSnackBar(snackbar);
+
+       residentAssociationId = message['data']['residentAssociationId'];
+       switch (message['data']['type']) {
           case (Constants.ADDED_MEETING):
             {
               Provider.of<MeetingsProvider>(context)
@@ -66,16 +79,6 @@ class _MessageHandlerState extends State<MessageHandler> {
             }
             break;
         }
-
-        final snackbar = SnackBar(
-          duration: const Duration(seconds: 10),
-          content: Text(
-            message['notification']['title'],
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.yellow[200],
-        );
-        Scaffold.of(context).showSnackBar(snackbar);
       },
     );
   }

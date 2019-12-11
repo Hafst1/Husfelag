@@ -112,7 +112,8 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
                   _deleteResidentAssociation();
                 } else {
                   _printErrorDialog(
-                      'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini meðlimur húsfélagins með admin réttindi!\n\nVeittu öðrum meðlimi admin réttindi og reyndu aftur.');
+                      'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini stjórnandi húsfélagins!\n\n'
+                      'Gerður annan meðlim að stjórnanda og reyndu aftur.');
                 }
               } else {
                 _leaveResidentAssociation(apartment);
@@ -183,12 +184,12 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     final user = userData.getResident(userId);
     try {
       if (user.id.isEmpty) {
-        await _printErrorDialog('Ekki tókst að veita meðlimi admin réttindi!');
+        await _printErrorDialog('Ekki tókst að gera meðlim að stjórnanda!');
         return;
       }
       await userData.makeUserAdmin(user);
     } catch (error) {
-      await _printErrorDialog('Ekki tókst að veita meðlimi admin réttindi!');
+      await _printErrorDialog('Ekki tókst að gera meðlim að stjórnanda!');
     }
     try {
       await Provider.of<NotificationsProvider>(context, listen: false)
@@ -220,7 +221,7 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
       final apartment = associationsData.getApartmentByNumber(apartmentNumber);
       await associationsData.kickUser(user, apartment);
     } catch (error) {
-      await _printErrorDialog('Ekki tókst að sparka meðlimi úr húsfélaginu!');
+      await _printErrorDialog('Ekki tókst að fjarlægja meðlim úr húsfélaginu!');
     }
     setState(() {
       _isLoadingAssociation = false;
@@ -235,7 +236,7 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
       builder: (ctx) => AlertDialog(
         title: Text('Brottrekstur'),
         content: Text(
-            'Ertu viss um að þú viljir sparka tilteknum meðlimi úr húsfélaginu?'),
+            'Ertu viss um að þú viljir fjarlægja meðlim úr húsfélaginu?'),
         actions: <Widget>[
           FlatButton(
             child: Text(
