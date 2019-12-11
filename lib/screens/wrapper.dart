@@ -61,7 +61,6 @@ class Wrapper extends StatelessWidget {
                   : AssociationOptionsScreen();
             default:
               if (snapshot.hasError) {
-                // Gera eittvað error page með valmöguleikum um framhald..
                 return ErrorScreen();
               }
               return ErrorScreen();

@@ -179,7 +179,6 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     setState(() {
       _isLoadingAssociation = true;
     });
-
     final userData = Provider.of<AssociationsProvider>(context);
     final user = userData.getResident(userId);
     try {
