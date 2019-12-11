@@ -8,8 +8,12 @@ import '../models/document.dart';
 import '../shared/constants.dart' as Constants;
 
 class DocumentsProvider with ChangeNotifier {
-  List<Document> _documents = [];
-  List<Folder> _folders = [];
+  // list containing documents of a specific folder.
+  @visibleForTesting
+  List<Document> documents = [];
+  // list of folders of a resident association.
+  @visibleForTesting
+  List<Folder> folders = [];
 
   // collection reference to the resident associations.
   CollectionReference _associationRef =
@@ -40,7 +44,7 @@ class DocumentsProvider with ChangeNotifier {
           authorId: document.data[Constants.AUTHOR_ID],
         ));
       });
-      _documents = loadedDocuments;
+      documents = loadedDocuments;
       notifyListeners();
     } catch (error) {}
   }
@@ -77,7 +81,7 @@ class DocumentsProvider with ChangeNotifier {
         Constants.FOLDER_ID: document.folderId,
         Constants.AUTHOR_ID: document.authorId,
       });
-      _documents.add(Document(
+      documents.add(Document(
         id: response.documentID,
         title: document.title,
         fileName: document.fileName,
@@ -98,9 +102,9 @@ class DocumentsProvider with ChangeNotifier {
     String fileName,
   ) async {
     final deleteIndex =
-        _documents.indexWhere((document) => document.id == documentId);
-    var deletedDocument = _documents[deleteIndex];
-    _documents.removeAt(deleteIndex);
+        documents.indexWhere((document) => document.id == documentId);
+    var deletedDocument = documents[deleteIndex];
+    documents.removeAt(deleteIndex);
     notifyListeners();
     try {
       await _storageRef.child(fileName).delete();
@@ -113,7 +117,7 @@ class DocumentsProvider with ChangeNotifier {
           .delete();
       deletedDocument = null;
     } catch (error) {
-      _documents.insert(deleteIndex, deletedDocument);
+      documents.insert(deleteIndex, deletedDocument);
       notifyListeners();
     }
   }
@@ -125,11 +129,11 @@ class DocumentsProvider with ChangeNotifier {
     String oldFolderId,
   ) async {
     final documentIndex =
-        _documents.indexWhere((document) => document.id == editedDocument.id);
+        documents.indexWhere((document) => document.id == editedDocument.id);
     // move file from one folder to another.
     if (editedDocument.folderId != oldFolderId) {
       if (documentIndex >= 0) {
-        _documents.removeAt(documentIndex);
+        documents.removeAt(documentIndex);
       }
       try {
         await _associationRef
@@ -158,7 +162,7 @@ class DocumentsProvider with ChangeNotifier {
       // update file in current folder.
     } else {
       if (documentIndex >= 0) {
-        _documents[documentIndex] = editedDocument;
+        documents[documentIndex] = editedDocument;
       }
       try {
         await _associationRef
@@ -174,7 +178,7 @@ class DocumentsProvider with ChangeNotifier {
           Constants.FOLDER_ID: editedDocument.folderId,
           Constants.AUTHOR_ID: editedDocument.authorId,
         });
-        _documents.sort((a, b) => a.title.compareTo(b.title));
+        documents.sort((a, b) => a.title.compareTo(b.title));
         notifyListeners();
       } catch (error) {
         throw (error);
@@ -185,19 +189,19 @@ class DocumentsProvider with ChangeNotifier {
   // function which returns a document which has the id taken in as
   // parameter, if found.
   Document findDocumentById(String id) {
-    return _documents.firstWhere((document) => document.id == id);
+    return documents.firstWhere((document) => document.id == id);
   }
 
   // function which returns a list of document which contain the
   // folderId and/or search query
-  List<Document> filteredItems(String query, String folderId) {
-    List<Document> documents = [..._documents];
+  List<Document> filteredItems(String query) {
+    List<Document> documentsList = [...documents];
     String searchQuery = query.toLowerCase();
     List<Document> displayList = [];
     if (query.isEmpty) {
-      return documents;
+      return documentsList;
     }
-    documents.forEach((document) {
+    documentsList.forEach((document) {
       if (document.title.toLowerCase().contains(searchQuery)) {
         displayList.add(document);
       }
@@ -219,8 +223,8 @@ class DocumentsProvider with ChangeNotifier {
         id: response.documentID,
         title: folderTitle,
       );
-      _folders.add(newFolder);
-      _folders.sort((a, b) => a.title.compareTo(b.title));
+      folders.add(newFolder);
+      folders.sort((a, b) => a.title.compareTo(b.title));
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -243,7 +247,7 @@ class DocumentsProvider with ChangeNotifier {
           title: folder.data[Constants.TITLE],
         ));
       });
-      _folders = loadedFolders;
+      folders = loadedFolders;
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -255,12 +259,12 @@ class DocumentsProvider with ChangeNotifier {
     String residentAssociationId,
     String folderId,
   ) async {
-    final deleteIndex = _folders.indexWhere((folder) => folder.id == folderId);
-    var deletedFolder = _folders[deleteIndex];
-    _folders.removeAt(deleteIndex);
+    final deleteIndex = folders.indexWhere((folder) => folder.id == folderId);
+    var deletedFolder = folders[deleteIndex];
+    folders.removeAt(deleteIndex);
     notifyListeners();
     try {
-      [..._documents].forEach((document) async {
+      [...documents].forEach((document) async {
         try {
           await deleteDocument(
             residentAssociationId,
@@ -279,21 +283,21 @@ class DocumentsProvider with ChangeNotifier {
           .delete();
       deletedFolder = null;
     } catch (error) {
-      _folders.insert(deleteIndex, deletedFolder);
+      folders.insert(deleteIndex, deletedFolder);
       notifyListeners();
     }
   }
 
   // function which returns all folders
   List<Folder> getAllFolders() {
-    return [..._folders];
+    return [...folders];
   }
 
   // function which checks if folder title already exists
   bool folderTitleExists(String folderTitle) {
     final searchQuery = folderTitle.toLowerCase();
     bool exists = false;
-    for (final folder in [..._folders]) {
+    for (final folder in [...folders]) {
       if (folder.title.toLowerCase().compareTo(searchQuery) == 0) {
         exists = true;
         break;
@@ -304,11 +308,11 @@ class DocumentsProvider with ChangeNotifier {
 
   // function which returns a folder by it's id
   Folder findFolderById(String id) {
-    return _folders.firstWhere((folder) => folder.id == id);
+    return folders.firstWhere((folder) => folder.id == id);
   }
 
   // function which returns the number of folders in the association
   int numberOfFolders() {
-    return _folders.length;
+    return folders.length;
   }
 }

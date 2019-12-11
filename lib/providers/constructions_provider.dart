@@ -7,7 +7,10 @@ import '../shared/constants.dart' as Constants;
 enum ConstructionStatus { current, ahead, old }
 
 class ConstructionsProvider with ChangeNotifier {
-  List<Construction> _constructions = [];
+
+  // list of constructions for a resident association.
+  @visibleForTesting
+  List<Construction> constructions = [];
 
   // collection reference to the resident associations.
   CollectionReference _associationRef =
@@ -34,7 +37,7 @@ class ConstructionsProvider with ChangeNotifier {
           authorId: construction.data[Constants.AUTHOR_ID],
         ));
       });
-      _constructions = loadedConstructions;
+      constructions = loadedConstructions;
       sortConstructions();
       notifyListeners();
     } catch (error) {
@@ -64,7 +67,7 @@ class ConstructionsProvider with ChangeNotifier {
         authorId: construction.authorId,
         id: response.documentID,
       );
-      _constructions.add(newConstruction);
+      constructions.add(newConstruction);
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -74,10 +77,10 @@ class ConstructionsProvider with ChangeNotifier {
   // function which deletes a construction from a resident association.
   Future<void> deleteConstruction(
       String residentAssociationId, String constructionId) async {
-    final deleteIndex = _constructions
+    final deleteIndex = constructions
         .indexWhere((construction) => construction.id == constructionId);
-    var deletedConstruction = _constructions[deleteIndex];
-    _constructions.removeAt(deleteIndex);
+    var deletedConstruction = constructions[deleteIndex];
+    constructions.removeAt(deleteIndex);
     notifyListeners();
     try {
       await _associationRef
@@ -87,7 +90,7 @@ class ConstructionsProvider with ChangeNotifier {
           .delete();
       deletedConstruction = null;
     } catch (error) {
-      _constructions.insert(deleteIndex, deletedConstruction);
+      constructions.insert(deleteIndex, deletedConstruction);
       notifyListeners();
     }
   }
@@ -95,7 +98,7 @@ class ConstructionsProvider with ChangeNotifier {
   // function which returns a construction which has the id taken in as
   // parameter, if found.
   Construction findById(String id) {
-    return _constructions.firstWhere((construction) => construction.id == id);
+    return constructions.firstWhere((construction) => construction.id == id);
   }
 
   // function which updates a construction in a resident association.
@@ -113,11 +116,11 @@ class ConstructionsProvider with ChangeNotifier {
         Constants.DESCRIPTION: editedConstruction.description,
         Constants.AUTHOR_ID: editedConstruction.authorId,
       });
-      final constructionIndex = _constructions.indexWhere(
+      final constructionIndex = constructions.indexWhere(
           (construction) => construction.id == editedConstruction.id);
       if (constructionIndex >= 0) {
-        final oldConstruction = _constructions[constructionIndex];
-        _constructions[constructionIndex] = editedConstruction;
+        final oldConstruction = constructions[constructionIndex];
+        constructions[constructionIndex] = editedConstruction;
 
         // if the either of the dates have changed we have to sort the list again.
         if (oldConstruction.dateFrom != editedConstruction.dateFrom ||
@@ -132,7 +135,7 @@ class ConstructionsProvider with ChangeNotifier {
   }
 
   // functions which filters constructions whether they are ahead, old or currently taking place.
-  bool _constructionStatusFilter(
+  bool constructionStatusFilter(
       int filterIndex, DateTime dateFrom, DateTime dateTo) {
     ConstructionStatus status = ConstructionStatus.values[filterIndex];
     DateTime exactDate = DateTime.now();
@@ -157,13 +160,13 @@ class ConstructionsProvider with ChangeNotifier {
   // function which return a list of construction which contain the search query and
   // match a given status filter (ahead, current or old).
   List<Construction> filteredItems(String query, int filterIndex) {
-    List<Construction> constructions = [..._constructions];
+    List<Construction> constructionsList = [...constructions];
     String searchQuery = query.toLowerCase();
     List<Construction> displayList = [];
     if (query.isNotEmpty) {
-      constructions.forEach((item) {
+      constructionsList.forEach((item) {
         if (item.title.toLowerCase().contains(searchQuery) &&
-            _constructionStatusFilter(
+            constructionStatusFilter(
               filterIndex,
               item.dateFrom,
               item.dateTo,
@@ -172,8 +175,8 @@ class ConstructionsProvider with ChangeNotifier {
         }
       });
     } else {
-      constructions.forEach((item) {
-        if (_constructionStatusFilter(
+      constructionsList.forEach((item) {
+        if (constructionStatusFilter(
           filterIndex,
           item.dateFrom,
           item.dateTo,
@@ -188,7 +191,7 @@ class ConstructionsProvider with ChangeNotifier {
   // function which sorts the constructions list by the dateFrom property, if
   // equal the items are sorted by the dateTo property.
   void sortConstructions() {
-    _constructions.sort(
+    constructions.sort(
       (a, b) => a.dateFrom.compareTo(b.dateFrom) == 0
           ? a.dateTo.compareTo(b.dateTo)
           : a.dateFrom.compareTo(b.dateFrom),
@@ -197,6 +200,6 @@ class ConstructionsProvider with ChangeNotifier {
 
   // function which returns all constructions.
   List<Construction> getAllConstructions() {
-    return [..._constructions];
+    return [...constructions];
   }
 }
