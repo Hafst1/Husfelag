@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
 
 import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
@@ -164,25 +163,26 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final platform = Theme.of(context).platform;
     final currentUserData =
         Provider.of<CurrentUserProvider>(context, listen: false);
     final residentAssociationId = currentUserData.getResidentAssociationId();
     final userId = currentUserData.getId();
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = AppBar(
-        title: Text(_initValues['appbar-title']),
-        centerTitle: true,
-        actions: <Widget>[
-          Platform.isIOS
-              ? IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    _saveForm(residentAssociationId);
-                  })
-              : Container(),
-        ],
-      );
+      title: Text(_initValues['appbar-title']),
+      centerTitle: true,
+      actions: <Widget>[
+        platform == TargetPlatform.iOS
+            ? IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  _saveForm(residentAssociationId);
+                })
+            : Container(),
+      ],
+    );
     final heightOfBody = mediaQuery.size.height -
         mediaQuery.padding.top -
         appBar.preferredSize.height -
@@ -211,8 +211,9 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                               fillColor: Colors.white,
                               hintText: 'Íbúð...',
                               prefixIcon: Icon(Icons.home),
-                              prefixText:
-                                  _apartmentController.text != '' ? 'Íbúð: ' : '',
+                              prefixText: _apartmentController.text != ''
+                                  ? 'Íbúð: '
+                                  : '',
                             ),
                             validator: (value) {
                               if (value.isEmpty) {
@@ -322,7 +323,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                       SizedBox(
                         height: 15,
                       ),
-                      Platform.isAndroid
+                      platform == TargetPlatform.android
                           ? SaveButton(
                               text: _initValues['save-text'],
                               saveFunc: () => _saveForm(residentAssociationId),

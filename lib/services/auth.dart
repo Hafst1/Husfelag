@@ -59,13 +59,11 @@ class AuthService {
   Future<void> changePassword(String password) async {
     //Create an instance of the current user.
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
-
-    // Pass in the password to updatePassword.
     try {
       await user.updatePassword(password);
     } on Exception catch (error) {
       print('Password can\'t be changed' + error.toString());
-      return null;
+      throw (error);
     }
   }
 
@@ -75,7 +73,7 @@ class AuthService {
       await _auth.sendPasswordResetEmail(email: email);
     } catch (error) {
       print(error.toString());
-      return null;
+      throw (error);
     }
   }
   
@@ -89,14 +87,15 @@ class AuthService {
     }
   }
 
+  // delete user from authentication in firebase
   Future deleteUser() async{
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
     try {
       user.delete();
-      
-    } catch (error) {
+    } on Exception catch (error) {
       print(error.toString());
+      throw (error);
     }
   }
 }
