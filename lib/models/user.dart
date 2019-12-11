@@ -24,6 +24,6 @@ class UserData {
     @required this.residentAssociationId,
     @required this.apartmentId,
     @required this.isAdmin,
-    this.userToken,
+    @required this.userToken,
   });
 }
