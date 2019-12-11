@@ -48,7 +48,7 @@ class CurrentUserProvider with ChangeNotifier {
   }
 
   // let functions that listens to current user update current user
-  currentUserNotifyListeners(){
+  triggerCurrentUserRefresh(){
     notifyListeners();
   }
 

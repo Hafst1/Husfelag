@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'tabs_screen.dart';
+import '../providers/notification_provider.dart';
+import '../screens/error_screen.dart';
 import '../models/user.dart';
 import '../providers/constructions_provider.dart';
 import '../providers/meetings_provider.dart';
@@ -53,7 +54,7 @@ class Wrapper extends StatelessWidget {
                           value: NotificationsProvider(),
                         )
                       ],
-                      child: TabsScreen(),
+                       child: TabsScreen(),
                     )
                   // send user to page where he can create or join a resident assocation
                   // if he doesn't contain resident association number
@@ -61,9 +62,9 @@ class Wrapper extends StatelessWidget {
             default:
               if (snapshot.hasError) {
                 // Gera eittvað error page með valmöguleikum um framhald..
-                return null;
+                return ErrorScreen();
               }
-              return null;
+              return ErrorScreen();
           }
         },
       );
