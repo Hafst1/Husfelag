@@ -183,7 +183,11 @@ class MapScreenState extends State<ProfilePage> {
                                                 (val) => setState(
                                                     () => _currentName = val),
                                                 _nameStatus,
-                                                _getNameEditIcon()),
+                                                _getEditIcon(() {
+                                                  setState(() {
+                                                    _nameStatus = false;
+                                                  });
+                                                })),
                                             if (!_nameStatus)
                                               Padding(
                                                 padding: EdgeInsets.only(
@@ -248,7 +252,11 @@ class MapScreenState extends State<ProfilePage> {
                                                 (val) => setState(
                                                     () => _currentEmail = val),
                                                 _emailStatus,
-                                                _getEmailEditIcon()),
+                                                _getEditIcon(() {
+                                                  setState(() {
+                                                    _emailStatus = false;
+                                                  });
+                                                })),
                                             if (!_emailStatus)
                                               Padding(
                                                 padding: EdgeInsets.only(
@@ -347,7 +355,11 @@ class MapScreenState extends State<ProfilePage> {
                                                   Column(
                                                     children: <Widget>[
                                                       _passwordStatus
-                                                          ? _getPasswordEditIcon()
+                                                          ? _getEditIcon(() {
+                                                              setState(() {
+                                                                _passwordStatus = false;
+                                                              });
+                                                            })
                                                           : Container(),
                                                     ],
                                                   )
@@ -421,7 +433,7 @@ class MapScreenState extends State<ProfilePage> {
         });
   }
 
-  Widget _getNameEditIcon() {
+    Widget _getEditIcon(Function getState) {
     return GestureDetector(
         child: CircleAvatar(
           backgroundColor: Colors.blue,
@@ -432,47 +444,8 @@ class MapScreenState extends State<ProfilePage> {
             size: 16.0,
           ),
         ),
-        onTap: () {
-          setState(() {
-            _nameStatus = false;
-          });
-        });
-  }
-
-  Widget _getEmailEditIcon() {
-    return GestureDetector(
-        child: CircleAvatar(
-          backgroundColor: Colors.blue,
-          radius: 14.0,
-          child: Icon(
-            Icons.edit,
-            color: Colors.white,
-            size: 16.0,
-          ),
-        ),
-        onTap: () {
-          setState(() {
-            _emailStatus = false;
-          });
-        });
-  }
-
-  Widget _getPasswordEditIcon() {
-    return GestureDetector(
-        child: CircleAvatar(
-          backgroundColor: Colors.blue,
-          radius: 14.0,
-          child: Icon(
-            Icons.edit,
-            color: Colors.white,
-            size: 16.0,
-          ),
-        ),
-        onTap: () {
-          setState(() {
-            _passwordStatus = false;
-          });
-        });
+        onTap: getState,
+      );
   }
 
   Widget _deleteButton() {
