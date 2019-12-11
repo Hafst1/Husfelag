@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:husfelagid/providers/notification_provider.dart';
+import 'package:husfelagid/screens/error_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'tabs_screen.dart';
@@ -61,7 +62,7 @@ class Wrapper extends StatelessWidget {
             default:
               if (snapshot.hasError) {
                 // Gera eittvað error page með valmöguleikum um framhald..
-                return null;
+                return ErrorScreen();
               }
               return null;
           }
