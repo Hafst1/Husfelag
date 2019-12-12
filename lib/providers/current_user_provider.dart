@@ -55,7 +55,8 @@ class CurrentUserProvider with ChangeNotifier {
   // functions which makes the current user leave the resident association
   // he is registered in. If the user is the only resident in his apartment
   // then the apartment is deleted as well.
-  Future<void> leaveResidentAssociation(Apartment apartment) async {
+  Future<void> leaveResidentAssociation(
+      Apartment apartment, bool deleteUser) async {
     try {
       if (apartment.residents.length <= 1) {
         await _associationsRef
@@ -77,14 +78,18 @@ class CurrentUserProvider with ChangeNotifier {
           Constants.RESIDENTS: updatedResidentsList,
         });
       }
-      await DatabaseService(uid: currentUser.id).updateUserData(
-        currentUser.name,
-        currentUser.email,
-        '',
-        '',
-        false,
-        currentUser.userToken,
-      );
+      if (deleteUser) {
+        // ...
+      } else {
+        await DatabaseService(uid: currentUser.id).updateUserData(
+          currentUser.name,
+          currentUser.email,
+          '',
+          '',
+          false,
+          currentUser.userToken,
+        );
+      }
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -92,7 +97,7 @@ class CurrentUserProvider with ChangeNotifier {
   }
 
   // function which deletes a resident association.
-  Future<void> deleteResidentAssociation() async {
+  Future<void> deleteResidentAssociation(bool deleteUser) async {
     try {
       // delete own apartment which is the only apartment left.
       await _associationsRef
@@ -207,15 +212,20 @@ class CurrentUserProvider with ChangeNotifier {
           .document(currentUser.residentAssociationId)
           .delete();
 
-      // update user information.
-      await DatabaseService(uid: currentUser.id).updateUserData(
-        currentUser.name,
-        currentUser.email,
-        '',
-        '',
-        false,
-        currentUser.userToken,
-      );
+      if (deleteUser) {
+        // ...
+      } else {
+        // update user information.
+        await DatabaseService(uid: currentUser.id).updateUserData(
+          currentUser.name,
+          currentUser.email,
+          '',
+          '',
+          false,
+          currentUser.userToken,
+        );
+      }
+
       notifyListeners();
     } catch (error) {
       throw (error);
