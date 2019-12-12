@@ -26,6 +26,8 @@ class CleaningListItem extends StatelessWidget {
     @required this.isAuthor,
   });
 
+  // function which presents an action dialog where you can choose to
+  // edit or delete item.
   void _showActionDialog(BuildContext context) {
     showDialog(
       context: context,

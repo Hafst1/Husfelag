@@ -21,6 +21,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // fetch all cleaning items which are to be displayed in the list.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -47,6 +48,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     super.didChangeDependencies();
   }
 
+  // functions which presents an error dialog.
   void _printErrorDialog() {
     showDialog(
       context: context,
@@ -65,6 +67,7 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     );
   }
 
+  // functions which refreshes and fetches the newest update of cleaning items.
   Future<void> _refreshCleaningItems(
       String residentAssociationId, BuildContext context) async {
     try {
@@ -75,18 +78,21 @@ class _CleaningListScreenState extends State<CleaningListScreen> {
     }
   }
 
+  // function which updates the selected index filter.
   _selectFilter(int index) {
     setState(() {
       _selectedFilterIndex = index;
     });
   }
 
+  // function which updates the search query.
   _changeSearchQuery(String query) {
     setState(() {
       _searchQuery = query;
     });
   }
 
+  // function which clears the text in the search bar.
   _onClear() {
     setState(() {
       _searchQuery = "";

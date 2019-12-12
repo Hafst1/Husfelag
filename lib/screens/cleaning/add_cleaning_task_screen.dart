@@ -32,6 +32,8 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // if we are editing a cleaning task we fill the textfield with the values
+  // of the cleaning task which is to be updated.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -53,6 +55,7 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
     super.didChangeDependencies();
   }
 
+  // function which validates the form, and adds it to database if valid.
   void _saveForm() async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
@@ -70,14 +73,14 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
         await Provider.of<CleaningProvider>(context, listen: false)
             .updateCleaningTaskItem(residentAssociationId, _cleaningTaskItem);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að breyta verkefni!');
+        await _printErrorDialog('Ekki tókst að breyta verkefni!');
       }
     } else {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
             .addCleaningTaskItem(residentAssociationId, _cleaningTaskItem);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að bæta við verkefni!');
+        await _printErrorDialog('Ekki tókst að bæta við verkefni!');
       }
     }
     setState(() {
@@ -86,7 +89,8 @@ class _AddCleaningTaskScreenState extends State<AddCleaningTaskScreen> {
     Navigator.of(context).pop();
   }
 
-  Future<void> printErrorDialog(String errorMessage) {
+  // function which prints an error dialog.
+  Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
