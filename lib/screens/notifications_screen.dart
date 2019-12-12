@@ -18,6 +18,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // fetch the notifications to be displayed when widget is built.
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {

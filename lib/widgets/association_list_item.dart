@@ -27,12 +27,15 @@ class _AssociationListItemState extends State<AssociationListItem> {
   final _form = GlobalKey<FormState>();
   var _isPushed = false;
 
+  // function which presents a text field if item is pushed.
   _presentTextField() {
     setState(() {
       _isPushed = !_isPushed;
     });
   }
 
+  // function which validates the form and sends the id of the 
+  // association if the access code is correct.
   void _validateForm() {
     FocusScope.of(context).requestFocus(FocusNode());
     var isValid = _form.currentState.validate();

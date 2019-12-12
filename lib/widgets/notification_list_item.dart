@@ -23,7 +23,7 @@ class NotificationItem extends StatelessWidget {
         style: Theme.of(context).textTheme.title,
       ),
       onTap: () {
-        Counter.listItemCounter = 0;  ///athuga
+        Counter.listItemCounter = 0;
       },
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
