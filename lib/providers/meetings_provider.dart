@@ -12,14 +12,14 @@ class MeetingsProvider with ChangeNotifier {
   List<Meeting> meetings = [];
 
   // collection reference to the resident associations.
-  CollectionReference _associationRef =
-      Firestore.instance.collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION);
+  final _associationRef = Firestore.instance;
 
   // function which fetches meetings from a resident association and stores
   // them in the _meetings list.
   Future<void> fetchMeetings(String residentAssociationId) async {
     try {
       final response = await _associationRef
+          .collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION)
           .document(residentAssociationId)
           .collection(Constants.MEETINGS_COLLECTION)
           .orderBy(Constants.DATE)
@@ -48,6 +48,7 @@ class MeetingsProvider with ChangeNotifier {
   Future<void> addMeeting(String residentAssociationId, Meeting meeting) async {
     try {
       final response = await _associationRef
+          .collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION)
           .document(residentAssociationId)
           .collection(Constants.MEETINGS_COLLECTION)
           .add({
@@ -84,6 +85,7 @@ class MeetingsProvider with ChangeNotifier {
     notifyListeners();
     try {
       await _associationRef
+          .collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION)
           .document(residentAssociationId)
           .collection(Constants.MEETINGS_COLLECTION)
           .document(meetingId)
@@ -105,6 +107,7 @@ class MeetingsProvider with ChangeNotifier {
       String residentAssociationId, Meeting editedMeeting) async {
     try {
       await _associationRef
+          .collection(Constants.RESIDENT_ASSOCIATIONS_COLLECTION)
           .document(residentAssociationId)
           .collection(Constants.MEETINGS_COLLECTION)
           .document(editedMeeting.id)
