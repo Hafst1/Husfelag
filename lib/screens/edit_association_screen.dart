@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 
 import '../providers/association_provider.dart';
 import '../models/resident_association.dart';
@@ -75,12 +74,13 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final platform = Theme.of(context).platform;
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
       title: Text('Breyta upplýsingum'),
       centerTitle: true,
       actions: <Widget>[
-        Platform.isIOS
+        platform == TargetPlatform.iOS
             ? IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
@@ -161,10 +161,12 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
                       SizedBox(
                         height: 15,
                       ),
-                      SaveButton(
-                        text: 'BREYTA',
-                        saveFunc: _saveForm,
-                      ),
+                      platform == TargetPlatform.android
+                          ? SaveButton(
+                              text: 'BREYTA',
+                              saveFunc: _saveForm,
+                            )
+                          : Container(),
                     ],
                   ),
                 ),
