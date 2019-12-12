@@ -23,6 +23,7 @@ final date2 = DateFormat.yMMMMEEEEd()
     .toString();
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('add cleaning form testing:', () {
     testWidgets('should display error messages on no input',
         (WidgetTester tester) async {

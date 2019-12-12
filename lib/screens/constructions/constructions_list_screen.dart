@@ -22,6 +22,7 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // fetch constructions to be displayed in the list.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -48,6 +49,7 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
     super.didChangeDependencies();
   }
 
+  // function which presents an error dialog.
   void _printErrorDialog() {
     showDialog(
       context: context,
@@ -66,6 +68,7 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
     );
   }
 
+  // function which refreshes the list of constructions.
   Future<void> _refreshConstructions(
       String residentAssociationId, BuildContext context) async {
     try {
@@ -76,18 +79,21 @@ class _ConstructionsListScreenState extends State<ConstructionsListScreen> {
     }
   }
 
+  // function which updates the selected filter.
   _selectFilter(int index) {
     setState(() {
       _selectedFilterIndex = index;
     });
   }
 
+  // function which updates the search query.
   _changeSearchQuery(String query) {
     setState(() {
       _searchQuery = query;
     });
   }
 
+  // function which clears the search bar.
   _onClear() {
     setState(() {
       _searchQuery = "";

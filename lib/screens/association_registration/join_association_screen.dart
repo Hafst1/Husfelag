@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 
 import '../../providers/current_user_provider.dart';
 import '../../providers/association_provider.dart';
@@ -253,7 +252,9 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
         title: Text('Ganga í húsfélag'),
         centerTitle: true,
         actions: <Widget>[
-          (Platform.isIOS && _showApartmentSection && _selectedChoiceIndex == 0)
+          (Theme.of(context).platform == TargetPlatform.iOS &&
+                  _showApartmentSection &&
+                  _selectedChoiceIndex == 0)
               ? IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
@@ -399,7 +400,7 @@ class _JoinAssociationScreenState extends State<JoinAssociationScreen> {
                 SizedBox(
                   height: 10,
                 ),
-                Platform.isAndroid
+                Theme.of(context).platform == TargetPlatform.android
                     ? SaveButton(
                         text: 'BÆTA VIÐ',
                         saveFunc: _validateForm,

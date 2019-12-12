@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 
 import '../../models/resident_association.dart';
 import '../../models/apartment.dart';
@@ -183,6 +182,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var platform = Theme.of(context).platform;
     final currentUser = Provider.of<CurrentUserProvider>(context).getUser();
     final associationsData = Provider.of<AssociationsProvider>(context);
     final mediaQuery = MediaQuery.of(context);
@@ -190,7 +190,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
       title: Text('Stofna húsfélag'),
       centerTitle: true,
       actions: <Widget>[
-        Platform.isIOS
+        platform == TargetPlatform.iOS
             ? IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
@@ -344,7 +344,7 @@ class _CreateAssociationScreenState extends State<CreateAssociationScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Platform.isAndroid
+                      platform == TargetPlatform.android
                           ? SaveButton(
                               text: 'STOFNA',
                               saveFunc: () => _saveForm(currentUser),

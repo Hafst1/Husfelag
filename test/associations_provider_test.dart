@@ -63,6 +63,7 @@ final apartment2 = Apartment(
 );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('resident testing:', () {
     test('should return empty list of residents', () {
       expect(AssociationsProvider().getResidentsOfAssociation(), []);

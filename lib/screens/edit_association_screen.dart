@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 
 import '../providers/association_provider.dart';
 import '../models/resident_association.dart';
@@ -24,6 +23,7 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // get the values of the association to be edited which is passed through arguments.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -34,6 +34,7 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
     super.didChangeDependencies();
   }
 
+  // functions which prints an error dialog.
   Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
@@ -52,6 +53,8 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
     );
   }
 
+  // function which validates the form and updates the association information
+  // if the input is valid.
   void _saveForm() async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
@@ -75,12 +78,13 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final platform = Theme.of(context).platform;
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
       title: Text('Breyta upplýsingum'),
       centerTitle: true,
       actions: <Widget>[
-        Platform.isIOS
+        platform == TargetPlatform.iOS
             ? IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
@@ -161,10 +165,12 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
                       SizedBox(
                         height: 15,
                       ),
-                      SaveButton(
-                        text: 'BREYTA',
-                        saveFunc: _saveForm,
-                      ),
+                      platform == TargetPlatform.android
+                          ? SaveButton(
+                              text: 'BREYTA',
+                              saveFunc: _saveForm,
+                            )
+                          : Container(),
                     ],
                   ),
                 ),
