@@ -526,6 +526,9 @@ class MapScreenState extends State<ProfilePage> {
         });
   }
 
+
+
+
   Widget _getNameEditIcon() {
     return GestureDetector(
         child: CircleAvatar(
