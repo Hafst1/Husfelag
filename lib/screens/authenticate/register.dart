@@ -153,7 +153,7 @@ class _RegisterState extends State<Register> {
                             SizedBox(
                               height: 60,
                             ),
-                            buildButton(),
+                            _buildButton(),
                             SizedBox(
                               height: 20,
                             ),
@@ -204,7 +204,8 @@ class _RegisterState extends State<Register> {
           );
   }
 
-  Widget buildButton() {
+  // a button that activates the register user with firebase
+  Widget _buildButton() {
     return GestureDetector(
       onTap: () async {
         if (_formKey.currentState.validate()) {

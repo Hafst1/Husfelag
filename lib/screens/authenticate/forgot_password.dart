@@ -61,7 +61,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     SizedBox(
                       height: 20,
                     ),
-                    buildButton(),
+                    _buildButton(),
                     SizedBox(
                       height: 20,
                     ),
@@ -81,12 +81,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-  Widget buildButton() {
+  // button that activates the send password reset email to the email that is given
+  Widget _buildButton() {
     return GestureDetector(
       onTap: () async {
         if (_formKey.currentState.validate()) {
           await _auth.sendPasswordResetEmail(_email);
-
           _popupDialog(context);
         }
       },
@@ -110,6 +110,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
+  // a pop up dialog that notifies the user that the email has been sent
   void _popupDialog(BuildContext context) {
     showDialog(
         context: context,
