@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/user.dart';
+import '../services/auth.dart';
 import '../shared/constants.dart' as Constants;
 
 class DatabaseService {
   final String uid;
   DatabaseService({this.uid});
 
+  final _auth = AuthService();
+
   // collection reference
-  final CollectionReference residentCollection =
+  final CollectionReference usersCollection =
       Firestore.instance.collection(Constants.USERS_COLLECTION);
 
   // update user data in firebase
@@ -20,7 +23,7 @@ class DatabaseService {
     bool isAdmin,
     String userToken,
   ) async {
-    return await residentCollection.document(uid).setData({
+    return await usersCollection.document(uid).setData({
       Constants.NAME: name,
       Constants.EMAIL: email,
       Constants.RESIDENT_ASSOCIATION_ID: residentAssociationNumber,
@@ -32,7 +35,12 @@ class DatabaseService {
 
   // delete user from database
   Future<void> deleteUserFromDB() async {
-    return await residentCollection.document(uid).delete();
+    try {
+      await usersCollection.document(uid).delete();
+      await _auth.deleteUser();
+    } catch (error) {
+      throw (error);
+    }
   }
 
   // user data from snapshot
@@ -50,9 +58,6 @@ class DatabaseService {
 
   // get user doc stream
   Stream<UserData> get userData {
-    return residentCollection
-        .document(uid)
-        .snapshots()
-        .map(_userDataFromSnapshot);
+    return usersCollection.document(uid).snapshots().map(_userDataFromSnapshot);
   }
 }

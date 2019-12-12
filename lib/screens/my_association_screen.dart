@@ -112,7 +112,7 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
                   _deleteResidentAssociation();
                 } else {
                   _printErrorDialog(
-                      'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini stjórnandi húsfélagins!\n\n'
+                      'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini stjórnandi húsfélagins!\n\n' +
                       'Gerður annan meðlim að stjórnanda og reyndu aftur.');
                 }
               } else {
@@ -137,7 +137,7 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     }
     try {
       await Provider.of<CurrentUserProvider>(context)
-          .leaveResidentAssociation(apartment);
+          .leaveResidentAssociation(apartment, false);
     } catch (error) {
       await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
     }
@@ -152,7 +152,7 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     });
     try {
       await Provider.of<CurrentUserProvider>(context)
-          .deleteResidentAssociation();
+          .deleteResidentAssociation(false);
     } catch (error) {
       await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
     }
