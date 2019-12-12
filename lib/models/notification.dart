@@ -18,3 +18,9 @@ class NotificationModel {
     @required this.type,
   });
 }
+
+class Counter {
+  static int notificationCounter;
+  static int prevCounter;
+  static int listItemCounter;
+}

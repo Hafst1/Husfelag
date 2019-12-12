@@ -32,8 +32,18 @@ class NotificationsProvider with ChangeNotifier {
           type: notification.data[Constants.TYPE],
         ));
       });
+      loadedNotifications.sort((b, a) => a.date.compareTo(b.date));
       _notifications = loadedNotifications;
       notifyListeners();
+      // get count of new notifications
+      if(Counter.prevCounter != null) {
+      Counter.notificationCounter = Counter.notificationCounter +
+         loadedNotifications.length - Counter.prevCounter; 
+      } else {
+        Counter.notificationCounter = 0;
+      }
+      Counter.listItemCounter = Counter.notificationCounter;
+      Counter.prevCounter = loadedNotifications.length;
     } catch (error) {
       showDialog(
         context: context,

@@ -1,11 +1,12 @@
+import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-import '../providers/constructions_provider.dart';
 import '../providers/current_user_provider.dart';
+import '../providers/constructions_provider.dart';
 import '../providers/meetings_provider.dart';
 import '../shared/constants.dart' as Constants;
 
@@ -20,6 +21,7 @@ class _MessageHandlerState extends State<MessageHandler> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<String> notificationMessages;
   String residentAssociationId;
+  String userId;
 
   @override
   void initState() {
@@ -29,18 +31,35 @@ class _MessageHandlerState extends State<MessageHandler> {
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
+        print('onmessage: $message');
+
+        final snackbar = SnackBar(
+          duration: const Duration(seconds: 5),
+          content: Text(
+            message['notification']['title'],
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.grey[200],
+        );
+        Scaffold.of(context).showSnackBar(snackbar);
+
         residentAssociationId = message['data']['residentAssociationId'];
+        userId = message['data']['id'];
         switch (message['data']['type']) {
           case (Constants.ADDED_MEETING):
             {
               Provider.of<MeetingsProvider>(context)
                   .fetchMeetings(residentAssociationId);
+              Provider.of<NotificationsProvider>(context)
+                  .fetchNotifications(residentAssociationId, context);
             }
             break;
           case (Constants.ADDED_CONSTRUCTION):
             {
               Provider.of<ConstructionsProvider>(context)
                   .fetchConstructions(residentAssociationId);
+              Provider.of<NotificationsProvider>(context)
+                  .fetchNotifications(residentAssociationId, context);
             }
             break;
           case (Constants.DELETED_MEETING):
@@ -57,25 +76,20 @@ class _MessageHandlerState extends State<MessageHandler> {
             break;
           case (Constants.MADE_ADMIN):
             {
-             Provider.of<CurrentUserProvider>(context).triggerCurrentUserRefresh();
+              FirebaseUser user = await _auth.currentUser();
+              if (user.uid == userId) {
+                Provider.of<CurrentUserProvider>(context)
+                    .triggerCurrentUserRefresh();
+              }
             }
             break;
           case (Constants.REMOVED_RESIDENT):
             {
-              Provider.of<CurrentUserProvider>(context).triggerCurrentUserRefresh();
+              Provider.of<CurrentUserProvider>(context)
+                  .triggerCurrentUserRefresh();
             }
             break;
         }
-
-        final snackbar = SnackBar(
-          duration: const Duration(seconds: 10),
-          content: Text(
-            message['notification']['title'],
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.yellow[200],
-        );
-        Scaffold.of(context).showSnackBar(snackbar);
       },
     );
   }

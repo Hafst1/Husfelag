@@ -5,6 +5,7 @@ import './../providers/notification_provider.dart';
 import './../shared/loading_spinner.dart';
 import './../widgets/notification_list_item.dart';
 import './../providers/current_user_provider.dart';
+import '../models/notification.dart';
 
 class NotificationScreen extends StatefulWidget {
   static const routeName = '/notifications';
@@ -65,13 +66,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: notifications.length,
-                      itemBuilder: (ctx, i) => NotificationItem(
-                        id: notifications[i].id,
-                        title: notifications[i].title,
-                        description: notifications[i].description,
-                        date: notifications[i].date,
+                    child: Container(
+                      color: Colors.white,
+                      child: ListView.builder(
+                        itemCount: notifications.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 5,
+                            ),
+                            elevation: 5,
+                            color: (i < Counter.listItemCounter)
+                                ? Color.fromRGBO(191, 212, 255, 1)
+                                : Colors.white,
+                            child: NotificationItem(
+                              id: notifications[i].id,
+                              title: notifications[i].title,
+                              description: notifications[i].description,
+                              date: notifications[i].date,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
