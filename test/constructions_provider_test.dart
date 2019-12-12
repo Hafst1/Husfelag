@@ -46,6 +46,7 @@ final construction3 = Construction(
 );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('constructions testing:', () {
     test('should return construction by id', () {
       final constructionsProvider = ConstructionsProvider();

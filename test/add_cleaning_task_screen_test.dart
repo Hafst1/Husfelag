@@ -7,6 +7,7 @@ import '../lib/providers/cleaning_provider.dart';
 import '../lib/providers/current_user_provider.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('add cleaning task form testing:', () {
     testWidgets('should display error messages on no input',
         (WidgetTester tester) async {
