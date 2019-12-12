@@ -40,15 +40,14 @@ class CurrentUserProvider with ChangeNotifier {
         isAdmin: fetchedUser[Constants.IS_ADMIN],
         userToken: fetchedUser[Constants.USER_TOKEN],
       );
-    
     } catch (error) {
-      //error handling vantar
+      // log the error instead of throwing it to futurebuilder.
       print(error);
     }
   }
 
-  // let functions that listens to current user update current user
-  triggerCurrentUserRefresh(){
+  // functions which rebuilds widgets listening to current user provider.
+  triggerCurrentUserRefresh() {
     notifyListeners();
   }
 

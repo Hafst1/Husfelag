@@ -5,7 +5,7 @@ import 'package:circular_check_box/circular_check_box.dart';
 import '../models/cleaning_task.dart';
 import '../providers/cleaning_provider.dart';
 import '../providers/current_user_provider.dart';
-import '../screens/cleaning/add_cleaningTask_screen.dart';
+import '../screens/cleaning/add_cleaning_task_screen.dart';
 import '../widgets/action_dialog.dart';
 import 'custom_icons_icons.dart';
 

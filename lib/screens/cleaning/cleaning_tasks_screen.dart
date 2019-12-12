@@ -5,7 +5,7 @@ import '../../providers/cleaning_provider.dart';
 import '../../providers/current_user_provider.dart';
 import '../../providers/association_provider.dart';
 import '../../widgets/cleaning_task_item.dart';
-import 'add_cleaningTask_screen.dart';
+import 'add_cleaning_task_screen.dart';
 import '../../shared/loading_spinner.dart';
 
 class CleaningTasksScreen extends StatefulWidget {

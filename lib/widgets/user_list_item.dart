@@ -139,7 +139,7 @@ class _UserListItemState extends State<UserListItem> {
                                       width: 10,
                                     ),
                                     Text(
-                                      'Veita stjórnanda réttindi',
+                                      'Gera að stjórnanda',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -172,7 +172,7 @@ class _UserListItemState extends State<UserListItem> {
                                       width: 12,
                                     ),
                                     Text(
-                                      'Fjarlægja úr húsfélagi',
+                                      'Fjarlægja meðlim',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),

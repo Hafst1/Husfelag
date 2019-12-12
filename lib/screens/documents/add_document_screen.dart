@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -160,6 +159,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final platform = Theme.of(context).platform;
     final currentUserData = Provider.of<CurrentUserProvider>(context);
     final residentAssociationId = currentUserData.getResidentAssociationId();
     final userId = currentUserData.getId();
@@ -170,7 +170,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
       title: Text(_initValues['appbar-title']),
       centerTitle: true,
       actions: <Widget>[
-        Platform.isIOS
+        platform == TargetPlatform.iOS
             ? IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
@@ -232,7 +232,6 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                                           : Center(
                                               child: Text(
                                                 _errorMessage,
-                                                // textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.redAccent[700],
                                                   fontSize: 12,
@@ -343,7 +342,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       SizedBox(
                         height: 25.0,
                       ),
-                      Platform.isAndroid
+                      platform == TargetPlatform.android
                           ? SaveButton(
                               text: _initValues['save-text'],
                               saveFunc: () => _saveForm(residentAssociationId),
