@@ -40,7 +40,7 @@ class NotificationsProvider with ChangeNotifier {
       Counter.notificationCounter = Counter.notificationCounter +
          loadedNotifications.length - Counter.prevCounter; 
       } else {
-        Counter.notificationCounter = loadedNotifications.length;
+        Counter.notificationCounter = 0;
       }
       Counter.listItemCounter = Counter.notificationCounter;
       Counter.prevCounter = loadedNotifications.length;
