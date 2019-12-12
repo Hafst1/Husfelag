@@ -551,10 +551,11 @@ class MapScreenState extends State<ProfilePage> {
       await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
     }
     try {
+      await _auth.deleteUser();
       await Provider.of<CurrentUserProvider>(context)
           .leaveResidentAssociation(apartment, true);
     } catch (error) {
-      await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
+      await _printErrorDialog('Ekki tókst að eyða aðgangi!');
     }
     if (!mounted) return;
     setState(() {
@@ -569,10 +570,11 @@ class MapScreenState extends State<ProfilePage> {
       _isLoading = true;
     });
     try {
+      await _auth.deleteUser();
       await Provider.of<CurrentUserProvider>(context)
           .deleteResidentAssociation(true);
     } catch (error) {
-      await _printErrorDialog('Ekki tókst að skrá þig úr húsfélaginu!');
+      await _printErrorDialog('Ekki tókst að eyða aðgangi!');
     }
     if (!mounted) return;
     setState(() {

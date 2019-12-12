@@ -37,7 +37,6 @@ class DatabaseService {
   Future<void> deleteUserFromDB() async {
     try {
       await usersCollection.document(uid).delete();
-      await _auth.deleteUser();
     } catch (error) {
       throw (error);
     }
