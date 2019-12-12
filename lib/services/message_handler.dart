@@ -32,7 +32,6 @@ class _MessageHandlerState extends State<MessageHandler> {
     // Read incoming notification
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print('onmessage: $message');
 
         final snackbar = SnackBar(
           duration: const Duration(seconds: 5),

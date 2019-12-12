@@ -238,7 +238,7 @@ exports.removeResidentTrigger = functions.firestore.document(
 
     var payload = {
       'notification': {
-        'title': '',
+        'title': 'removed resident',
         'body': '',
       },
       'data': {
