@@ -1,11 +1,12 @@
+import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-import '../providers/constructions_provider.dart';
 import '../providers/current_user_provider.dart';
+import '../providers/constructions_provider.dart';
 import '../providers/meetings_provider.dart';
 import '../shared/constants.dart' as Constants;
 
@@ -49,12 +50,16 @@ class _MessageHandlerState extends State<MessageHandler> {
             {
               Provider.of<MeetingsProvider>(context)
                   .fetchMeetings(residentAssociationId);
+              Provider.of<NotificationsProvider>(context)
+                  .fetchNotifications(residentAssociationId, context);
             }
             break;
           case (Constants.ADDED_CONSTRUCTION):
             {
               Provider.of<ConstructionsProvider>(context)
                   .fetchConstructions(residentAssociationId);
+              Provider.of<NotificationsProvider>(context)
+                  .fetchNotifications(residentAssociationId, context);
             }
             break;
           case (Constants.DELETED_MEETING):
