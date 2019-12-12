@@ -9,11 +9,11 @@ import './providers/current_user_provider.dart';
 import './providers/association_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 

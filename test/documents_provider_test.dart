@@ -31,6 +31,7 @@ final document2 = Document(
     authorId: 'author_id_2');
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('folders testing:', () {
     test('should return a list of all folders', () {
       final documentsProvider = DocumentsProvider();

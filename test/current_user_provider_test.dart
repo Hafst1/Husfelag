@@ -24,6 +24,7 @@ final user2 = UserData(
 );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('current user provider testing:', () {
     test('should get current user', () {
       final currentUserProvider = CurrentUserProvider();

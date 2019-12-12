@@ -30,6 +30,7 @@ final meeting2 = Meeting(
 );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('meetings testing:', () {
     test('should return meeting by id', () {
       final meetingsProvider = MeetingsProvider();

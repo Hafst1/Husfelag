@@ -58,6 +58,7 @@ final cleaningTask2 = CleaningTask(
 );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('cleaning items testing:', () {
     test('should return cleaning item by id', () {
       final cleaningProvider = CleaningProvider();
