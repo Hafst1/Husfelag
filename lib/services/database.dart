@@ -31,9 +31,9 @@ class DatabaseService {
   }
 
   // delete user from database
-  Future<void> deleteUserFromDB() async {
-    return await residentCollection.document(uid).delete();
-  }
+  // Future<void> deleteUserFromDB() async {
+  //   return await residentCollection.document(uid).delete();
+  // }
 
   // user data from snapshot
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
