@@ -27,83 +27,6 @@ class MapScreenState extends State<ProfilePage> {
   String _currentEmail;
   String _currentPassword;
 
-  Widget buildPadding(String name) {
-    return Padding(
-        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-        child: Row(
-          children: <Widget>[
-            Text(
-              name,
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ));
-  }
-
-  Widget buildInputField(var value, String textHint, Function valCheck,
-      Function changed, bool currStatus, var editIcon) {
-    return Padding(
-        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 2.0),
-        child: Row(
-          children: <Widget>[
-            Flexible(
-              child: TextFormField(
-                initialValue: value,
-                decoration: InputDecoration(
-                  hintText: textHint,
-                ),
-                validator: valCheck,
-                onChanged: changed,
-                enabled: !currStatus,
-                autofocus: !currStatus,
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                currStatus ? editIcon : Container(),
-              ],
-            )
-          ],
-        ));
-  }
-
-  Widget buildSaveButton(Function updateData) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.only(right: 10.0),
-        child: Container(
-            child: RaisedButton(
-          child: Text('Vista'),
-          textColor: Colors.white,
-          color: Colors.green,
-          onPressed: updateData,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        )),
-      ),
-      flex: 2,
-    );
-  }
-
-  Widget buildStopButton(Function stateChange) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.only(left: 10.0),
-        child: Container(
-          child: RaisedButton(
-            child: Text('Hætta við'),
-            textColor: Colors.white,
-            color: Colors.red,
-            onPressed: stateChange,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-          ),
-        ),
-      ),
-      flex: 2,
-    );
-  }
-
   Future<void> printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
@@ -173,8 +96,8 @@ class MapScreenState extends State<ProfilePage> {
                                         key: _nameKey,
                                         child: Column(
                                           children: <Widget>[
-                                            buildPadding('Nafn'),
-                                            buildInputField(
+                                            _buildPadding('Nafn'),
+                                            _buildInputField(
                                                 userData.name,
                                                 'Skráðu nafnið þitt',
                                                 (val) => val.isEmpty
@@ -182,12 +105,11 @@ class MapScreenState extends State<ProfilePage> {
                                                     : null,
                                                 (val) => setState(
                                                     () => _currentName = val),
-                                                _nameStatus,
-                                                _getEditIcon(() {
-                                                  setState(() {
-                                                    _nameStatus = false;
-                                                  });
-                                                })),
+                                                _nameStatus, _getEditIcon(() {
+                                              setState(() {
+                                                _nameStatus = false;
+                                              });
+                                            })),
                                             if (!_nameStatus)
                                               Padding(
                                                 padding: EdgeInsets.only(
@@ -196,7 +118,7 @@ class MapScreenState extends State<ProfilePage> {
                                                     top: 20.0),
                                                 child: Row(
                                                   children: <Widget>[
-                                                    buildSaveButton(() async {
+                                                    _buildSaveButton(() async {
                                                       if (_nameKey.currentState
                                                           .validate()) {
                                                         await DatabaseService(
@@ -222,7 +144,7 @@ class MapScreenState extends State<ProfilePage> {
                                                         });
                                                       }
                                                     }),
-                                                    buildStopButton(() {
+                                                    _buildStopButton(() {
                                                       setState(() {
                                                         _nameStatus = true;
                                                         FocusScope.of(context)
@@ -242,8 +164,8 @@ class MapScreenState extends State<ProfilePage> {
                                         key: _emailKey,
                                         child: Column(
                                           children: <Widget>[
-                                            buildPadding('Netfang'),
-                                            buildInputField(
+                                            _buildPadding('Netfang'),
+                                            _buildInputField(
                                                 userData.email,
                                                 'Skráðu netfangið þitt',
                                                 (val) => val.isEmpty
@@ -251,12 +173,11 @@ class MapScreenState extends State<ProfilePage> {
                                                     : null,
                                                 (val) => setState(
                                                     () => _currentEmail = val),
-                                                _emailStatus,
-                                                _getEditIcon(() {
-                                                  setState(() {
-                                                    _emailStatus = false;
-                                                  });
-                                                })),
+                                                _emailStatus, _getEditIcon(() {
+                                              setState(() {
+                                                _emailStatus = false;
+                                              });
+                                            })),
                                             if (!_emailStatus)
                                               Padding(
                                                 padding: EdgeInsets.only(
@@ -265,7 +186,7 @@ class MapScreenState extends State<ProfilePage> {
                                                     top: 20.0),
                                                 child: Row(
                                                   children: <Widget>[
-                                                    buildSaveButton(
+                                                    _buildSaveButton(
                                                       () async {
                                                         if (_emailKey
                                                             .currentState
@@ -306,7 +227,7 @@ class MapScreenState extends State<ProfilePage> {
                                                         }
                                                       },
                                                     ),
-                                                    buildStopButton(() {
+                                                    _buildStopButton(() {
                                                       setState(() {
                                                         _emailStatus = true;
                                                         FocusScope.of(context)
@@ -326,7 +247,7 @@ class MapScreenState extends State<ProfilePage> {
                                         key: _passwordKey,
                                         child: Column(
                                           children: <Widget>[
-                                            buildPadding('Nýtt lykilorð'),
+                                            _buildPadding('Nýtt lykilorð'),
                                             Padding(
                                               padding: EdgeInsets.only(
                                                   left: 25.0,
@@ -357,7 +278,8 @@ class MapScreenState extends State<ProfilePage> {
                                                       _passwordStatus
                                                           ? _getEditIcon(() {
                                                               setState(() {
-                                                                _passwordStatus = false;
+                                                                _passwordStatus =
+                                                                    false;
                                                               });
                                                             })
                                                           : Container(),
@@ -374,7 +296,7 @@ class MapScreenState extends State<ProfilePage> {
                                                     top: 20.0),
                                                 child: Row(
                                                   children: <Widget>[
-                                                    buildSaveButton(() async {
+                                                    _buildSaveButton(() async {
                                                       if (_passwordKey
                                                           .currentState
                                                           .validate()) {
@@ -391,12 +313,12 @@ class MapScreenState extends State<ProfilePage> {
                                                                     FocusNode());
                                                           });
                                                         } catch (error) {
-                                                            await printErrorDialog(
-                                                                'Þú þarft að vera nýskráð/ur inn til að breyta þessum upplýsingum');
-                                                          }
+                                                          await printErrorDialog(
+                                                              'Þú þarft að vera nýskráð/ur inn til að breyta þessum upplýsingum');
+                                                        }
                                                       }
                                                     }),
-                                                    buildStopButton(() {
+                                                    _buildStopButton(() {
                                                       setState(() {
                                                         _passwordStatus = true;
                                                         FocusScope.of(context)
@@ -433,21 +355,104 @@ class MapScreenState extends State<ProfilePage> {
         });
   }
 
-    Widget _getEditIcon(Function getState) {
-    return GestureDetector(
-        child: CircleAvatar(
-          backgroundColor: Colors.blue,
-          radius: 14.0,
-          child: Icon(
-            Icons.edit,
-            color: Colors.white,
-            size: 16.0,
-          ),
-        ),
-        onTap: getState,
-      );
+  // builds the padding for the title of the input field
+  Widget _buildPadding(String name) {
+    return Padding(
+        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+        child: Row(
+          children: <Widget>[
+            Text(
+              name,
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ));
   }
 
+  // builds the padding for the input field
+  Widget _buildInputField(var value, String textHint, Function valCheck,
+      Function changed, bool currStatus, var editIcon) {
+    return Padding(
+        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 2.0),
+        child: Row(
+          children: <Widget>[
+            Flexible(
+              child: TextFormField(
+                initialValue: value,
+                decoration: InputDecoration(
+                  hintText: textHint,
+                ),
+                validator: valCheck,
+                onChanged: changed,
+                enabled: !currStatus,
+                autofocus: !currStatus,
+              ),
+            ),
+            Column(
+              children: <Widget>[
+                currStatus ? editIcon : Container(),
+              ],
+            )
+          ],
+        ));
+  }
+
+  // a butten that saves the changed info to the database
+  Widget _buildSaveButton(Function updateData) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(right: 10.0),
+        child: Container(
+            child: RaisedButton(
+          child: Text('Vista'),
+          textColor: Colors.white,
+          color: Colors.green,
+          onPressed: updateData,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        )),
+      ),
+      flex: 2,
+    );
+  }
+
+  // a button to cancel ongoing changes about his info
+  Widget _buildStopButton(Function stateChange) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(left: 10.0),
+        child: Container(
+          child: RaisedButton(
+            child: Text('Hætta við'),
+            textColor: Colors.white,
+            color: Colors.red,
+            onPressed: stateChange,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+          ),
+        ),
+      ),
+      flex: 2,
+    );
+  }
+
+  // activates the edit icons for each text form field so usesr can update his information
+  Widget _getEditIcon(Function getState) {
+    return GestureDetector(
+      child: CircleAvatar(
+        backgroundColor: Colors.blue,
+        radius: 14.0,
+        child: Icon(
+          Icons.edit,
+          color: Colors.white,
+          size: 16.0,
+        ),
+      ),
+      onTap: getState,
+    );
+  }
+
+  // a button to delete from database and authentication
   Widget _deleteButton() {
     return GestureDetector(
       onTap: () async {
@@ -476,6 +481,7 @@ class MapScreenState extends State<ProfilePage> {
     );
   }
 
+  // creates a pop up dialog for user if he presses delete button
   void _popupDialog(BuildContext context) {
     showDialog(
         context: context,

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/user.dart';
+import '../services/database.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -92,7 +93,8 @@ class AuthService {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
     try {
-      user.delete();
+      await user.delete();
+      await DatabaseService(uid: user.uid).deleteUserFromDB();
     } on Exception catch (error) {
       print(error.toString());
       throw (error);
