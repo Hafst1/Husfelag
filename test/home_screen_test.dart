@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../lib/screens/home_screen.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('should display the four main option buttons', (WidgetTester tester) async {
     await tester.pumpWidget(
         MaterialApp(

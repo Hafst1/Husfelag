@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../lib/screens/constructions/constructions_screen.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('should display main options in constructions section',
       (WidgetTester tester) async {
     await tester.pumpWidget(
