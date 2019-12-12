@@ -19,6 +19,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     final currentUser = Provider.of<CurrentUserProvider>(context);
+
     // return Authenticate page if user has value of null
     if (user == null) {
       return Authenticate();
@@ -54,7 +55,7 @@ class Wrapper extends StatelessWidget {
                           value: NotificationsProvider(),
                         )
                       ],
-                       child: TabsScreen(),
+                      child: TabsScreen(),
                     )
                   // send user to page where he can create or join a resident assocation
                   // if he doesn't contain resident association number
