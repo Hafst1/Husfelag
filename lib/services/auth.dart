@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/user.dart';
-import '../services/database.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -77,7 +76,7 @@ class AuthService {
       throw (error);
     }
   }
-  
+
   // sign out function
   Future signOut() async {
     try {
@@ -89,13 +88,11 @@ class AuthService {
   }
 
   // delete user from authentication in firebase
-  Future deleteUser() async{
+  Future deleteUser() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     try {
       await user.delete();
-      await DatabaseService(uid: user.uid).deleteUserFromDB();
     } on Exception catch (error) {
-      print(error.toString());
       throw (error);
     }
   }

@@ -79,7 +79,8 @@ class CurrentUserProvider with ChangeNotifier {
         });
       }
       if (deleteUser) {
-        // ...
+        await DatabaseService(uid: currentUser.id).deleteUserFromDB();
+        return;
       } else {
         await DatabaseService(uid: currentUser.id).updateUserData(
           currentUser.name,
@@ -213,7 +214,9 @@ class CurrentUserProvider with ChangeNotifier {
           .delete();
 
       if (deleteUser) {
-        // ...
+        // delete user
+        await DatabaseService(uid: currentUser.id).deleteUserFromDB();
+        return;
       } else {
         // update user information.
         await DatabaseService(uid: currentUser.id).updateUserData(
@@ -225,7 +228,6 @@ class CurrentUserProvider with ChangeNotifier {
           currentUser.userToken,
         );
       }
-
       notifyListeners();
     } catch (error) {
       throw (error);
