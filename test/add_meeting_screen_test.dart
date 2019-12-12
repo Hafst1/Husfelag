@@ -16,6 +16,7 @@ final date = DateFormat.yMMMMEEEEd()
     .toString();
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('add meeting form testing:', () {
     testWidgets('should display error messages on no input',
         (WidgetTester tester) async {

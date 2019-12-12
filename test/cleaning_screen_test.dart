@@ -27,6 +27,7 @@ final user2 = UserData(
 );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('cleaning screen testing:', () {
     testWidgets('should display add cleaning option for admin',
         (WidgetTester tester) async {
