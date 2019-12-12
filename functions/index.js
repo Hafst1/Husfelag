@@ -190,6 +190,7 @@ exports.updateAdminTrigger = functions.firestore.document(
   const before = change.before.data();
   const after = change.after.data();
   const residentAssociationId = before.residentAssociationId;
+  const userId = change.before.id;
 
   if (before.isAdmin == false && after.isAdmin == true) {
 
@@ -212,6 +213,7 @@ exports.updateAdminTrigger = functions.firestore.document(
           'data': {
             'residentAssociationId': residentAssociationId,
             'type': 'madeAdmin',
+            'id': userId,
           }
         }
 
