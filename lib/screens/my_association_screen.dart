@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/providers/notification_provider.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/notification_provider.dart';
 import '../providers/current_user_provider.dart';
 import '../providers/association_provider.dart';
 import '../shared/loading_spinner.dart';
@@ -23,17 +22,6 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
   var _isInit = true;
   var _isLoadingAssociation = false;
   var _isLoadingResidents = false;
-
-  ///oddny
-  var _notification = NotificationModel(
-    id: null,
-    title: '',
-    date: DateTime.now(),
-    description: '',
-    authorId: '',
-    type: '',
-  );
-  ////
 
   @override
   // fetch the current association, apartments and residents before widget is built.
@@ -124,7 +112,8 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
                   _deleteResidentAssociation();
                 } else {
                   _printErrorDialog(
-                      'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini meðlimur húsfélagins með admin réttindi!\n\nVeittu öðrum meðlimi admin réttindi og reyndu aftur.');
+                      'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini stjórnandi húsfélagins!\n\n'
+                      'Gerður annan meðlim að stjórnanda og reyndu aftur.');
                 }
               } else {
                 _leaveResidentAssociation(apartment);
@@ -191,20 +180,18 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
     setState(() {
       _isLoadingAssociation = true;
     });
+    final userData = Provider.of<AssociationsProvider>(context);
+    final user = userData.getResident(userId);
     try {
-      final userData = Provider.of<AssociationsProvider>(context);
-      final user = userData.getResident(userId);
       if (user.id.isEmpty) {
-        await _printErrorDialog('Ekki tókst að veita meðlimi admin réttindi!');
+        await _printErrorDialog('Ekki tókst að gera meðlim að stjórnanda!');
         return;
       }
       await userData.makeUserAdmin(user);
     } catch (error) {
-      await _printErrorDialog('Ekki tókst að veita meðlimi admin réttindi!');
+      await _printErrorDialog('Ekki tókst að gera meðlim að stjórnanda!');
     }
     try {
-      final userData = Provider.of<AssociationsProvider>(context);
-      final user = userData.getResident(userId);
       await Provider.of<NotificationsProvider>(context, listen: false)
           .addNotification(
               user.residentAssociationId,
@@ -214,11 +201,9 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
                 description: '',
                 date: DateTime.now(),
                 authorId: user.id,
-                type: Constants.ADDED_MEETING,
+                type: Constants.MADE_ADMIN,
               ));
-    } catch (error) {
-      await _printErrorDialog(error);
-    }
+    } catch (error) {}
     setState(() {
       _isLoadingAssociation = false;
     });
@@ -236,7 +221,7 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
       final apartment = associationsData.getApartmentByNumber(apartmentNumber);
       await associationsData.kickUser(user, apartment);
     } catch (error) {
-      await _printErrorDialog('Ekki tókst að sparka meðlimi úr húsfélaginu!');
+      await _printErrorDialog('Ekki tókst að fjarlægja meðlim úr húsfélaginu!');
     }
     setState(() {
       _isLoadingAssociation = false;
@@ -251,7 +236,7 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
       builder: (ctx) => AlertDialog(
         title: Text('Brottrekstur'),
         content: Text(
-            'Ertu viss um að þú viljir sparka tilteknum meðlimi úr húsfélaginu?'),
+            'Ertu viss um að þú viljir fjarlægja meðlim úr húsfélaginu?'),
         actions: <Widget>[
           FlatButton(
             child: Text(

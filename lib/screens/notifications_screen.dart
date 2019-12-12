@@ -66,29 +66,30 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                   child: ListView.builder(
-                      itemCount: notifications.length,
-                      itemBuilder: (BuildContext context, int i) {
-                        return Container(
-                          color: (i < Counter.listItemCounter) ? Colors.blue[100] : Color.fromRGBO(230, 230, 230, 1),
-                          child: NotificationItem(
-                            id: notifications[i].id,
-                            title: notifications[i].title,
-                            description: notifications[i].description,
-                            date: notifications[i].date,
-                          ),
-                        );
-                      },
-                    ),
-                    /*child: ListView.builder(
-                      itemCount: notifications.length,
-                      itemBuilder: (ctx, i) => NotificationItem(
-                        id: notifications[i].id,
-                        title: notifications[i].title,
-                        description: notifications[i].description,
-                        date: notifications[i].date,
+                    child: Container(
+                      color: Colors.white,
+                      child: ListView.builder(
+                        itemCount: notifications.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 5,
+                            ),
+                            elevation: 5,
+                            color: (i < Counter.listItemCounter)
+                                ? Color.fromRGBO(191, 212, 255, 1)
+                                : Colors.white,
+                            child: NotificationItem(
+                              id: notifications[i].id,
+                              title: notifications[i].title,
+                              description: notifications[i].description,
+                              date: notifications[i].date,
+                            ),
+                          );
+                        },
                       ),
-                  ),*/
+                    ),
                   ),
                 ],
               ),

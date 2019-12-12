@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:husfelagid/models/notification.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/navigators/home_navigator.dart';
 import '../widgets/navigators/calendar_navigator.dart';
 import '../widgets/navigators/notification_navigator.dart';
 import '../services/message_handler.dart';
+import '../providers/current_user_provider.dart';
+import '../providers/notification_provider.dart';
+import '../models/notification.dart';
 
 class TabsScreen extends StatefulWidget {
   @override
@@ -13,13 +16,33 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
-  int _counter = Counter.notificationCounter;
-  
+  int _counter = 0;
+
   Map<int, GlobalKey<NavigatorState>> navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
     1: GlobalKey<NavigatorState>(),
     2: GlobalKey<NavigatorState>(),
   };
+
+  var _isInit = true;
+
+  void didChangeDependencies() {
+    if (_isInit) {
+      final currentUserData =
+          Provider.of<CurrentUserProvider>(context, listen: false);
+      final notificationData = Provider.of<NotificationsProvider>(context);
+      final residentAssociationId = currentUserData.getResidentAssociationId();
+      notificationData
+          .fetchNotifications(residentAssociationId, context)
+          .then((_) {
+        setState(() {
+          _counter = Counter.notificationCounter;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   void _selectPage(int index) {
     if (_selectedPageIndex == index) {
@@ -27,7 +50,9 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
     setState(() {
-      _counter = Counter.notificationCounter;
+      if(Counter.notificationCounter != null) {
+        _counter = Counter.notificationCounter;
+      }
       _selectedPageIndex = index;
       if(_selectedPageIndex == 2) {
         Counter.notificationCounter = 0;
@@ -44,6 +69,9 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+     if(Counter.notificationCounter != null) {
+        _counter = Counter.notificationCounter;
+      }
     return WillPopScope(
       onWillPop: () async =>
           !await navigatorKeys[_selectedPageIndex].currentState.maybePop(),

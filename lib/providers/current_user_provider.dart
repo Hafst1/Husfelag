@@ -41,9 +41,14 @@ class CurrentUserProvider with ChangeNotifier {
         userToken: fetchedUser[Constants.USER_TOKEN],
       );
     } catch (error) {
-      //error handling vantar
+      // log the error instead of throwing it to futurebuilder.
       print(error);
     }
+  }
+
+  // functions which rebuilds widgets listening to current user provider.
+  triggerCurrentUserRefresh() {
+    notifyListeners();
   }
 
   // functions which makes the current user leave the resident association

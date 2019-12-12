@@ -93,7 +93,7 @@ class _UserListItemState extends State<UserListItem> {
                                 width: 10,
                               ),
                               Text(
-                                'Admin',
+                                'Stjórnandi',
                                 style: TextStyle(
                                   fontSize: 17,
                                 ),
@@ -139,7 +139,7 @@ class _UserListItemState extends State<UserListItem> {
                                       width: 10,
                                     ),
                                     Text(
-                                      'Veita admin réttindi',
+                                      'Gera að stjórnanda',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -172,7 +172,7 @@ class _UserListItemState extends State<UserListItem> {
                                       width: 12,
                                     ),
                                     Text(
-                                      'Sparka úr húsfélagi',
+                                      'Fjarlægja meðlim',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),

@@ -140,9 +140,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
                   authorId: _construction.authorId,
                   type: Constants.ADDED_CONSTRUCTION,
                 ));
-      } catch (error) {
-        print(error);
-      }
+      } catch (error) {}
     }
     setState(() {
       _isLoading = false;
