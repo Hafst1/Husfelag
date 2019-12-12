@@ -40,6 +40,8 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // if we are editing a construction then the textfields get the value
+  // of the construction with the id passed in through arguments.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -72,6 +74,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     super.dispose();
   }
 
+  // functions which presents a date picker.
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
     final firstDate = exactDate.subtract(
@@ -96,15 +99,18 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     });
   }
 
+  // function which converts a string formatted date to DateTime object.
   DateTime convertToDate(String input) {
     try {
-      var d = new DateFormat.yMMMMEEEEd().parseStrict(input);
+      var d = DateFormat.yMMMMEEEEd().parseStrict(input);
       return d;
     } catch (e) {
       return null;
     }
   }
 
+  // function which validates the form and adds the construction to 
+  // database if input is valid.
   void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
@@ -119,14 +125,14 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
         await Provider.of<ConstructionsProvider>(context, listen: false)
             .updateConstruction(residentAssociationId, _construction);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að breyta framkvæmd!');
+        await _printErrorDialog('Ekki tókst að breyta framkvæmd!');
       }
     } else {
       try {
         await Provider.of<ConstructionsProvider>(context, listen: false)
             .addConstruction(residentAssociationId, _construction);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að bæta við framkvæmd!');
+        await _printErrorDialog('Ekki tókst að bæta við framkvæmd!');
       }
       try {
         await Provider.of<NotificationsProvider>(context, listen: false)
@@ -148,7 +154,8 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     Navigator.of(context).pop();
   }
 
-  Future<void> printErrorDialog(String errorMessage) {
+  // functions which presents an error dialog.
+  Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
       builder: (ctx) => AlertDialog(

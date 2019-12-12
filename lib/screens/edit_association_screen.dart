@@ -23,6 +23,7 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // get the values of the association to be edited which is passed through arguments.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -33,6 +34,7 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
     super.didChangeDependencies();
   }
 
+  // functions which prints an error dialog.
   Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
@@ -51,6 +53,8 @@ class _EditAssociationScreenState extends State<EditAssociationScreen> {
     );
   }
 
+  // function which validates the form and updates the association information
+  // if the input is valid.
   void _saveForm() async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
