@@ -93,7 +93,7 @@ class AuthService {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     try {
       await user.delete();
-      //await DatabaseService(uid: user.uid).deleteUserFromDB();
+      await DatabaseService(uid: user.uid).deleteUserFromDB();
     } on Exception catch (error) {
       print(error.toString());
       throw (error);
