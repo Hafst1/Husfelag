@@ -27,7 +27,7 @@ class MapScreenState extends State<ProfilePage> {
   String _currentEmail;
   String _currentPassword;
 
-  Future<void> printErrorDialog(String errorMessage) {
+  Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -56,12 +56,12 @@ class MapScreenState extends State<ProfilePage> {
             UserData userData = snapshot.data;
 
             return Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 title: Text('Mín síða',
                     style: TextStyle(fontSize: 20.0, color: Colors.white)),
               ),
               body: Container(
-                color: Colors.white,
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
@@ -72,7 +72,6 @@ class MapScreenState extends State<ProfilePage> {
                             children: <Widget>[
                               Container(
                                 height: 50.0,
-                                color: Colors.white,
                               ),
                               Container(
                                 child: Column(
@@ -221,7 +220,7 @@ class MapScreenState extends State<ProfilePage> {
                                                                       FocusNode());
                                                             });
                                                           } catch (error) {
-                                                            await printErrorDialog(
+                                                            await _printErrorDialog(
                                                                 'Þú þarft að vera nýskráð/ur inn til að breyta þessum upplýsingum');
                                                           }
                                                         }
@@ -313,7 +312,7 @@ class MapScreenState extends State<ProfilePage> {
                                                                     FocusNode());
                                                           });
                                                         } catch (error) {
-                                                          await printErrorDialog(
+                                                          await _printErrorDialog(
                                                               'Þú þarft að vera nýskráð/ur inn til að breyta þessum upplýsingum');
                                                         }
                                                       }
