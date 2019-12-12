@@ -116,7 +116,7 @@ class _SignInState extends State<SignIn> {
                             SizedBox(
                               height: 15,
                             ),
-                            buildButton(),
+                            _buildButton(),
                             SizedBox(
                               height: 20,
                             ),
@@ -167,7 +167,8 @@ class _SignInState extends State<SignIn> {
           );
   }
 
-  Widget buildButton() {
+  // a button that activates the sign in method with firebase
+  Widget _buildButton() {
     return GestureDetector(
       onTap: () async {
         if (_formKey.currentState.validate()) {
