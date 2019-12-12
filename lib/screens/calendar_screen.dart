@@ -81,6 +81,7 @@ class _CalendarScreenState extends State<CalendarScreen>
     super.didChangeDependencies();
   }
 
+  // function which prints an error dialog.
   void _printErrorDialog() {
     showDialog(
       context: context,
@@ -119,7 +120,8 @@ class _CalendarScreenState extends State<CalendarScreen>
     });
   }
 
-  // function which generates the calendar events list.
+  // function which merges the lists of constructions, meetings and cleaning items
+  // to a map and generates the calendar events list.
   void generateEventsList(
     List<Construction> constructions,
     List<Meeting> meetings,

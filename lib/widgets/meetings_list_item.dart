@@ -26,6 +26,8 @@ class MeetingsListItem extends StatelessWidget {
     @required this.isAuthor,
   });
 
+  // function whic presents an action dialog where user can choose to edit 
+  // or delete meeting item.
   void _showActionDialog(BuildContext context) {
     showDialog(
       context: context,

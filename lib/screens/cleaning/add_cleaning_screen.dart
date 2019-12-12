@@ -36,6 +36,8 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // if we there was a cleaning item id passed in through arguments then the 
+  // text fields will contain the value of that particular cleaning item.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -66,6 +68,8 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     super.dispose();
   }
 
+  // function which presents a page where you can pick one of the 
+  // apartments in the resident association.
   void _presentApartmentPicker() async {
     String apartment =
         await Navigator.of(context).push(MaterialPageRoute<String>(
@@ -80,9 +84,10 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     }
   }
 
+  // function which presents a date picker.
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
-    final convertedDate = convertToDate(controller.text) ?? exactDate;
+    final convertedDate = _convertToDate(controller.text) ?? exactDate;
     final firstDate = exactDate.subtract(
       Duration(days: 30),
     );
@@ -104,15 +109,18 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     });
   }
 
-  DateTime convertToDate(String input) {
+  // function which convert a string formatted date to a DateTime object.
+  DateTime _convertToDate(String input) {
     try {
-      var d = new DateFormat.yMMMMEEEEd().parseStrict(input);
+      var d = DateFormat.yMMMMEEEEd().parseStrict(input);
       return d;
     } catch (e) {
       return null;
     }
   }
 
+  // function which validates the form and if it is valid it is saved and 
+  // added to the database.
   void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
@@ -127,14 +135,14 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
         await Provider.of<CleaningProvider>(context, listen: false)
             .updateCleaningItem(residentAssociationId, _cleaningItem);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að breyta þrifum!');
+        await _printErrorDialog('Ekki tókst að breyta þrifum!');
       }
     } else {
       try {
         await Provider.of<CleaningProvider>(context, listen: false)
             .addCleaningItem(residentAssociationId, _cleaningItem);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að bæta við þrif!');
+        await _printErrorDialog('Ekki tókst að bæta við þrif!');
       }
     }
     setState(() {
@@ -143,7 +151,8 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     Navigator.of(context).pop();
   }
 
-  Future<void> printErrorDialog(String errorMessage) {
+  // function which prints an error dialog
+  Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -259,8 +268,8 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                                 return 'Fylla þarf út upphafsdagsetningu þrifa!';
                               }
                               if (_dateToController.text.isNotEmpty) {
-                                if (convertToDate(value).isAfter(
-                                    convertToDate(_dateToController.text))) {
+                                if (_convertToDate(value).isAfter(
+                                    _convertToDate(_dateToController.text))) {
                                   return 'Valin dagsetning á sér stað á eftir lokadagsetningu þrifa!';
                                 }
                               }
@@ -270,7 +279,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                               _cleaningItem = Cleaning(
                                 id: _cleaningItem.id,
                                 apartmentNumber: _cleaningItem.apartmentNumber,
-                                dateFrom: convertToDate(value),
+                                dateFrom: _convertToDate(value),
                                 dateTo: _cleaningItem.dateTo,
                                 authorId: _cleaningItem.authorId,
                               );
@@ -301,8 +310,8 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                                 return 'Fylla þarf út lokadagsetningu þrifa!';
                               }
                               if (_dateFromController.text.isNotEmpty) {
-                                if (convertToDate(value).isBefore(
-                                    convertToDate(_dateFromController.text))) {
+                                if (_convertToDate(value).isBefore(
+                                    _convertToDate(_dateFromController.text))) {
                                   return 'Valin dagsetning á sér stað á undan upphafsdagsetningu þrifa!';
                                 }
                               }
@@ -313,7 +322,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
                                 id: _cleaningItem.id,
                                 apartmentNumber: _cleaningItem.apartmentNumber,
                                 dateFrom: _cleaningItem.dateFrom,
-                                dateTo: convertToDate(value),
+                                dateTo: _convertToDate(value),
                                 authorId: _cleaningItem.authorId,
                               );
                             },

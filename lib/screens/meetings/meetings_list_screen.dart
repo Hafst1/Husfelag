@@ -21,6 +21,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // fetch the meetings which are to be displayed in the meetings list.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -47,6 +48,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
     super.didChangeDependencies();
   }
 
+  // function which prints an error dialog.
   void _printErrorDialog() {
     showDialog(
       context: context,
@@ -65,6 +67,7 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
     );
   }
 
+  // function which refreshes the list of meetings.
   Future<void> _refreshMeetings(
       String residentAssociationId, BuildContext context) async {
     try {
@@ -75,18 +78,21 @@ class _MeetingsListScreenState extends State<MeetingsListScreen> {
     }
   }
 
+  // function which updates the filter index.
   _selectFilter(int index) {
     setState(() {
       _selectedFilterIndex = index;
     });
   }
 
+  // function which updates the search query.
   _changeSearchQuery(String query) {
     setState(() {
       _searchQuery = query;
     });
   }
 
+  // function which clears the search bar.
   _onClear() {
     setState(() {
       _searchQuery = "";

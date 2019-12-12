@@ -31,6 +31,8 @@ class CleaningTaskItem extends StatefulWidget {
 }
 
 class _CleaningTaskItemState extends State<CleaningTaskItem> {
+
+  // function which changes the task status of a cleaning task item.
   _changeTaskStatus(bool value) async {
     final residentAssociationId =
         Provider.of<CurrentUserProvider>(context, listen: false)
@@ -50,6 +52,7 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
     }
   }
 
+  // function which prints an error dialog.
   Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
@@ -68,6 +71,8 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
     );
   }
 
+  // function which presents an error dialog where user can choose to 
+  // edit or delete cleaning task item.
   _showActionDialog(BuildContext context) {
     showDialog(
       context: context,

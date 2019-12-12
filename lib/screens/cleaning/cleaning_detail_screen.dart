@@ -17,6 +17,8 @@ class _CleaningDetailScreenState extends State<CleaningDetailScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // fetch cleaning tasks when widget is built.
+  @override
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {
@@ -42,6 +44,7 @@ class _CleaningDetailScreenState extends State<CleaningDetailScreen> {
     super.didChangeDependencies();
   }
 
+  // function which presents an error dialog
   void _printErrorDialog() {
     showDialog(
       context: context,
