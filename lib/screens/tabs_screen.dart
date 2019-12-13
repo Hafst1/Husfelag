@@ -16,7 +16,7 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
-  int _counter = 0;
+  int _notificationCounter = 0; 
 
   Map<int, GlobalKey<NavigatorState>> navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
@@ -37,7 +37,7 @@ class _TabsScreenState extends State<TabsScreen> {
           .fetchNotifications(residentAssociationId, context)
           .then((_) {
         setState(() {
-          _counter = Counter.notificationCounter;
+          _notificationCounter = Counter.notificationCounter;
         });
       });
     }
@@ -54,9 +54,6 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
     setState(() {
-      if(Counter.notificationCounter != null) {
-        _counter = Counter.notificationCounter;
-      }
       _selectedPageIndex = index;
       if(_selectedPageIndex == 2) {
         Counter.notificationCounter = 0;
@@ -75,9 +72,9 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-     if(Counter.notificationCounter != null) {
-        _counter = Counter.notificationCounter;
-      }
+    if(Counter.notificationCounter != null) {
+        _notificationCounter = Counter.notificationCounter;
+    }
     return WillPopScope(
       onWillPop: () async =>
           !await navigatorKeys[_selectedPageIndex].currentState.maybePop(),
@@ -121,7 +118,7 @@ class _TabsScreenState extends State<TabsScreen> {
               icon: Stack(
                 children: <Widget>[
                   Icon(Icons.notifications),
-                  (_counter > 0) 
+                  (_notificationCounter > 0) 
                   ? Positioned(
                       right: 0,
                       child: Container(
@@ -135,7 +132,7 @@ class _TabsScreenState extends State<TabsScreen> {
                           minHeight: 12,
                         ),
                         child: Text(
-                          '$_counter',
+                          '$_notificationCounter',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 8,
