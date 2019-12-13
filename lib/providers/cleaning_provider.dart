@@ -21,8 +21,7 @@ class CleaningProvider with ChangeNotifier {
 
   // function which fetches cleaning items of a resident association
   // and stores them in the _cleaningItems list.
-  Future<void> fetchCleaningItems(
-      String residentAssociationId) async {
+  Future<void> fetchCleaningItems(String residentAssociationId) async {
     try {
       final response = await _associationsRef
           .document(residentAssociationId)

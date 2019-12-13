@@ -7,7 +7,6 @@ class NotificationModel {
   final String description;
   final String authorId;
   final String type;
-  
 
   NotificationModel({
     @required this.id,
