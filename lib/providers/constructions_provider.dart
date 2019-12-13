@@ -7,7 +7,6 @@ import '../shared/constants.dart' as Constants;
 enum ConstructionStatus { current, ahead, old }
 
 class ConstructionsProvider with ChangeNotifier {
-
   // list of constructions for a resident association.
   @visibleForTesting
   List<Construction> constructions = [];

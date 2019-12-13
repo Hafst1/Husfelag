@@ -20,7 +20,7 @@ class _DeleteFolderDialogState extends State<DeleteFolderDialog> {
   var _selectedFolder = '';
   var _folderId = '';
 
-  // function which validates and saves the form, and sends the id of the 
+  // function which validates and saves the form, and sends the id of the
   // folder to delete to the widget's delete function.
   void _saveForm(BuildContext context) {
     var isValid = _form.currentState.validate();

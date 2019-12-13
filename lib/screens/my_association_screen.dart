@@ -113,7 +113,7 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
                 } else {
                   _printErrorDialog(
                       'Ekki tókst að skrá þig úr húsfélaginu þar sem þú ert eini stjórnandi húsfélagins!\n\n' +
-                      'Gerður annan meðlim að stjórnanda og reyndu aftur.');
+                          'Gerður annan meðlim að stjórnanda og reyndu aftur.');
                 }
               } else {
                 _leaveResidentAssociation(apartment);
@@ -235,8 +235,8 @@ class _MyAssociationScreenState extends State<MyAssociationScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('Brottrekstur'),
-        content: Text(
-            'Ertu viss um að þú viljir fjarlægja meðlim úr húsfélaginu?'),
+        content:
+            Text('Ertu viss um að þú viljir fjarlægja meðlim úr húsfélaginu?'),
         actions: <Widget>[
           FlatButton(
             child: Text(

@@ -45,7 +45,6 @@ const String DELETED_CONSTRUCTION = 'deletedConstruction';
 const String MADE_ADMIN = 'madeAdmin';
 const String REMOVED_RESIDENT = 'removedResident';
 
-
 // constants for months in icelandic.
 const List<String> months = [
   'Janúar',

@@ -31,7 +31,6 @@ class CleaningTaskItem extends StatefulWidget {
 }
 
 class _CleaningTaskItemState extends State<CleaningTaskItem> {
-
   // function which changes the task status of a cleaning task item.
   _changeTaskStatus(bool value) async {
     final residentAssociationId =
@@ -71,7 +70,7 @@ class _CleaningTaskItemState extends State<CleaningTaskItem> {
     );
   }
 
-  // function which presents an error dialog where user can choose to 
+  // function which presents an error dialog where user can choose to
   // edit or delete cleaning task item.
   _showActionDialog(BuildContext context) {
     showDialog(

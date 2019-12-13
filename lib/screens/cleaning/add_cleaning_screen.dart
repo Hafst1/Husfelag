@@ -36,7 +36,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
   var _isInit = true;
   var _isLoading = false;
 
-  // if we there was a cleaning item id passed in through arguments then the 
+  // if we there was a cleaning item id passed in through arguments then the
   // text fields will contain the value of that particular cleaning item.
   @override
   void didChangeDependencies() {
@@ -68,7 +68,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     super.dispose();
   }
 
-  // function which presents a page where you can pick one of the 
+  // function which presents a page where you can pick one of the
   // apartments in the resident association.
   void _presentApartmentPicker() async {
     String apartment =
@@ -119,7 +119,7 @@ class _AddCleaningScreenState extends State<AddCleaningScreen> {
     }
   }
 
-  // function which validates the form and if it is valid it is saved and 
+  // function which validates the form and if it is valid it is saved and
   // added to the database.
   void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();

@@ -1,10 +1,10 @@
-import 'package:husfelagid/providers/notification_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
+import '../providers/notification_provider.dart';
 import '../providers/current_user_provider.dart';
 import '../providers/constructions_provider.dart';
 import '../providers/meetings_provider.dart';
@@ -32,7 +32,6 @@ class _MessageHandlerState extends State<MessageHandler> {
     // Read incoming notification
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-
         final snackbar = SnackBar(
           duration: const Duration(seconds: 5),
           content: Text(
