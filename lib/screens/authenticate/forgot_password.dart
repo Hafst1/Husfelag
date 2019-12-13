@@ -13,6 +13,25 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   String _email = '';
 
+  // function which prints an error dialog.
+  Future<void> _printErrorDialog(String errorMessage) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Villa kom upp'),
+        content: Text(errorMessage),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Halda áfram'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,8 +105,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return GestureDetector(
       onTap: () async {
         if (_formKey.currentState.validate()) {
-          await _auth.sendPasswordResetEmail(_email);
-          _popupDialog(context);
+          try {
+            await _auth.sendPasswordResetEmail(_email);
+            _popupDialog(context);
+          } catch (error) {
+            _printErrorDialog('Þetta netfang er ekki til staðar');
+          }
         }
       },
       child: Container(
