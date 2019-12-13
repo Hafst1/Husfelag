@@ -457,7 +457,7 @@ class MapScreenState extends State<ProfilePage> {
         ));
   }
 
-  // a butten that saves the changed info to the database
+  // a button that saves the changed info to the database
   Widget _buildSaveButton(Function updateData) {
     return Expanded(
       child: Padding(
