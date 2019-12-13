@@ -36,9 +36,10 @@ class NotificationsProvider with ChangeNotifier {
       _notifications = loadedNotifications;
       notifyListeners();
       // get count of new notifications
-      if(Counter.prevCounter != null) {
-      Counter.notificationCounter = Counter.notificationCounter +
-         loadedNotifications.length - Counter.prevCounter; 
+      if (Counter.prevCounter != null) {
+        Counter.notificationCounter = Counter.notificationCounter +
+            loadedNotifications.length -
+            Counter.prevCounter;
       } else {
         Counter.notificationCounter = 0;
       }
@@ -91,6 +92,7 @@ class NotificationsProvider with ChangeNotifier {
         type: notification.type,
       );
       _notifications.add(newNotification);
+      Counter.notificationCounter--;
       notifyListeners();
     } catch (error) {
       throw (error);

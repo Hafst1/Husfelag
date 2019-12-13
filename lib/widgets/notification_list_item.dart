@@ -17,24 +17,26 @@ class NotificationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () => Counter.listItemCounter = 0,
       isThreeLine: true,
       title: Text(
         title,
         style: Theme.of(context).textTheme.title,
       ),
-      onTap: () {
-        Counter.listItemCounter = 0;  ///athuga, þetta virkar ekki
-      },
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(description, style: TextStyle(fontSize: 15),),
+          Text(
+            description, 
+            style: TextStyle(
+              fontSize: 15),
+          ),
           Text('Tilkynning sett inn: ' + date.day.toString() + '.' + 
                 date.month.toString() + '.' + date.year.toString() + ' ' + date.hour.toString() + 
-                ':' +date.minute.toString().padLeft(2,'0')
+                ':' +date.minute.toString().padLeft(2,'0'),
           ),
         ],
-      )
+      ),
     );
   }
 }
