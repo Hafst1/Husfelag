@@ -33,6 +33,8 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    final regExp =
+        RegExp(r'(^[a-zA-Z0-9_.+!"#$%&/()=-]+@[a-zA-Z0-9]+.[a-zA-Z]+)');
     return _isLoading
         ? Scaffold(
             body: LoadingSpinner(),
@@ -74,8 +76,15 @@ class _RegisterState extends State<Register> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
-                              validator: (val) =>
-                                  val.isEmpty ? 'Sláðu inn fullt nafn' : null,
+                              validator: (val) {
+                                if (val.isEmpty) {
+                                  return 'Sláðu inn fullt nafn';
+                                }
+                                if (val.length > 45) {
+                                  return 'Nafn getur ekki verið meira en 45 stafir á lengd!';
+                                }
+                                return null;
+                              },
                               onChanged: (val) {
                                 _user = UserData(
                                   id: _user.id,
@@ -100,8 +109,15 @@ class _RegisterState extends State<Register> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
-                              validator: (val) =>
-                                  val.isEmpty ? 'Sláðu inn netfang' : null,
+                              validator: (val) {
+                                if (val.isEmpty) {
+                                  return 'Sláðu inn netfang';
+                                }
+                                if (!regExp.hasMatch(val)) {
+                                  return 'Vinsamlegast fylltu út gilt netfang!';
+                                }
+                                return null;
+                              },
                               onChanged: (val) {
                                 _user = UserData(
                                   id: _user.id,
@@ -137,7 +153,7 @@ class _RegisterState extends State<Register> {
                             SizedBox(
                               height: 60,
                             ),
-                            buildButton(),
+                            _buildButton(),
                             SizedBox(
                               height: 20,
                             ),
@@ -188,7 +204,8 @@ class _RegisterState extends State<Register> {
           );
   }
 
-  Widget buildButton() {
+  // a button that activates the register user with firebase
+  Widget _buildButton() {
     return GestureDetector(
       onTap: () async {
         if (_formKey.currentState.validate()) {
@@ -209,13 +226,16 @@ class _RegisterState extends State<Register> {
             if (this.mounted) {
               if (result == null) {
                 setState(() {
-                  _errorMessage = 'Vinsamlegast fylltu út gilt netfang';
+                  _errorMessage = 'Ekki tókst að stofna aðgang!';
                   _isLoading = false;
                 });
               }
             }
           } catch (error) {
-            // error handling
+            setState(() {
+              _errorMessage = 'Ekki tókst að stofna aðgang!';
+              _isLoading = false;
+            });
           }
         }
       },

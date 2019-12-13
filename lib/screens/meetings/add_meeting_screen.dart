@@ -43,6 +43,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // if we are editing a meeting we fill the textfields with the value of the 
+  // meeting with the id passed in through arguments.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -77,6 +79,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     super.dispose();
   }
 
+  // function which presents a date picker.
   void _presentDatePicker(TextEditingController controller) {
     DateTime exactDate = DateTime.now();
     DateTime startOfCurrentDate =
@@ -101,6 +104,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     });
   }
 
+  // function which converts a string formatted date to DateTime object.
   DateTime _convertToDate(String input) {
     try {
       var d = new DateFormat.yMMMMEEEEd().parseStrict(input);
@@ -110,6 +114,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     }
   }
 
+  // functions which presents a time picker.
   void _presentTimePicker(TextEditingController controller) {
     showTimePicker(
       context: context,
@@ -125,6 +130,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     });
   }
 
+  // function which convert string parameter to TimeOfDay object.
   TimeOfDay _convertToTimeOfDay(String input) {
     if (input.isEmpty) {
       return null;
@@ -134,6 +140,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         minute: int.parse(input.split(':')[1]));
   }
 
+  // function which checks whether the start time and end time of a 
+  // meeting are valid or not.
   bool _isInvalidTime(String startingTime, String endingTime) {
     DateTime currentDate = DateTime.now();
     TimeOfDay startOfMeeting = _convertToTimeOfDay(startingTime);
@@ -147,6 +155,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
+  // function which returns the duration of a meeting, given two strings
+  // representing when the meeting starts and when it ends.
   Duration _getDuration(String startingTime, String endingTime) {
     DateTime currentDate = DateTime.now();
     TimeOfDay startOfMeeting = _convertToTimeOfDay(startingTime);
@@ -160,6 +170,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
+  // function which validates the form and adds a meeting to the database
+  // if the input is valid.
   Future<void> _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();
     if (!isValid) {
@@ -174,14 +186,14 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         await Provider.of<MeetingsProvider>(context, listen: false)
             .updateMeeting(residentAssociationId, _meeting);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að breyta fundi!');
+        await _printErrorDialog('Ekki tókst að breyta fundi!');
       }
     } else {
       try {
         await Provider.of<MeetingsProvider>(context, listen: false)
             .addMeeting(residentAssociationId, _meeting);
       } catch (error) {
-        await printErrorDialog('Ekki tókst að bæta við fundi!');
+        await _printErrorDialog('Ekki tókst að bæta við fundi!');
       }
       try {
         await Provider.of<NotificationsProvider>(context, listen: false)
@@ -203,7 +215,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     Navigator.of(context).pop();
   }
 
-  Future<void> printErrorDialog(String errorMessage) {
+  // functions which prints an error dialog.
+  Future<void> _printErrorDialog(String errorMessage) {
     return showDialog(
       context: context,
       builder: (ctx) => AlertDialog(

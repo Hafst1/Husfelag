@@ -26,6 +26,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   var _isInit = true;
 
+  // fetch notification counter
   void didChangeDependencies() {
     if (_isInit) {
       final currentUserData =
@@ -44,6 +45,9 @@ class _TabsScreenState extends State<TabsScreen> {
     super.didChangeDependencies();
   }
 
+  // function which selects a page to navigate to. If the tab you are currently 
+  // on is pressed then you will go to the main page of that section. 
+  // If notifications tab is pressed then the counter will be set to 0.
   void _selectPage(int index) {
     if (_selectedPageIndex == index) {
       navigatorKeys[index].currentState.popUntil((key) => key.isFirst);
@@ -57,6 +61,8 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  // functions which displays the section which is chosen and hides
+  // the others.
   Widget _buildOffstageNavigator(Object navigator, int pageIndex) {
     return Offstage(
       offstage: _selectedPageIndex != pageIndex,

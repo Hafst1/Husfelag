@@ -11,6 +11,7 @@ class CategoryOption extends StatelessWidget {
     @required this.optionRoute}
   );
 
+  // function which pushes to a page with specific route.
   void selectOption(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
       optionRoute,

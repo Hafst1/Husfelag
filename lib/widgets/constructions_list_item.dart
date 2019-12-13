@@ -26,6 +26,8 @@ class ConstructionsListItem extends StatelessWidget {
     @required this.isAuthor,
   });
 
+  // function which presents an action dialog where user can choose to 
+  // edit or delete construction.
   void _showActionDialog(BuildContext context) {
     showDialog(
       context: context,

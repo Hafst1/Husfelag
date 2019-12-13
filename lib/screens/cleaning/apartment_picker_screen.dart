@@ -15,6 +15,7 @@ class _ApartMentPickerScreenState extends State<ApartMentPickerScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // fetch the available apartments to pick from when widget is built.
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -40,10 +41,12 @@ class _ApartMentPickerScreenState extends State<ApartMentPickerScreen> {
     super.didChangeDependencies();
   }
 
-  selectApartment(BuildContext context, String apartmentNumber) {
+  // functions which picks one of the apartments which are available.
+  _selectApartment(BuildContext context, String apartmentNumber) {
     Navigator.of(context).pop(apartmentNumber);
   }
 
+  // function which presents an error dialog.
   _printErrorDialog() {
     showDialog(
       context: context,
@@ -79,7 +82,7 @@ class _ApartMentPickerScreenState extends State<ApartMentPickerScreen> {
                   .map(
                     (apartment) => ApartmentPickerItem(
                       apartment: apartment.apartmentNumber,
-                      onClickFunc: selectApartment,
+                      onClickFunc: _selectApartment,
                     ),
                   )
                   .toList(),

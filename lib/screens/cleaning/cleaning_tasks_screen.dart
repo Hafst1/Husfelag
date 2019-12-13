@@ -19,6 +19,8 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
   var _isInit = true;
   var _isLoading = false;
 
+  // fetch cleaning tasks, apartments and cleaning items when widget is built.
+  @override
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {
@@ -48,6 +50,7 @@ class _CleaningTasksScreenState extends State<CleaningTasksScreen> {
     super.didChangeDependencies();
   }
 
+  // function which presents an error dialog.
   _printErrorDialog() {
     showDialog(
       context: context,

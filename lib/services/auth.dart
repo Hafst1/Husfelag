@@ -76,7 +76,7 @@ class AuthService {
       throw (error);
     }
   }
-  
+
   // sign out function
   Future signOut() async {
     try {
@@ -88,13 +88,11 @@ class AuthService {
   }
 
   // delete user from authentication in firebase
-  Future deleteUser() async{
+  Future deleteUser() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
-
     try {
-      user.delete();
+      await user.delete();
     } on Exception catch (error) {
-      print(error.toString());
       throw (error);
     }
   }

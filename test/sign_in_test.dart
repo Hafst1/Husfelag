@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../lib/screens/authenticate/sign_in.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('sign in form testing:', () {
     testWidgets('should display appropriate error messages on no input',
         (WidgetTester tester) async {
