@@ -109,7 +109,7 @@ class _AddConstructionScreenState extends State<AddConstructionScreen> {
     }
   }
 
-  // function which validates the form and adds the construction to 
+  // function which validates the form and adds the construction to
   // database if input is valid.
   void _saveForm(String residentAssociationId) async {
     var isValid = _form.currentState.validate();

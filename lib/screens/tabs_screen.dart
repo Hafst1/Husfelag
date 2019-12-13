@@ -45,8 +45,8 @@ class _TabsScreenState extends State<TabsScreen> {
     super.didChangeDependencies();
   }
 
-  // function which selects a page to navigate to. If the tab you are currently 
-  // on is pressed then you will go to the main page of that section. 
+  // function which selects a page to navigate to. If the tab you are currently
+  // on is pressed then you will go to the main page of that section.
   // If notifications tab is pressed then the counter will be set to 0.
   void _selectPage(int index) {
     if (_selectedPageIndex == index) {
@@ -54,11 +54,11 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
     setState(() {
-      if(Counter.notificationCounter != null) {
+      if (Counter.notificationCounter != null) {
         _counter = Counter.notificationCounter;
       }
       _selectedPageIndex = index;
-      if(_selectedPageIndex == 2) {
+      if (_selectedPageIndex == 2) {
         Counter.notificationCounter = 0;
       }
     });
@@ -75,9 +75,9 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-     if(Counter.notificationCounter != null) {
-        _counter = Counter.notificationCounter;
-      }
+    if (Counter.notificationCounter != null) {
+      _counter = Counter.notificationCounter;
+    }
     return WillPopScope(
       onWillPop: () async =>
           !await navigatorKeys[_selectedPageIndex].currentState.maybePop(),
@@ -121,30 +121,30 @@ class _TabsScreenState extends State<TabsScreen> {
               icon: Stack(
                 children: <Widget>[
                   Icon(Icons.notifications),
-                  (_counter > 0) 
-                  ? Positioned(
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        constraints: BoxConstraints(
-                          minWidth: 12,
-                          minHeight: 12,
-                        ),
-                        child: Text(
-                          '$_counter',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 8,
+                  (_counter > 0)
+                      ? Positioned(
+                          right: 0,
+                          child: Container(
+                            padding: EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            constraints: BoxConstraints(
+                              minWidth: 12,
+                              minHeight: 12,
+                            ),
+                            child: Text(
+                              '$_counter',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 8,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
-                  : Container(height: 0, width: 0),
+                        )
+                      : Container(height: 0, width: 0),
                 ],
               ),
               title: Text('Tilkynningar'),

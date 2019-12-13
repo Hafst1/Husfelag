@@ -43,7 +43,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   var _isInit = true;
   var _isLoading = false;
 
-  // if we are editing a meeting we fill the textfields with the value of the 
+  // if we are editing a meeting we fill the textfields with the value of the
   // meeting with the id passed in through arguments.
   @override
   void didChangeDependencies() {
@@ -140,7 +140,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         minute: int.parse(input.split(':')[1]));
   }
 
-  // function which checks whether the start time and end time of a 
+  // function which checks whether the start time and end time of a
   // meeting are valid or not.
   bool _isInvalidTime(String startingTime, String endingTime) {
     DateTime currentDate = DateTime.now();

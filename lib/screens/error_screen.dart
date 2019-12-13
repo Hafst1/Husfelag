@@ -15,7 +15,7 @@ class ErrorScreen extends StatelessWidget {
           Icons.error_outline,
           color: Colors.red,
           size: 100,
-          ),
+        ),
         SizedBox(height: 50),
         Text(
           "Eitthvað fór úrskeiðis",
@@ -24,7 +24,8 @@ class ErrorScreen extends StatelessWidget {
         SizedBox(height: 50),
         RaisedButton(
           onPressed: () {
-            Provider.of<CurrentUserProvider>(context).triggerCurrentUserRefresh();
+            Provider.of<CurrentUserProvider>(context)
+                .triggerCurrentUserRefresh();
           },
           child: Text('Reyna aftur'),
         ),
