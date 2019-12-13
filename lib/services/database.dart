@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/user.dart';
-import '../services/auth.dart';
 import '../shared/constants.dart' as Constants;
 
 class DatabaseService {
   final String uid;
   DatabaseService({this.uid});
-
-  final _auth = AuthService();
 
   // collection reference
   final CollectionReference usersCollection =
@@ -37,7 +34,6 @@ class DatabaseService {
   Future<void> deleteUserFromDB() async {
     try {
       await usersCollection.document(uid).delete();
-      await _auth.deleteUser();
     } catch (error) {
       throw (error);
     }

@@ -93,6 +93,7 @@ class NotificationsProvider with ChangeNotifier {
         type: notification.type,
       );
       _notifications.add(newNotification);
+      Counter.notificationCounter--;
       notifyListeners();
     } catch (error) {
       throw (error);
