@@ -7,13 +7,12 @@ class TabFilterButton extends StatelessWidget {
   final double buttonHeight;
   final int filterIndex;
 
-  TabFilterButton({
-    @required this.buttonFilterId,
-    @required this.buttonText,
-    @required this.buttonFunc,
-    @required this.buttonHeight,
-    @required this.filterIndex
-  });
+  TabFilterButton(
+      {@required this.buttonFilterId,
+      @required this.buttonText,
+      @required this.buttonFunc,
+      @required this.buttonHeight,
+      @required this.filterIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,9 @@ class TabFilterButton extends StatelessWidget {
           border: Border(
             bottom: BorderSide(
               width: 3.5,
-              color: filterIndex == buttonFilterId ? Colors.grey[600] : Colors.grey[300],
+              color: filterIndex == buttonFilterId
+                  ? Colors.grey[600]
+                  : Colors.grey[300],
             ),
           ),
         ),
@@ -34,7 +35,9 @@ class TabFilterButton extends StatelessWidget {
           buttonText,
           style: TextStyle(
             fontSize: 18,
-            fontWeight: filterIndex == buttonFilterId ? FontWeight.bold : FontWeight.normal,
+            fontWeight: filterIndex == buttonFilterId
+                ? FontWeight.bold
+                : FontWeight.normal,
           ),
         ),
         alignment: Alignment.center,

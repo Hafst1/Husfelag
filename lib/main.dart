@@ -35,7 +35,7 @@ Map<int, Color> colorMap = {
   900: Color.fromRGBO(58, 100, 124, 1),
 };
 
-MaterialColor customColor = MaterialColor(0xFF3A647C, colorMap); 
+MaterialColor customColor = MaterialColor(0xFF3A647C, colorMap);
 
 class _MyAppState extends State<MyApp> {
   @override
@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
           title: 'Húsfélagið',
           theme: ThemeData(
-            primarySwatch: customColor, 
+            primarySwatch: customColor,
             accentColor: Colors.pink[400],
           ),
           home: Wrapper(),

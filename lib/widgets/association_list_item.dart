@@ -34,7 +34,7 @@ class _AssociationListItemState extends State<AssociationListItem> {
     });
   }
 
-  // function which validates the form and sends the id of the 
+  // function which validates the form and sends the id of the
   // association if the access code is correct.
   void _validateForm() {
     FocusScope.of(context).requestFocus(FocusNode());

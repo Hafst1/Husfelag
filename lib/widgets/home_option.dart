@@ -23,7 +23,7 @@ class HomeOption extends StatelessWidget {
       onTap: () => selectOption(context),
       child: Container(
         decoration: BoxDecoration(
-         boxShadow: [
+          boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
               blurRadius: 28.0, // has the effect of softening the shadow
@@ -60,7 +60,10 @@ class HomeOption extends StatelessWidget {
                   child: FittedBox(
                     child: Text(
                       optionText,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Color.fromRGBO(54, 60, 67, 1)),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          color: Color.fromRGBO(54, 60, 67, 1)),
                     ),
                   ),
                 ),

@@ -40,7 +40,8 @@ class HomeNavigator extends StatelessWidget {
       HomeNavigatorRoutes.root: (context) => HomeScreen(),
       HomeNavigatorRoutes.constructions: (context) => ConstructionsScreen(),
       HomeNavigatorRoutes.addConstruction: (context) => AddConstructionScreen(),
-      HomeNavigatorRoutes.constructionslist: (context) => ConstructionsListScreen(),
+      HomeNavigatorRoutes.constructionslist: (context) =>
+          ConstructionsListScreen(),
       HomeNavigatorRoutes.meetings: (context) => MeetingsScreen(),
       HomeNavigatorRoutes.addMeeting: (context) => AddMeetingScreen(),
       HomeNavigatorRoutes.meetingsList: (context) => MeetingsListScreen(),
